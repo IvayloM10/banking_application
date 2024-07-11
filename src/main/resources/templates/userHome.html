@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,32 +17,27 @@
             <div class="right-buttons">
                 <li>
                     <form>
-                        <a href="/home"><button class="nav-button">Home</button></a>
+                        <a th:href="@{/home}" ><button class="nav-button">Home</button></a>
                     </form>
                 </li>
                 <li>
                     <form>
-                        <a href="/home"> <button class="nav-button">Take Loan</button> </a>
+                        <a th:href="@{/home}"> <button class="nav-button">Take Loan</button> </a>
                     </form>
                 </li>
                 <li>
                     <form>
-                        <a href="/users/register"><button class="nav-button">Register</button> </a>
+                        <a th:href="@{/users/register}"><button class="nav-button">Register</button> </a>
                     </form>
                 </li>
                 <li>
                     <form>
-                        <a href="/users/transaction"><button class="nav-button">Make Transaction</button> </a>
+                        <a th:href="@{/users/login}"> <button class="nav-button">Login</button> </a>
                     </form>
                 </li>
                 <li>
                     <form>
-                        <a href="/users/login"> <button class="nav-button">Login</button> </a>
-                    </form>
-                </li>
-                <li>
-                    <form>
-                        <a href="/users/logout"> <button class="nav-button">Logout</button> </a>
+                        <a th:href="@{/users/logout}"> <button class="nav-button">Logout</button> </a>
                     </form>
                 </li>
             </div>
@@ -51,24 +46,25 @@
 </header>
 
 <main>
-    <h1 class="welcome-message">Welcome, {name}</h1>
+    <h1 class="welcome-message">Welcome,<span th:text="${name}"></span></h1>
 
+    <div class="wrapper">
     <section class="account-info">
         <h2>Account Information</h2>
-        <p>Account Number: 123456789 - Currency: USD</p>
-        <p>Balance: 20000</p>
+        <p>Account Number: <span th:text="${account.getAccountNumber()}"></span> - Currency: <span th:text="${account.getCurrency()}"></span></p>
+        <p>Balance: <span th:text="${account.getBalance()}"></span></p>
         <img src="account-card.jpg" alt="Account Card" class="account-card-image">
     </section>
     <section class="account-info">
-        <h2>Account Information</h2>
-        <p>Account Number: 123456789 - Currency: USD</p>
-        <p>Balance: 20000</p>
+        <h2>Card</h2>
+        <p>Card Number: <span th:text="${physicalCard.getCardNumber()}"></span> - Currency: <span th:text="${physicalCard.getCurrency()}"></span></p>
+        <p>Balance: <span th:text="${physicalCard.getBalance()}"></span></p>
         <img src="account-card.jpg" alt="Account Card" class="account-card-image">
     </section>
     <section class="account-info">
         <h2>Virtual Card</h2>
-        <p>Account Number: 123456789 - Currency: USD</p>
-        <p>Balance: 20000</p>
+        <p>Virtual Card Number: <span th:text="${virtualCard.getCardNumber()}"></span> - Currency: <span th:text="${virtualCard.getCurrency()}"></span></p>
+        <p>Balance: <span th:text="${virtualCard.getBalance()}"></span></p>
         <img src="account-card.jpg" alt="Account Card" class="account-card-image">
     </section>
 
@@ -81,6 +77,7 @@
         </select>
     </section>
 
+    </div>
     <section class="transactions-history">
         <h2>Transaction History</h2>
         <table>

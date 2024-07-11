@@ -1,5 +1,6 @@
 package com.example.banking_application.models.entities;
 
+import com.example.banking_application.models.entities.enums.Currency;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,16 +15,17 @@ public class Account {
     private Long id;
 
     @Column(nullable = false)
-    private String currency;
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
     @OneToOne
     @JoinColumn(name = "user_id",unique = true,nullable = false)
     private User user;
 
     @Column(name ="account_number", unique = true,nullable = false)
-    private int accountNumber;
+    private String accountNumber;
 
     @Column(nullable = false)
-    private double accountSum;
+    private double balance;
 
     @ManyToOne
     private Administrator administrator;
@@ -38,12 +40,12 @@ public class Account {
 
 
     public void reduceAccount(int sum){
-        this.accountSum -= sum;
+        this.balance -= sum;
     }
 
 
     public void addIntoAccount(int sum){
-        this.accountSum += sum;
+        this.balance += sum;
     }
 
 

@@ -1,14 +1,14 @@
 package com.example.banking_application.controllers;
 
+import com.example.banking_application.models.dtos.CardDto;
 import com.example.banking_application.models.dtos.UserRegisterDto;
+import com.example.banking_application.models.entities.Card;
 import com.example.banking_application.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -23,7 +23,7 @@ public class RegisterController {
 
     @GetMapping("/register")
     public String registerView(){
-        return "register";
+        return"register";
     }
 
     @PostMapping("/register")
@@ -43,6 +43,20 @@ public class RegisterController {
             return "redirect:/users/register";
         }
 
+        return "redirect:/users/createCard";
+    }
+
+    @ModelAttribute("card")
+    public CardDto cardDto(){
+        return new CardDto();
+    }
+    @GetMapping("/createCard")
+    public String cardCreationView(){
+        return "createCard";
+    }
+    @PostMapping("/createCard")
+    public String createCard(@Valid CardDto cardDto, @RequestParam Long userId, Model model) {
+        userService.createCardAndAccountForUser(userId, cardDto);
         return "redirect:/users/login";
     }
 }

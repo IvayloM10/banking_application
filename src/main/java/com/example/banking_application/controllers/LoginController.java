@@ -19,7 +19,7 @@ public class LoginController {
 
     @ModelAttribute("userLogin")
     public UserLoginDto userLoginDto(){
-        return userLoginDto();
+        return new UserLoginDto();
     }
 
     @GetMapping("/login")
@@ -31,8 +31,8 @@ public class LoginController {
     public String login(@Valid UserLoginDto userLoginDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
 
         if(bindingResult.hasErrors()){
-            redirectAttributes.addFlashAttribute("newUser",userLoginDto);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.newUser",bindingResult);
+            redirectAttributes.addFlashAttribute("userLogin",userLoginDto);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userLogin",bindingResult);
             return "redirect:/users/register";
         }
 

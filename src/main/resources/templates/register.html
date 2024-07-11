@@ -8,41 +8,41 @@
 </head>
 <body>
 <header>
-    <<nav>
-    <ul>
-        <div class="left-buttons">
-            <li><a href ="/"><img src="/img/logo.jpg" alt="Logo" width="50" height="50"></a></li>
+    <nav>
+        <ul>
+            <div class="left-buttons">
+                <li><a href ="/"><img src="/img/logo.jpg" alt="Logo" width="50" height="50"></a></li>
 
-        </div>
-        <div class="right-buttons">
-            <li>
-                <form>
-                    <a href="/home"><button class="nav-button">Home</button></a>
-                </form>
-            </li>
-            <li>
-                <form>
-                    <a href="/home"> <button class="nav-button">Take Loan</button> </a>
-                </form>
-            </li>
-            <li>
-                <form>
-                    <a href="/users/register"><button class="nav-button">Register</button> </a>
-                </form>
-            </li>
-            <li>
-                <form>
-                    <a href="/users/login"> <button class="nav-button">Login</button> </a>
-                </form>
-            </li>
-            <li>
-                <form>
-                    <a href="/users/logout"> <button class="nav-button">Logout</button> </a>
-                </form>
-            </li>
-        </div>
-    </ul>
-</nav>
+            </div>
+            <div class="right-buttons">
+                <li>
+                    <form>
+                        <a class="nav-button" th:href="@{/home}" ><button class="nav-button">Home</button></a>
+                    </form>
+                </li>
+                <li>
+                    <form>
+                        <a th:href="@{/home}"> <button class="nav-button">Take Loan</button> </a>
+                    </form>
+                </li>
+                <li>
+                    <form>
+                        <a th:href="@{/users/register}"><button class="nav-button">Register</button> </a>
+                    </form>
+                </li>
+                <li>
+                    <form>
+                        <a th:href="@{/users/login}"> <button class="nav-button">Login</button> </a>
+                    </form>
+                </li>
+                <li>
+                    <form>
+                        <a th:href="@{/users/logout}"> <button class="nav-button">Logout</button> </a>
+                    </form>
+                </li>
+            </div>
+        </ul>
+    </nav>
 </header>
 <main>
     <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Register</span></h1>

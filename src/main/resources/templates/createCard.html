@@ -1,0 +1,29 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Card</title>
+    <link rel="stylesheet" type="text/css" href="/createCard.css">
+</head>
+<body>
+<div class="container">
+    <h1>Create Card</h1>
+    <form th:action="@{/createCard}" th:object="${card}" method="post">
+        <input type="hidden" th:value="${userId}" name="userId"/>
+
+        <label for="cardType">Card Type:</label>
+        <select id="cardType" th:field="*{cardType}" required>
+            <option value="Mastercard">Mastercard</option>
+            <option value="Visa">Visa</option>
+        </select><br/>
+
+        <label for="currency">Currency:</label>
+        <select id="currency" th:field="*{currency}" required>
+            <option value="USD">USD</option>
+            <option value="BGN">BGN</option>
+            <option value="EUR">EUR</option>
+        </select><br/>
+
+        <button type="submit">Create Card</button>
+    </form>
+</div>
+</body>
+</html>

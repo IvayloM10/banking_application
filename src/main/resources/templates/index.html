@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,27 +16,27 @@
         <div class="right-buttons">
             <li>
                 <form>
-                    <a href="/home"><button class="nav-button">Home</button></a>
+                    <a th:href="@{/home}" >Home</a>
                 </form>
             </li>
             <li>
                 <form>
-                    <a href="/home"> <button class="nav-button">Take Loan</button> </a>
+                    <a  class="nav-button" th:href="@{/home}"> Take Loan</a>
                 </form>
             </li>
             <li>
                 <form>
-                    <a href="/users/register"><button class="nav-button">Register</button> </a>
+                    <a  class="nav-button" th:href="@{/users/register}">Register </a>
                 </form>
             </li>
             <li>
                 <form>
-                    <a href="/users/login"> <button class="nav-button">Login</button> </a>
+                    <a  class="nav-button" th:href="@{/users/login}"> Login</a>
                 </form>
             </li>
             <li>
                 <form>
-                    <a href="/users/logout"> <button class="nav-button">Logout</button> </a>
+                    <a  class="nav-button" th:href="@{/users/logout}"> Logout </a>
                 </form>
             </li>
         </div>

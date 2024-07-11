@@ -37,8 +37,8 @@ public class User {
     @JoinColumn(name = "account_id", unique = true)
     private Account account;
 
-    @OneToMany(mappedBy = "cardHolder")
-    private List<Card> card = new ArrayList<>();
+    @OneToOne(mappedBy = "cardHolder")
+    private Card card;
 
     @ManyToMany
     private List<Transaction> transactions = new ArrayList<>();
@@ -46,5 +46,7 @@ public class User {
     @OneToMany(mappedBy = "requester")
     private List<Loan> loans;
 
-    //TODO: initialize the new Array
+    @OneToOne(mappedBy = "cardHolder")
+    private VirtualCard virtualCard;
+
 }
