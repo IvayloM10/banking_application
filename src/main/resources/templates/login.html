@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <div class="left-buttons">
+                <li><a href ="/"><img src="/img/logo.jpg" alt="Logo" width="50" height="50"></a></li>
+
+            </div>
+            <div class="right-buttons">
+                <li>
+                    <form>
+                        <a href="/home"><button class="nav-button">Home</button></a>
+                    </form>
+                </li>
+                <li>
+                    <form>
+                        <a href="/home"> <button class="nav-button">Take Loan</button> </a>
+                    </form>
+                </li>
+                <li>
+                    <form>
+                        <a href="/users/register"><button class="nav-button">Register</button> </a>
+                    </form>
+                </li>
+                <li>
+                    <form>
+                        <a href="/users/login"> <button class="nav-button">Login</button> </a>
+                    </form>
+                </li>
+                <li>
+                    <form>
+                        <a href="/users/logout"> <button class="nav-button">Logout</button> </a>
+                    </form>
+                </li>
+            </div>
+        </ul>
+    </nav>
+</header>
+<main>
+    <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Login</span></h1>
+    <hr class="hr-3 w-25 white"/>
+
+    <form class="login-form"
+          th:method="Post"
+          th:action="@{/users/login}"
+          th:object="${userLogin}"
+    >
+        <div class="form-group">
+            <div class="label-holder">
+                <label for="username" class="form-label">Username</label>
+            </div>
+            <input th:field="*{username}"
+                   type="text"
+                   class="form-control"
+                   id="username"
+                   name="username"
+                   th:errorclass="'is-invalid alert-danger'"
+            />
+            <small class="invalid-feedback text-danger">Username error message</small>
+        </div>
+
+        <div class="form-group">
+            <div class="label-holder">
+                <label for="password" class="form-label">Password</label>
+            </div>
+            <input th:field="*{password}"
+                   th:errorclass="'is-invalid alert-danger'"
+                   type="password"
+                   class="form-control"
+                   id="password"
+                   name="password"/>
+            <small class="invalid-feedback text-danger">Password error message</small>
+        </div>
+
+        <div class="form-group text-center">
+            <a href="/" class="forgot-link">Forgot username or password?</a>
+        </div>
+
+        <div class="button-holder">
+            <button type="submit" class="btn btn-warning" value="Login">Login</button>
+        </div>
+    </form>
+</main>
+</body>
+<footer>
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>About Us</h3>
+            <ul class="social-media">
+                <li><a href="/">Our Story</a></li>
+                <li><a href="/">Careers</a></li>
+                <li><a href="/">Press</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Customer Service</h3>
+            <ul class="social-media">
+                <li><a href="/">Contact Us</a></li>
+                <li><a href="/">FAQ</a></li>
+                <li><a href="/">Support Center</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Legal</h3>
+            <ul class="social-media">
+                <li><a href="/">Privacy Policy</a></li>
+                <li><a href="/">Terms of Service</a></li>
+                <li><a href="/">Security</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Connect with Us</h3>
+            <ul class="social-media">
+                <li><a href="/"><img src="facebook-icon.png" alt="Facebook"></a></li>
+                <li><a href="/"><img src="twitter-icon.png" alt="Twitter"></a></li>
+                <li><a href="/"><img src="linkedin-icon.png" alt="LinkedIn"></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 UB Bank. All rights reserved.</p>
+    </div>
+</footer>
+</html>

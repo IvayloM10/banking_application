@@ -1,0 +1,210 @@
+nav {
+    display: flex;
+    justify-content: space-between;
+    background-color: #333;
+    padding: 10px;
+}
+
+ul {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+ul li {
+    display: flex;
+}
+
+ul li form {
+    margin: 0;
+}
+
+.nav-button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.nav-button:hover {
+    background-color: #555;
+}
+
+.left-buttons {
+    display: flex;
+}
+
+.right-buttons {
+    display: flex;
+    margin-left: auto;
+}
+/* main body */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+}
+
+
+h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+main {
+    padding: 20px;
+}
+
+.welcome-message {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 2rem;
+}
+
+.account-info {
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    background-color: #000;
+    color: white;
+    padding: 20px;
+    border-radius: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 30%;
+    float: left;
+    text-align: center;
+}
+
+.account-info h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.account-info p {
+    margin-bottom: 20px;
+}
+
+.account-card-image {
+    width: 100%;
+    border-radius: 15px;
+    object-fit: cover;
+}
+
+.transactions-filter {
+    margin-top: 20px;
+    clear: both;
+    text-align: center;
+}
+
+.transactions-filter select {
+    padding: 10px;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+.transactions-history {
+    margin-top: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    clear: both;
+}
+
+.transactions-history h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #000;
+    color: white;
+}
+/* footer */
+footer {
+    background-color: #000;
+    color: white;
+    padding: 10px 0;
+    margin-bottom: 0;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 200px;
+    margin: 10px;
+}
+
+.footer-section h3 {
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #ffc107;
+}
+
+.footer-section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin: 2px 0;
+}
+
+.footer-section ul li a {
+    display: block; /* Ensure each link is block level */
+    color: white;
+    text-decoration: none;
+}
+
+.footer-section ul li a:hover {
+    text-decoration: underline;
+}
+
+.social-media {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.social-media li {
+    display: block; /* Ensure each social media icon is block level */
+}
+
+.social-media img {
+    width: 24px;
+    height: 24px;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    border-top: 1px solid #444;
+    padding-top: 10px;
+}

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="/css/userHome.css">
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <div class="left-buttons">
+                <li><a href ="/"><img src="/img/logo.jpg" alt="Logo" width="50" height="50"></a></li>
+
+            </div>
+            <div class="right-buttons">
+                <li>
+                    <form>
+                        <a href="/home"><button class="nav-button">Home</button></a>
+                    </form>
+                </li>
+                <li>
+                    <form>
+                        <a href="/home"> <button class="nav-button">Take Loan</button> </a>
+                    </form>
+                </li>
+                <li>
+                    <form>
+                        <a href="/users/register"><button class="nav-button">Register</button> </a>
+                    </form>
+                </li>
+                <li>
+                    <form>
+                        <a href="/users/transaction"><button class="nav-button">Make Transaction</button> </a>
+                    </form>
+                </li>
+                <li>
+                    <form>
+                        <a href="/users/login"> <button class="nav-button">Login</button> </a>
+                    </form>
+                </li>
+                <li>
+                    <form>
+                        <a href="/users/logout"> <button class="nav-button">Logout</button> </a>
+                    </form>
+                </li>
+            </div>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <h1 class="welcome-message">Welcome, {name}</h1>
+
+    <section class="account-info">
+        <h2>Account Information</h2>
+        <p>Account Number: 123456789 - Currency: USD</p>
+        <p>Balance: 20000</p>
+        <img src="account-card.jpg" alt="Account Card" class="account-card-image">
+    </section>
+    <section class="account-info">
+        <h2>Account Information</h2>
+        <p>Account Number: 123456789 - Currency: USD</p>
+        <p>Balance: 20000</p>
+        <img src="account-card.jpg" alt="Account Card" class="account-card-image">
+    </section>
+    <section class="account-info">
+        <h2>Virtual Card</h2>
+        <p>Account Number: 123456789 - Currency: USD</p>
+        <p>Balance: 20000</p>
+        <img src="account-card.jpg" alt="Account Card" class="account-card-image">
+    </section>
+
+    <section class="transactions-filter">
+        <label for="filter">Show transactions for:</label>
+        <select id="filter">
+            <option value="week">Past Week</option>
+            <option value="month">Past Month</option>
+            <option value="all">All Time</option>
+        </select>
+    </section>
+
+    <section class="transactions-history">
+        <h2>Transaction History</h2>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Amount</th>
+            </tr>
+            <tr>
+                <td>2024-06-01</td>
+                <td>Deposit</td>
+                <td>+1000 USD</td>
+            </tr>
+            <tr>
+                <td>2024-06-02</td>
+                <td>Purchase</td>
+                <td>-50 USD</td>
+            </tr>
+            <!-- More rows as needed -->
+        </table>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>About Us</h3>
+            <ul class="social-media">
+                <li><a href="/">Our Story</a></li>
+                <li><a href="/">Careers</a></li>
+                <li><a href="/">Press</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Customer Service</h3>
+            <ul class="social-media">
+                <li><a href="/">Contact Us</a></li>
+                <li><a href="/">FAQ</a></li>
+                <li><a href="/">Support Center</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Legal</h3>
+            <ul class="social-media">
+                <li><a href="/">Privacy Policy</a></li>
+                <li><a href="/">Terms of Service</a></li>
+                <li><a href="/">Security</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Connect with Us</h3>
+            <ul class="social-media">
+                <li><a href="/"><img src="facebook-icon.png" alt="Facebook"></a></li>
+                <li><a href="/"><img src="twitter-icon.png" alt="Twitter"></a></li>
+                <li><a href="/"><img src="linkedin-icon.png" alt="LinkedIn"></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 UB Bank. All rights reserved.</p>
+    </div>
+</footer>
+</body>
+</html>
