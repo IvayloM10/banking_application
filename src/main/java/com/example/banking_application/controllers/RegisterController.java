@@ -2,7 +2,7 @@ package com.example.banking_application.controllers;
 
 import com.example.banking_application.models.dtos.CardDto;
 import com.example.banking_application.models.dtos.UserRegisterDto;
-import com.example.banking_application.models.entities.Card;
+import com.example.banking_application.models.entities.User;
 import com.example.banking_application.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -16,6 +16,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class RegisterController {
     private UserService userService;
 
+    public RegisterController(UserService userService) {
+        this.userService = userService;
+    }
+
     @ModelAttribute("newUser")
     public UserRegisterDto userRegisterDto(){
         return  new UserRegisterDto();
@@ -27,7 +31,7 @@ public class RegisterController {
     }
 
     @PostMapping("/register")
-    public String register(@Valid UserRegisterDto userRegisterDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+    public String register(@Valid UserRegisterDto userRegisterDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model){
 
         if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("newUser",userRegisterDto);
@@ -43,6 +47,7 @@ public class RegisterController {
             return "redirect:/users/register";
         }
 
+        model.addAttribute("userId",userRegisterDto.getUsername());
         return "redirect:/users/createCard";
     }
 
@@ -55,8 +60,8 @@ public class RegisterController {
         return "createCard";
     }
     @PostMapping("/createCard")
-    public String createCard(@Valid CardDto cardDto, @RequestParam Long userId, Model model) {
-        userService.createCardAndAccountForUser(userId, cardDto);
+    public String createCard(@Valid CardDto cardDto) {
+        this.userService.createCardAndAccountForUser(cardDto);
         return "redirect:/users/login";
     }
 }

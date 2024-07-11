@@ -17,6 +17,10 @@ public class LoginController {
 
     private UserService userService;
 
+    public LoginController(UserService userService) {
+        this.userService = userService;
+    }
+
     @ModelAttribute("userLogin")
     public UserLoginDto userLoginDto(){
         return new UserLoginDto();
@@ -33,12 +37,13 @@ public class LoginController {
         if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("userLogin",userLoginDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userLogin",bindingResult);
-            return "redirect:/users/register";
+            redirectAttributes.addFlashAttribute("loginError", true);
+            return "redirect:/users/login";
         }
 
         this.userService.login(userLoginDto);
 
 
-        return "/home";
+        return "redirect:/home";
     }
 }

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Banking App</title>
+    <link rel="stylesheet" href="/css/fragments"/>
+</head>
+<nav>
+    <ul>
+        <div class="left-buttons">
+            <li><a href ="/"><img src="/img/logo.jpg" alt="Logo" width="50" height="50"></a></li>
+
+        </div>
+        <div class="right-buttons">
+            <li>
+                <form>
+                    <a th:href="@{/home}" >Home</a>
+                </form>
+            </li>
+            <li>
+                <form>
+                    <a  class="nav-button" th:href="@{/home}"> Take Loan</a>
+                </form>
+            </li>
+            <li>
+                <form>
+                    <a  class="nav-button" th:href="@{/users/register}">Register </a>
+                </form>
+            </li>
+            <li>
+                <form>
+                    <a  class="nav-button" th:href="@{/users/login}"> Login</a>
+                </form>
+            </li>
+            <li>
+                <form>
+                    <a  class="nav-button" th:href="@{/users/logout}"> Logout </a>
+                </form>
+            </li>
+        </div>
+    </ul>
+</nav>
+<footer>
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>About Us</h3>
+            <ul class="social-media">
+                <li><a href="/">Our Story</a></li>
+                <li><a href="/">Careers</a></li>
+                <li><a href="/">Press</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Customer Service</h3>
+            <ul class="social-media">
+                <li><a href="/">Contact Us</a></li>
+                <li><a href="/">FAQ</a></li>
+                <li><a href="/">Support Center</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Legal</h3>
+            <ul class="social-media">
+                <li><a href="/">Privacy Policy</a></li>
+                <li><a href="/">Terms of Service</a></li>
+                <li><a href="/">Security</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Connect with Us</h3>
+            <ul class="social-media">
+                <li><a href="/"><img src="/img/facebookWhite.png" alt="Facebook"></a></li>
+                <li><a href="/"><img src="twitter-icon.png" alt="Twitter"></a></li>
+                <li><a href="/"><img src="linkedin-icon.png" alt="LinkedIn"></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 UB Bank. All rights reserved.</p>
+    </div>
+</footer>
+</body>
+</html>

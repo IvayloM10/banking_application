@@ -8,41 +8,7 @@
 </head>
 <body>
 <header>
-    <nav>
-        <ul>
-            <div class="left-buttons">
-                <li><a href ="/"><img src="/img/logo.jpg" alt="Logo" width="50" height="50"></a></li>
-
-            </div>
-            <div class="right-buttons">
-                <li>
-                    <form>
-                        <a class="nav-button" th:href="@{/home}" ><button class="nav-button">Home</button></a>
-                    </form>
-                </li>
-                <li>
-                    <form>
-                        <a th:href="@{/home}"> <button class="nav-button">Take Loan</button> </a>
-                    </form>
-                </li>
-                <li>
-                    <form>
-                        <a th:href="@{/users/register}"><button class="nav-button">Register</button> </a>
-                    </form>
-                </li>
-                <li>
-                    <form>
-                        <a th:href="@{/users/login}"> <button class="nav-button">Login</button> </a>
-                    </form>
-                </li>
-                <li>
-                    <form>
-                        <a th:href="@{/users/logout}"> <button class="nav-button">Logout</button> </a>
-                    </form>
-                </li>
-            </div>
-        </ul>
-    </nav>
+    <nav th:replace="~{fragments/commons::nav}"></nav>
 </header>
 <main>
     <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Register</span></h1>
@@ -138,44 +104,6 @@
 
     </form>
 </main>
-<footer>
-    <div class="footer-container">
-        <div class="footer-section">
-            <h3>About Us</h3>
-            <ul class="social-media">
-                <li><a href="/">Our Story</a></li>
-                <li><a href="/">Careers</a></li>
-                <li><a href="/">Press</a></li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h3>Customer Service</h3>
-            <ul class="social-media">
-                <li><a href="/">Contact Us</a></li>
-                <li><a href="/">FAQ</a></li>
-                <li><a href="/">Support Center</a></li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h3>Legal</h3>
-            <ul class="social-media">
-                <li><a href="/">Privacy Policy</a></li>
-                <li><a href="/">Terms of Service</a></li>
-                <li><a href="/">Security</a></li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h3>Connect with Us</h3>
-            <ul class="social-media">
-                <li><a href="/"><img src="facebook-icon.png" alt="Facebook"></a></li>
-                <li><a href="/"><img src="twitter-icon.png" alt="Twitter"></a></li>
-                <li><a href="/"><img src="linkedin-icon.png" alt="LinkedIn"></a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>&copy; 2024 UB Bank. All rights reserved.</p>
-    </div>
-</footer>
+<footer th:replace="~{fragments/commons::footer}"></footer>
 </body>
 </html>

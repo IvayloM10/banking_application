@@ -1,29 +1,144 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Create Card</title>
-    <link rel="stylesheet" type="text/css" href="/createCard.css">
+    <link rel="stylesheet" type="text/css" href="/css/createCard.css">
+    <link rel="stylesheet" href="/css/fragments"/>
 </head>
+<nav th:replace="~{fragments/commons::nav}"></nav>
 <body>
-<div class="container">
-    <h1>Create Card</h1>
-    <form th:action="@{/createCard}" th:object="${card}" method="post">
-        <input type="hidden" th:value="${userId}" name="userId"/>
 
-        <label for="cardType">Card Type:</label>
-        <select id="cardType" th:field="*{cardType}" required>
-            <option value="Mastercard">Mastercard</option>
-            <option value="Visa">Visa</option>
-        </select><br/>
+<main>
+    <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Register</span></h1>
+    <hr class="hr-3 w-25 white"/>
 
-        <label for="currency">Currency:</label>
-        <select id="currency" th:field="*{currency}" required>
-            <option value="USD">USD</option>
-            <option value="BGN">BGN</option>
-            <option value="EUR">EUR</option>
-        </select><br/>
+    <form class="registration-form"
 
-        <button type="submit">Create Card</button>
+          th:object ="${newUser}"
+    >
+
+        <div class="form-group">
+            <div class="label-holder">
+                <label for="username" class="form-label">Username</label>
+            </div>
+            <input th:field="*{username}"
+                   type="text"
+                   class="form-control"
+                   id="username"
+                   name="username"
+                   th:errorclass="'is-invalid alert-danger'"
+            />
+            <small class="invalid-feedback text-danger">Username error message</small>
+        </div>
+        <div class="form-group">
+            <div class="label-holder">
+                <label for="firstName" class="form-label">First name</label>
+            </div>
+            <input th:field="*{firstName}"
+                   type="text"
+                   class="form-control"
+                   id="firstName"
+                   name="firstName"
+                   th:errorclass="'is-invalid alert-danger'"
+            />
+            <small class="invalid-feedback text-danger">First name error message</small>
+        </div>
+        <div class="form-group">
+            <div class="label-holder">
+                <label for="lastName" class="form-label">Last name</label>
+            </div>
+            <input th:field="*{lastName}"
+                   type="text"
+                   class="form-control"
+                   id="lastName"
+                   name="lastName"
+                   th:errorclass="'is-invalid alert-danger'"
+            />
+            <small class="invalid-feedback text-danger">Last name error message</small>
+        </div>
+        <div class="form-group">
+            <div class="label-holder">
+                <label for="email" class="form-label">Email</label>
+            </div>
+            <input th:field="*{email}"
+                   th:errorclass="'is-invalid alert-danger'"
+                   type="email"
+                   class="form-control"
+                   id="email"
+                   name="email"/>
+            <small class="invalid-feedback text-danger">Email error message</small>
+        </div>
+
+        <div class="form-group">
+            <div class="label-holder">
+                <label for="password" class="form-label">Password</label>
+            </div>
+            <input th:field="*{password}"
+                   th:errorclass="'is-invalid alert-danger'"
+                   type="password"
+                   class="form-control"
+                   id="password"
+                   name="password"/>
+            <small class="invalid-feedback text-danger">Password error message</small>
+        </div>
+
+        <div th:if="${userPassMismatch}" class="text-danger text-center">Confirm password doesn't match password!</div>
+        <div class="form-group">
+            <div class="label-holder">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+            </div>
+            <input
+                    type="password"
+                    class="form-control"
+                    id="confirmPassword"
+                    name="confirmPassword"/>
+        </div>
+
+        <div class="button-holder">
+            <button type="submit" class="btn btn-warning" value="Register">Register</button>
+        </div>
     </form>
+</main>
+<div id="cardModal" class="modal">
+    <div class="modal-content">
+        <h1>Create Card</h1>
+        <form th:action="@{/users/createCard}" th:object="${card}" method="post">
+            <input type="hidden"  name="userId"/>
+
+            <label for="cardType">Card Type:</label>
+            <select id="cardType" th:field="*{cardType}" required>
+                <option value="Mastercard">Mastercard</option>
+                <option value="Visa">Visa</option>
+            </select><br/>
+
+            <label for="currency">Currency:</label>
+            <select id="currency" th:field="*{currency}" required>
+                <option value="USD">USD</option>
+                <option value="BGN">BGN</option>
+                <option value="EUR">EUR</option>
+            </select><br/>
+
+            <button  type="submit">Create Card</button>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const registrationForm = document.getElementById('registrationForm');
+                    const cardCreationContainer = document.getElementById('cardCreationContainer');
+
+
+                    registrationForm.addEventListener('submit', function(event) {
+                        event.preventDefault();
+
+
+                        setTimeout(function() {
+                            document.getElementById('registrationContainer').style.display = 'none';
+
+                            cardCreationContainer.style.display = 'block';
+                        }, 2000);
+                    });
+                });
+            </script>
+        </form>
+    </div>
 </div>
 </body>
+<footer th:replace="~{fragments/commons::footer}"></footer>
 </html>

@@ -12,8 +12,8 @@ import lombok.Setter;
 @Setter
 public class CardDto {
     @NotEmpty
-    private Currency currency;
+    private String currency;
     @NotEmpty
-    private CardType cardType;
+    private String cardType;
 
 }

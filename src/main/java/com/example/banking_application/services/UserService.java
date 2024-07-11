@@ -14,5 +14,7 @@ public interface UserService {
 
     User getCurrentUser(Long id);
 
-    void createCardAndAccountForUser(Long userId, CardDto carddto);
+    void createCardAndAccountForUser( CardDto carddto);
+
+    User getUser(String username);
 }

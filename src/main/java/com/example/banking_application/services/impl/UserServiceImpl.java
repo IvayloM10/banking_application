@@ -7,6 +7,8 @@ import com.example.banking_application.models.dtos.UserRegisterDto;
 import com.example.banking_application.models.entities.Account;
 import com.example.banking_application.models.entities.Card;
 import com.example.banking_application.models.entities.User;
+import com.example.banking_application.models.entities.enums.CardType;
+import com.example.banking_application.models.entities.enums.Currency;
 import com.example.banking_application.repositories.AccountRepository;
 import com.example.banking_application.repositories.CardRepository;
 import com.example.banking_application.repositories.UserRepository;
@@ -55,11 +57,8 @@ public class UserServiceImpl implements UserService {
 
         User user = modelMapper.map(userRegisterDto, User.class);
         user.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
-
-
-
-
         this.userRepository.save(user);
+        this.currentUser.setUsername(userRegisterDto.getUsername());
         return true;
     }
 
@@ -78,19 +77,21 @@ public class UserServiceImpl implements UserService {
         }
 
         this.currentUser = this.modelMapper.map(userLoginDto,CurrentUser.class);
+        this.currentUser.setId(searchedUser.get().getId());
         this.currentUser.setFullName(String.join(" ",user.getFirstName(), user.getLastName()));
 
         return true;
     }
-    @Transactional
-    public void createCardAndAccountForUser(Long userId, CardDto cardDetails) {
-        User byId = this.userRepository.findById(userId).get();
+    @Override
+    public void createCardAndAccountForUser(CardDto cardDetails) {
+        User byId = this.userRepository.findByUsername(this.currentUser.getUsername()).get();
         Card card = new Card();
+        card.setCardHolder(byId);
         card.setCvvNumber(generateCVV());
         card.setAccountNumber(generateCardNumber());
         card.setExpirationDate(LocalDate.now());
-        card.setType(cardDetails.getCardType());
-        card.setCurrency(cardDetails.getCurrency());
+        card.setType(CardType.valueOf(cardDetails.getCardType()));
+        card.setCurrency(Currency.valueOf(cardDetails.getCurrency()));
         byId.setCard(card);
         Account account = new Account();
         account.setAccountNumber(generateAccountNumber());
@@ -99,6 +100,12 @@ public class UserServiceImpl implements UserService {
         byId.setAccount(account);
         this.accountRepository.save(account);
         this.cardRepository.save(card);
+        this.currentUser.setUsername("");
+    }
+
+    @Override
+    public User getUser(String username) {
+        return this.userRepository.findByUsername(username).get();
     }
 
 

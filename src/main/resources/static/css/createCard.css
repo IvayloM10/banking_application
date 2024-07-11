@@ -1,55 +1,274 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+nav {
+    display: flex;
+    justify-content: space-between;
+    background-color: #212121;
+    padding: 10px;
+}
+
+ul {
+    display: flex;
+    list-style-type: none;
     margin: 0;
     padding: 0;
-    height: 100vh;
-    overflow: hidden;
+    width: 100%;
+}
+
+ul li {
+    display: flex;
+}
+
+ul li form {
+    margin: 0;
+}
+
+.nav-button {
+    background-color: #212121;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.nav-button:hover {
+    background-color: #555;
+}
+
+.left-buttons {
+    display: flex;
+}
+
+.right-buttons {
+    display: flex;
+    margin-left: auto;
+}
+/* main */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #5c626c;
+    margin: 0;
+    padding: 0;
+}
+
+header, footer {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+main {
+    margin: 20px;
+}
+
+h1 {
+    margin-top: 20px;
+}
+
+.badge {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+}
+
+.hr-3 {
+    margin: 20px auto;
+}
+
+.registration-form {
+    width: 25%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.label-holder {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.form-label {
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.invalid-feedback {
+    font-size: 0.875rem;
+}
+
+.button-holder {
+    text-align: center;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.btn-warning {
+    background-color: #e1ac0d;
+    color: #fff;
+}
+
+.btn-warning:hover {
+    background-color: #d3c8a6;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-2 {
+    margin-top: 20px;
+}
+
+.w-25 {
+    width: 25%;
+}
+
+.white {
+    background-color: white;
+}
+
+.bg-blur {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.rounded {
+    border-radius: 8px;
+}
+
+.invalid-feedback, .text-danger {
+    color: #fc031c;
+}
+
+footer {
+    background-color: #000;
+    color: white;
+    padding: 10px 0;
+    margin-bottom: 0;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 200px;
+    margin: 10px;
+}
+
+.footer-section h3 {
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #ffc107;
+}
+
+.footer-section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin: 2px 0;
+}
+
+.footer-section ul li a {
+    display: block; /* Ensure each link is block level */
+    color: white;
+    text-decoration: none;
+}
+
+.footer-section ul li a:hover {
+    text-decoration: underline;
+}
+
+.social-media {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.social-media li {
+    display: block; /* Ensure each social media icon is block level */
+}
+
+.social-media img {
+    width: 24px;
+    height: 24px;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    border-top: 1px solid #444;
+    padding-top: 10px;
+}
+
+/* Modal Styles */
+.modal {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
-}
-
-.background-blur {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
-    z-index: 1;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000; /* Make sure the modal is above other elements */
 }
 
-.container {
-    position: relative;
-    background: #fff;
+.modal-content {
+    background-color: white;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 300px;
-    text-align: center;
-    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-    color: #000;
+.modal-content h1 {
     margin-bottom: 20px;
 }
 
-form {
+.modal-content form {
     text-align: left;
 }
 
-label {
+.modal-content label {
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
 }
 
-input[type="text"],
-select {
+.modal-content select, .modal-content input[type="text"] {
     width: 100%;
     padding: 8px;
     margin-bottom: 15px;
@@ -58,7 +277,7 @@ select {
     box-sizing: border-box;
 }
 
-button {
+.modal-content button {
     width: 100%;
     background-color: #007bff;
     color: white;
@@ -69,6 +288,6 @@ button {
     font-size: 16px;
 }
 
-button:hover {
+.modal-content button:hover {
     background-color: #0056b3;
 }

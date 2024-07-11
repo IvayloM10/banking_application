@@ -7,41 +7,7 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<nav>
-    <ul>
-        <div class="left-buttons">
-            <li><a href ="/"><img src="/img/logo.jpg" alt="Logo" width="50" height="50"></a></li>
-
-        </div>
-        <div class="right-buttons">
-            <li>
-                <form>
-                    <a th:href="@{/home}" >Home</a>
-                </form>
-            </li>
-            <li>
-                <form>
-                    <a  class="nav-button" th:href="@{/home}"> Take Loan</a>
-                </form>
-            </li>
-            <li>
-                <form>
-                    <a  class="nav-button" th:href="@{/users/register}">Register </a>
-                </form>
-            </li>
-            <li>
-                <form>
-                    <a  class="nav-button" th:href="@{/users/login}"> Login</a>
-                </form>
-            </li>
-            <li>
-                <form>
-                    <a  class="nav-button" th:href="@{/users/logout}"> Logout </a>
-                </form>
-            </li>
-        </div>
-    </ul>
-</nav>
+<nav th:replace="~{fragments/commons::nav}"></nav>
 <article class="first_section">
     <div class="text-box">
         <p>People have always perceived banks as evil entities with hidden fees and ways of taking our money. We are here to show that this doesn't have to be the case anymore.
@@ -105,44 +71,6 @@
         </li>
     </ul>
 </section>
-<footer>
-    <div class="footer-container">
-        <div class="footer-section">
-            <h3>About Us</h3>
-            <ul class="social-media">
-                <li><a href="/">Our Story</a></li>
-                <li><a href="/">Careers</a></li>
-                <li><a href="/">Press</a></li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h3>Customer Service</h3>
-            <ul class="social-media">
-                <li><a href="/">Contact Us</a></li>
-                <li><a href="/">FAQ</a></li>
-                <li><a href="/">Support Center</a></li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h3>Legal</h3>
-            <ul class="social-media">
-                <li><a href="/">Privacy Policy</a></li>
-                <li><a href="/">Terms of Service</a></li>
-                <li><a href="/">Security</a></li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h3>Connect with Us</h3>
-            <ul class="social-media">
-                <li><a href="/"><img src="/img/facebookWhite.png" alt="Facebook"></a></li>
-                <li><a href="/"><img src="twitter-icon.png" alt="Twitter"></a></li>
-                <li><a href="/"><img src="linkedin-icon.png" alt="LinkedIn"></a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>&copy; 2024 UB Bank. All rights reserved.</p>
-    </div>
-</footer>
+<footer th:replace="~{fragments/commons::footer}"></footer>
 </body>
 </html>
