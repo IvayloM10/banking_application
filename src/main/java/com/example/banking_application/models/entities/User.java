@@ -49,4 +49,7 @@ public class User {
     @OneToOne(mappedBy = "cardHolder")
     private VirtualCard virtualCard;
 
+    @ManyToOne
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
 }

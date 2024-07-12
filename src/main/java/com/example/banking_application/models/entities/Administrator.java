@@ -1,5 +1,6 @@
 package com.example.banking_application.models.entities;
 
+import com.example.banking_application.models.entities.enums.Currency;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,9 @@ public class Administrator {
     @OneToMany(mappedBy = "administrator")
     private List<Account> accounts;
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
 
 
     public Branch getBranch() {
@@ -34,9 +38,6 @@ public class Administrator {
         this.branch = branch;
     }
 
-    public void createACard(){
-        //TODO:write implementation that should return email to the user given email
-    }
 
     public boolean isAuthorized(){
       this.branch.getLoans();
