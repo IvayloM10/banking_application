@@ -12,13 +12,15 @@ import lombok.Setter;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "account_id")
     private Long id;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Currency currency;
-    @OneToOne
+   @OneToOne
     @JoinColumn(name = "user_id",unique = true,nullable = false)
+
     private User user;
 
     @Column(name ="account_number", unique = true,nullable = false)

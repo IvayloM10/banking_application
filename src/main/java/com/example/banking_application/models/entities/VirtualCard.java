@@ -18,13 +18,13 @@ public class VirtualCard {
     private Long id;
 
     @Column(name="card_type",nullable = false)
-    private CardType cardType;
+    private CardType type;
 
     @Column(nullable = false)
     private double balance;
 
     @Column(nullable = false)
-     private String accountNumber;
+     private String cardNumber;
     @OneToOne
     @JoinColumn(name = "user_id")
     private User cardHolder;
@@ -33,7 +33,8 @@ public class VirtualCard {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
-    private void setAccountNumberFromUser(){
-        setAccountNumber(this.cardHolder.getAccount().getAccountNumber());
-    }
+    @Column(nullable = false)
+    private String pin;
+
+
 }

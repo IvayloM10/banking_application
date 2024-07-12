@@ -7,16 +7,17 @@ import com.example.banking_application.models.dtos.UserRegisterDto;
 import com.example.banking_application.models.entities.Account;
 import com.example.banking_application.models.entities.Card;
 import com.example.banking_application.models.entities.User;
+import com.example.banking_application.models.entities.VirtualCard;
 import com.example.banking_application.models.entities.enums.CardType;
 import com.example.banking_application.models.entities.enums.Currency;
 import com.example.banking_application.repositories.AccountRepository;
 import com.example.banking_application.repositories.CardRepository;
 import com.example.banking_application.repositories.UserRepository;
+import com.example.banking_application.repositories.VirtualCardRepository;
 import com.example.banking_application.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -32,14 +33,17 @@ public class UserServiceImpl implements UserService {
 
     private AccountRepository accountRepository;
 
+    private VirtualCardRepository virtualCardRepository;
+
     private CurrentUser currentUser;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, CardRepository cardRepository, AccountRepository accountRepository, CurrentUser currentUser) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, CardRepository cardRepository, AccountRepository accountRepository, VirtualCardRepository virtualCardRepository, CurrentUser currentUser) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
         this.cardRepository = cardRepository;
         this.accountRepository = accountRepository;
+        this.virtualCardRepository = virtualCardRepository;
         this.currentUser = currentUser;
     }
 
@@ -77,7 +81,7 @@ public class UserServiceImpl implements UserService {
         }
 
         this.currentUser = this.modelMapper.map(userLoginDto,CurrentUser.class);
-        this.currentUser.setId(searchedUser.get().getId());
+        this.currentUser.setId(user.getId());
         this.currentUser.setFullName(String.join(" ",user.getFirstName(), user.getLastName()));
 
         return true;
@@ -88,17 +92,20 @@ public class UserServiceImpl implements UserService {
         Card card = new Card();
         card.setCardHolder(byId);
         card.setCvvNumber(generateCVV());
-        card.setAccountNumber(generateCardNumber());
+        card.setCardNumber(generateCardNumber());
         card.setExpirationDate(LocalDate.now());
         card.setType(CardType.valueOf(cardDetails.getCardType()));
         card.setCurrency(Currency.valueOf(cardDetails.getCurrency()));
+        card.setPin(cardDetails.getPin());
         byId.setCard(card);
         Account account = new Account();
         account.setAccountNumber(generateAccountNumber());
         account.setUser(byId);
         account.setCurrency(card.getCurrency());
-        byId.setAccount(account);
         this.accountRepository.save(account);
+        VirtualCard virtualCard = this.modelMapper.map(card, VirtualCard.class);
+        virtualCard.setType(CardType.valueOf(cardDetails.getCardType()));
+        this.virtualCardRepository.save(virtualCard);
         this.cardRepository.save(card);
         this.currentUser.setUsername("");
     }
@@ -110,8 +117,8 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User getCurrentUser(Long id) {
-        return this.userRepository.findById(id).get();
+    public User getCurrentUser() {
+        return this.userRepository.findByUsername(this.currentUser.getUsername()).get();
     }
 
     private String generateAccountNumber() {

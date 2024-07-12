@@ -33,17 +33,17 @@ public class User {
     @Column(unique = true,nullable = false)
     private String password;
 
-    @OneToOne
-    @JoinColumn(name = "account_id", unique = true)
-    private Account account;
+//    @OneToOne
+//    @JoinColumn(name = "account_id", unique = true)
+//    private Account account;
 
     @OneToOne(mappedBy = "cardHolder")
     private Card card;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Transaction> transactions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "requester")
+    @OneToMany(mappedBy = "requester",fetch = FetchType.EAGER)
     private List<Loan> loans;
 
     @OneToOne(mappedBy = "cardHolder")

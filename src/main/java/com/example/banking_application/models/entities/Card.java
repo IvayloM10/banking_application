@@ -33,14 +33,17 @@ public class Card {
     @Column(name="cvv", unique = true, nullable = false)
     private String cvvNumber;
 
-    @Column(name="account_number",nullable = false,unique = true)
-    private String accountNumber;
+    @Column(name="card_number",nullable = false,unique = true)
+    private String cardNumber;
 
     @Enumerated(EnumType.STRING)
     private CardType type;
 
     @Column(nullable = false)
     private double balance;
+
+    @Column(nullable = false)
+    private String pin;
 
     public User getCardHolder() {
         return cardHolder;
@@ -50,8 +53,5 @@ public class Card {
         this.cardHolder = cardHolder;
     }
 
-    private void setAccountNumberFromUser(){
-       setAccountNumber(this.cardHolder.getAccount().getAccountNumber());
-    }
 
 }

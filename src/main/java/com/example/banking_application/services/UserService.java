@@ -12,7 +12,7 @@ public interface UserService {
     boolean login(UserLoginDto userLoginDto);
 
 
-    User getCurrentUser(Long id);
+    User getCurrentUser();
 
     void createCardAndAccountForUser( CardDto carddto);
 

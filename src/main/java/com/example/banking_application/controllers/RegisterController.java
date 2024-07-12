@@ -60,7 +60,12 @@ public class RegisterController {
         return "createCard";
     }
     @PostMapping("/createCard")
-    public String createCard(@Valid CardDto cardDto) {
+    public String createCard(@Valid CardDto cardDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors() || !cardDto.getConfirmPin().equals(cardDto.getPin())){
+            redirectAttributes.addFlashAttribute("card",cardDto);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.card",bindingResult);
+            return "redirect:/users/createCard";
+        }
         this.userService.createCardAndAccountForUser(cardDto);
         return "redirect:/users/login";
     }
