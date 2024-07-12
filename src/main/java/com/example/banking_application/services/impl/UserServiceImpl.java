@@ -4,16 +4,10 @@ import com.example.banking_application.config.CurrentUser;
 import com.example.banking_application.models.dtos.CardDto;
 import com.example.banking_application.models.dtos.UserLoginDto;
 import com.example.banking_application.models.dtos.UserRegisterDto;
-import com.example.banking_application.models.entities.Account;
-import com.example.banking_application.models.entities.Card;
-import com.example.banking_application.models.entities.User;
-import com.example.banking_application.models.entities.VirtualCard;
+import com.example.banking_application.models.entities.*;
 import com.example.banking_application.models.entities.enums.CardType;
 import com.example.banking_application.models.entities.enums.Currency;
-import com.example.banking_application.repositories.AccountRepository;
-import com.example.banking_application.repositories.CardRepository;
-import com.example.banking_application.repositories.UserRepository;
-import com.example.banking_application.repositories.VirtualCardRepository;
+import com.example.banking_application.repositories.*;
 import com.example.banking_application.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,15 +29,18 @@ public class UserServiceImpl implements UserService {
 
     private VirtualCardRepository virtualCardRepository;
 
+    private BranchRepository branchRepository;
+
     private CurrentUser currentUser;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, CardRepository cardRepository, AccountRepository accountRepository, VirtualCardRepository virtualCardRepository, CurrentUser currentUser) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, CardRepository cardRepository, AccountRepository accountRepository, VirtualCardRepository virtualCardRepository, BranchRepository branchRepository, CurrentUser currentUser) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
         this.cardRepository = cardRepository;
         this.accountRepository = accountRepository;
         this.virtualCardRepository = virtualCardRepository;
+        this.branchRepository = branchRepository;
         this.currentUser = currentUser;
     }
 
@@ -61,6 +58,7 @@ public class UserServiceImpl implements UserService {
 
         User user = modelMapper.map(userRegisterDto, User.class);
         user.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
+
         this.userRepository.save(user);
         this.currentUser.setUsername(userRegisterDto.getUsername());
         return true;
@@ -103,6 +101,13 @@ public class UserServiceImpl implements UserService {
         account.setUser(byId);
         account.setCurrency(card.getCurrency());
         this.accountRepository.save(account);
+        Branch branch;
+        if(card.getCurrency().equals(Currency.BGN)){
+            branch = this.branchRepository.findByCurrency(Currency.EUR);
+        }else {
+            branch = this.branchRepository.findByCurrency(card.getCurrency());
+        }
+        byId.setBranch(branch);
         VirtualCard virtualCard = this.modelMapper.map(card, VirtualCard.class);
         virtualCard.setType(CardType.valueOf(cardDetails.getCardType()));
         this.virtualCardRepository.save(virtualCard);

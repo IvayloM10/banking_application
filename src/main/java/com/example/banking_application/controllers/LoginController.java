@@ -1,6 +1,7 @@
 package com.example.banking_application.controllers;
 
 import com.example.banking_application.models.dtos.UserLoginDto;
+import com.example.banking_application.services.AdministrationService;
 import com.example.banking_application.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -16,9 +17,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class LoginController {
 
     private UserService userService;
+    private AdministrationService administrationService;
 
-    public LoginController(UserService userService) {
+    public LoginController(UserService userService, AdministrationService administrationService) {
         this.userService = userService;
+        this.administrationService = administrationService;
     }
 
     @ModelAttribute("userLogin")
@@ -34,6 +37,10 @@ public class LoginController {
     @PostMapping("/login")
     public String login(@Valid UserLoginDto userLoginDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
 
+        boolean adminLog = this.administrationService.loginAdmin(userLoginDto);
+        if(adminLog){
+            return "redirect:/admin/home";
+        }
         if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("userLogin",userLoginDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userLogin",bindingResult);

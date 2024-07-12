@@ -29,6 +29,27 @@ public class BranchServiceImpl implements BranchService {
         euBranch.setName("European branch");
         euBranch.setAddress("Dublin, Ireland");
         euBranch.setCurrency(Currency.EUR);
+        Administrator euAdministrator = findRightAdministrator(euBranch.getCurrency());
+        euBranch.setAdministrator(euAdministrator);
+        this.branchRepository.save(euBranch);
+
+        Branch usBranch = new Branch();
+        usBranch.setId(2L);
+        usBranch.setName("American branch");
+        usBranch.setAddress("New York, USA");
+        usBranch.setCurrency(Currency.USD);
+        Administrator usAdministrator = findRightAdministrator(usBranch.getCurrency());
+        usBranch.setAdministrator(usAdministrator);
+        this.branchRepository.save(usBranch);
+
+        Branch asianBranch = new Branch();
+        asianBranch.setId(3L);
+        asianBranch.setName("Asian branch");
+        asianBranch.setAddress("Singapore, Singapore");
+        asianBranch.setCurrency(Currency.YEN);
+        Administrator asianAdministrator = findRightAdministrator(asianBranch.getCurrency());
+        asianBranch.setAdministrator(asianAdministrator);
+        this.branchRepository.save(asianBranch);
     }
 
     private Administrator findRightAdministrator(Currency currency){

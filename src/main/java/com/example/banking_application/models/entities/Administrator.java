@@ -18,6 +18,12 @@ public class Administrator {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
+    private String username;
+
+    @Column(unique = true,nullable = false)
+    private String password;
+
     @OneToOne
     @JoinColumn(name = "branch_id")
     private Branch branch;
