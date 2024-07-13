@@ -3,8 +3,10 @@ package com.example.banking_application.services.impl;
 import com.example.banking_application.config.CurrentUser;
 import com.example.banking_application.models.dtos.UserLoginDto;
 import com.example.banking_application.models.entities.Administrator;
+import com.example.banking_application.models.entities.Branch;
 import com.example.banking_application.models.entities.enums.Currency;
 import com.example.banking_application.repositories.AdministratorRepository;
+import com.example.banking_application.repositories.BranchRepository;
 import com.example.banking_application.services.AdministrationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -18,10 +20,12 @@ public class AdministrationServiceImpl implements AdministrationService {
     private CurrentUser currentUser;
 
     private ModelMapper modelMapper;
+    private BranchRepository branchRepository;
 
-    public AdministrationServiceImpl(AdministratorRepository administratorRepository, ModelMapper modelMapper) {
+    public AdministrationServiceImpl(AdministratorRepository administratorRepository, ModelMapper modelMapper, BranchRepository branchRepository) {
         this.administratorRepository = administratorRepository;
         this.modelMapper = modelMapper;
+        this.branchRepository = branchRepository;
     }
 
     @Override
@@ -37,8 +41,15 @@ public class AdministrationServiceImpl implements AdministrationService {
             administrator.setUsername(String.join(" ", String.valueOf(currencies.get(i))));
             administrator.setPassword(String.join("",String.valueOf(i),String.valueOf(i),String.valueOf(i),String.valueOf(i)));
             administrator.setCurrency(currencies.get(i));
+            Branch branch;
+            if(currencies.get(i).equals(Currency.BGN)){
+                branch = this.branchRepository.findByCurrency(Currency.EUR);
+            }else {
+                branch = this.branchRepository.findByCurrency(currencies.get(i));
+            }
+            administrator.setBranch(branch);
             this.administratorRepository.save(administrator);
-            //TODO find branch and set it
+
             id++;
         }
     }

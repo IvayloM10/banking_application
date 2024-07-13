@@ -59,6 +59,24 @@
             />
             <small class="invalid-feedback text-danger">Last name error message</small>
         </div>
+
+        <div class="form-group">
+            <div class="label-holder">
+                <label for="region" class="form-label">Region</label>
+            </div>
+            <select th:field="*{region}"
+                    class="form-control"
+                    id="region"
+                    name="region"
+                    th:errorclass="'is-invalid alert-danger'">
+                <option value="" disabled selected>Select your region</option>
+                <option value="North America">North America</option>
+                <option value="Europe">Europe</option>
+                <option value="Asia">Asia</option>
+            </select>
+            <small class="invalid-feedback text-danger">Region error message</small>
+        </div>
+
         <div class="form-group">
             <div class="label-holder">
                 <label for="email" class="form-label">Email</label>

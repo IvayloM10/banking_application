@@ -12,4 +12,6 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     List<Branch> findAll();
 
     Branch findByCurrency(Currency currency);
+
+    Branch findByRegion(String region);
 }

@@ -24,8 +24,7 @@ public class Administrator {
     @Column(unique = true,nullable = false)
     private String password;
 
-    @OneToOne
-    @JoinColumn(name = "branch_id")
+    @OneToOne(mappedBy = "administrator", cascade = CascadeType.ALL)
     private Branch branch;
 
     @OneToMany(mappedBy = "administrator")
@@ -46,9 +45,9 @@ public class Administrator {
 
 
     public boolean isAuthorized(){
-      this.branch.getLoans();
-      return false;
+        this.branch.getLoans();
+        return false;
 
-      //TODO: implement getting all authorized
+        //TODO: implement getting all authorized
     }
 }

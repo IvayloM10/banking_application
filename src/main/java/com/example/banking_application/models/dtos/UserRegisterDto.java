@@ -25,6 +25,8 @@ public class UserRegisterDto {
     @Email
     @NotEmpty
     private String email;
+    @NotEmpty
+    private String region;
     @Size(min=3,max = 40)
     @NotEmpty
     private String password;

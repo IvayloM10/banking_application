@@ -58,7 +58,8 @@ public class UserServiceImpl implements UserService {
 
         User user = modelMapper.map(userRegisterDto, User.class);
         user.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
-
+        Branch regionBranch = this.branchRepository.findByRegion(userRegisterDto.getRegion());
+        user.setBranch(regionBranch);
         this.userRepository.save(user);
         this.currentUser.setUsername(userRegisterDto.getUsername());
         return true;
@@ -101,13 +102,6 @@ public class UserServiceImpl implements UserService {
         account.setUser(byId);
         account.setCurrency(card.getCurrency());
         this.accountRepository.save(account);
-        Branch branch;
-        if(card.getCurrency().equals(Currency.BGN)){
-            branch = this.branchRepository.findByCurrency(Currency.EUR);
-        }else {
-            branch = this.branchRepository.findByCurrency(card.getCurrency());
-        }
-        byId.setBranch(branch);
         VirtualCard virtualCard = this.modelMapper.map(card, VirtualCard.class);
         virtualCard.setType(CardType.valueOf(cardDetails.getCardType()));
         this.virtualCardRepository.save(virtualCard);

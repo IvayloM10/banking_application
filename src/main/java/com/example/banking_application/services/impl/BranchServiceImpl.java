@@ -29,6 +29,7 @@ public class BranchServiceImpl implements BranchService {
         euBranch.setName("European branch");
         euBranch.setAddress("Dublin, Ireland");
         euBranch.setCurrency(Currency.EUR);
+        euBranch.setRegion("Europe");
         Administrator euAdministrator = findRightAdministrator(euBranch.getCurrency());
         euBranch.setAdministrator(euAdministrator);
         this.branchRepository.save(euBranch);
@@ -38,6 +39,7 @@ public class BranchServiceImpl implements BranchService {
         usBranch.setName("American branch");
         usBranch.setAddress("New York, USA");
         usBranch.setCurrency(Currency.USD);
+        usBranch.setRegion("North America");
         Administrator usAdministrator = findRightAdministrator(usBranch.getCurrency());
         usBranch.setAdministrator(usAdministrator);
         this.branchRepository.save(usBranch);
@@ -47,6 +49,7 @@ public class BranchServiceImpl implements BranchService {
         asianBranch.setName("Asian branch");
         asianBranch.setAddress("Singapore, Singapore");
         asianBranch.setCurrency(Currency.YEN);
+        asianBranch.setRegion("Asia");
         Administrator asianAdministrator = findRightAdministrator(asianBranch.getCurrency());
         asianBranch.setAdministrator(asianAdministrator);
         this.branchRepository.save(asianBranch);
