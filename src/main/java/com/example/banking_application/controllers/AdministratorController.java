@@ -1,6 +1,7 @@
 package com.example.banking_application.controllers;
 
 import com.example.banking_application.config.CurrentUser;
+import com.example.banking_application.models.entities.Administrator;
 import com.example.banking_application.services.AdministrationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +21,8 @@ public class AdministratorController {
 
     @GetMapping("/home")
     public String adminView(Model model){
-
+        Administrator currentAdmin = this.administrationService.getCurrentAdmin(this.currentUser.getId());
+        model.addAttribute("admin",currentAdmin);
         return "administratorHome";
     }
 }

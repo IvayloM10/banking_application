@@ -15,4 +15,6 @@ public interface AdministratorRepository extends JpaRepository<Administrator,Lon
     Administrator findByCurrency(Currency currency);
 
     Optional<Administrator> findByUsername(String username);
+
+    Optional<Administrator> findById(Long id);
 }

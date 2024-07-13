@@ -1,0 +1,41 @@
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Transaction</title>
+    <link rel="stylesheet" href="/css/makeTransaction.css">
+</head>
+<body>
+<header>
+    <nav th:replace="~{fragments/commons::nav}"></nav>
+</header>
+
+<main>
+    <section class="transaction-form-container">
+        <h1>Make a Transaction</h1>
+        <form class="transaction-form">
+            <label for="currency">Currency:</label>
+            <select id="currency" name="currency" required>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="BGN">BGN</option>
+                <option value="GBP">YEN</option>
+            </select>
+
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" max="5000" required>
+
+            <label for="accountId">Account Number:</label>
+            <input type="text" id="accountId" name="accountId" required>
+
+            <label for="accountHolderName">Account Holder Name:</label>
+            <input type="text" id="accountHolderName" name="accountHolderName" required>
+
+            <button type="submit">Submit</button>
+        </form>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/commons::footer}"></footer>
+</body>
+</html>

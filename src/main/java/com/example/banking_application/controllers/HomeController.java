@@ -41,6 +41,7 @@ public class HomeController {
 
         User loggedUser = this.userService.getCurrentUser();
         Account userAccount = this.accountService.getUserAccount(loggedUser);
+        model.addAttribute("user", loggedUser);
         model.addAttribute("account", userAccount);
         Card userCard = this.cardService.UserCard(loggedUser);
         model.addAttribute("physicalCard", userCard);

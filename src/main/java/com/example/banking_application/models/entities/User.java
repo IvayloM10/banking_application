@@ -52,4 +52,8 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "branch_id")
     private Branch branch;
+
+    public String getFullName(){
+        return String.join(" ", this.firstName, this.lastName);
+    }
 }

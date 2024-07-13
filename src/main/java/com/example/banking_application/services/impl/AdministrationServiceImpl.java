@@ -66,4 +66,9 @@ public class AdministrationServiceImpl implements AdministrationService {
         this.currentUser.setId(administrator.getId());
         return true;
     }
+
+    @Override
+    public Administrator getCurrentAdmin(Long id) {
+        return this.administratorRepository.findById(id).get();
+    }
 }

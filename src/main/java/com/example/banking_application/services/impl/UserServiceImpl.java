@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private String generateAccountNumber() {
-        return "AC" + new Random().nextInt(999999);
+        return "UB" + new Random().nextInt(999999);
     }
 
     private String generateCardNumber() {

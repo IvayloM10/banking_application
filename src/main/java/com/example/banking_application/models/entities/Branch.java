@@ -25,7 +25,8 @@ public class Branch {
     @Column(nullable = false, unique = true)
     private String address;
 
-    @Column(nullable = false)
+    @Column(nullable = false
+    )
     private String region;
 
     @OneToMany(fetch = FetchType.EAGER)

@@ -12,7 +12,7 @@
 </header>
 
 <main>
-    <h1 class="welcome-message">Welcome,<span th:text="${name}"></span></h1>
+    <h1 class="welcome-message">Welcome, <span th:text="${user.getFullName()}"></span></h1>
 
     <div class="wrapper">
     <section class="account-info">

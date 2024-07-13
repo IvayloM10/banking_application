@@ -7,8 +7,8 @@ spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: "jdbc:mysql://localhost:3306/banking_application?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC"
-    username: root
-    password: mySqlIvayloM10
+    username: ${db_username}
+    password: ${db_password}
   servlet:
     multipart:
       max-file-size: 1MB
@@ -17,6 +17,11 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+        forex:
+          api:
+            key: ${FOREX_API_KEY:}
+            url: ${FOREX_API_URL:}
+            base: ${FOREX_API_BASE:}
       #sql:
       #init:
       #mode: always
@@ -38,3 +43,4 @@ spring:
   #api-key:
   #api-secret:
   #cloud-name:
+
