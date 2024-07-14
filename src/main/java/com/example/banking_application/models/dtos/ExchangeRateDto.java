@@ -5,4 +5,5 @@ import java.util.Map;
 
 public record ExchangeRateDto(String base, Map<String, BigDecimal> rates) {
 
+
 }
