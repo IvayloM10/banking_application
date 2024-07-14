@@ -47,8 +47,8 @@ public class BranchServiceImpl implements BranchService {
         Branch asianBranch = new Branch();
         asianBranch.setId(3L);
         asianBranch.setName("Asian branch");
-        asianBranch.setAddress("Singapore, Singapore");
-        asianBranch.setCurrency(Currency.YEN);
+        asianBranch.setAddress("Tokyo, Japan");
+        asianBranch.setCurrency(Currency.JPY);
         asianBranch.setRegion("Asia");
         Administrator asianAdministrator = findRightAdministrator(asianBranch.getCurrency());
         asianBranch.setAdministrator(asianAdministrator);

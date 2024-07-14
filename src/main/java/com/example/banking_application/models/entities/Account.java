@@ -41,12 +41,12 @@ public class Account {
     }
 
 
-    public void reduceAccount(int sum){
+    public void reduceAccount(double sum){
         this.balance -= sum;
     }
 
 
-    public void addIntoAccount(int sum){
+    public void addIntoAccount(double sum){
         this.balance += sum;
     }
 

@@ -2,17 +2,21 @@ package com.example.banking_application.services.impl;
 
 import com.example.banking_application.config.CurrentUser;
 import com.example.banking_application.models.dtos.CardDto;
+import com.example.banking_application.models.dtos.TransactionDto;
 import com.example.banking_application.models.dtos.UserLoginDto;
 import com.example.banking_application.models.dtos.UserRegisterDto;
 import com.example.banking_application.models.entities.*;
 import com.example.banking_application.models.entities.enums.CardType;
 import com.example.banking_application.models.entities.enums.Currency;
 import com.example.banking_application.repositories.*;
+import com.example.banking_application.services.ExchangeRateService;
 import com.example.banking_application.services.UserService;
+import com.example.banking_application.services.exceptions.NotEnoughFundsException;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Random;
@@ -31,9 +35,11 @@ public class UserServiceImpl implements UserService {
 
     private BranchRepository branchRepository;
 
+private ExchangeRateService exchangeRateService;
+
     private CurrentUser currentUser;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, CardRepository cardRepository, AccountRepository accountRepository, VirtualCardRepository virtualCardRepository, BranchRepository branchRepository, CurrentUser currentUser) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, CardRepository cardRepository, AccountRepository accountRepository, VirtualCardRepository virtualCardRepository, BranchRepository branchRepository, ExchangeRateService exchangeRateService, CurrentUser currentUser) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
@@ -41,6 +47,8 @@ public class UserServiceImpl implements UserService {
         this.accountRepository = accountRepository;
         this.virtualCardRepository = virtualCardRepository;
         this.branchRepository = branchRepository;
+        this.exchangeRateService = exchangeRateService;
+
         this.currentUser = currentUser;
     }
 
@@ -100,9 +108,11 @@ public class UserServiceImpl implements UserService {
         Account account = new Account();
         account.setAccountNumber(generateAccountNumber());
         account.setUser(byId);
+        account.setBalance(50);
         account.setCurrency(card.getCurrency());
         this.accountRepository.save(account);
         VirtualCard virtualCard = this.modelMapper.map(card, VirtualCard.class);
+        virtualCard.setBalance(50);
         virtualCard.setType(CardType.valueOf(cardDetails.getCardType()));
         this.virtualCardRepository.save(virtualCard);
         this.cardRepository.save(card);
@@ -112,6 +122,29 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(String username) {
         return this.userRepository.findByUsername(username).get();
+    }
+
+    @Override
+    public void makeTransaction( TransactionDto transactionDto) {
+        Optional<User> user = this.userRepository.findById(this.currentUser.getId());
+        User sender = user.get();
+        Account senderAccount = this.accountRepository.findByUser(sender);
+
+        if(senderAccount.getBalance() < Double.parseDouble(String.valueOf(transactionDto.getAmountBase()))){
+            throw new NotEnoughFundsException("I am sorry to inform you but you have no sufficient funds to execute transaction", sender.getId());
+        }
+        senderAccount.reduceAccount(Double.parseDouble(String.valueOf(transactionDto.getAmountBase())));
+
+        Optional<Account> receiverAccountNumber = this.accountRepository.findByAccountNumber(transactionDto.getAccountNumber());
+        Account receiverAccount = receiverAccountNumber.get();
+
+        BigDecimal convertAmount = this.exchangeRateService.convert(String.valueOf(senderAccount.getCurrency()), String.valueOf(transactionDto.getCurrency()), transactionDto.getAmountBase());
+        if(!receiverAccount.getCurrency().equals(transactionDto.getCurrency())) {
+             convertAmount = this.exchangeRateService.convert(String.valueOf(transactionDto.getCurrency()), String.valueOf(receiverAccount.getCurrency()), convertAmount);
+        }
+        receiverAccount.addIntoAccount(Double.parseDouble(String.valueOf(convertAmount)));
+
+
     }
 
 
