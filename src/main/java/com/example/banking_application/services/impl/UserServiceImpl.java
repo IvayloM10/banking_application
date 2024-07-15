@@ -13,7 +13,7 @@ import com.example.banking_application.services.ExchangeRateService;
 import com.example.banking_application.services.UserService;
 import com.example.banking_application.services.exceptions.NotEnoughFundsException;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.Transient;
+import org.springframework.data.annotation.Transient;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +54,7 @@ private ExchangeRateService exchangeRateService;
     }
 
     @Override
+    @Transient
     public boolean register(UserRegisterDto userRegisterDto) {
         if(!userRegisterDto.getPassword().equals(userRegisterDto.getConfirmPassword())){
             return false;
