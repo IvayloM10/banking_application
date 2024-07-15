@@ -13,6 +13,7 @@ import com.example.banking_application.services.ExchangeRateService;
 import com.example.banking_application.services.UserService;
 import com.example.banking_application.services.exceptions.NotEnoughFundsException;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Transient;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -68,6 +69,7 @@ private ExchangeRateService exchangeRateService;
         user.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
         Branch regionBranch = this.branchRepository.findByRegion(userRegisterDto.getRegion());
         user.setBranch(regionBranch);
+        user.setAccount(new Account());
         this.userRepository.save(user);
         this.currentUser.setUsername(userRegisterDto.getUsername());
         return true;
@@ -110,6 +112,7 @@ private ExchangeRateService exchangeRateService;
         account.setUser(byId);
         account.setBalance(50);
         account.setCurrency(card.getCurrency());
+        byId.setAccount(account);
         this.accountRepository.save(account);
         VirtualCard virtualCard = this.modelMapper.map(card, VirtualCard.class);
         virtualCard.setBalance(50);
@@ -126,23 +129,26 @@ private ExchangeRateService exchangeRateService;
 
     @Override
     public void makeTransaction( TransactionDto transactionDto) {
-        Optional<User> user = this.userRepository.findById(this.currentUser.getId());
-        User sender = user.get();
-        Account senderAccount = this.accountRepository.findByUser(sender);
+        Optional<User> senderAccount = this.userRepository.findById(this.currentUser.getId());
+        Account account =  senderAccount.get().getAccount();
 
-        if(senderAccount.getBalance() < Double.parseDouble(String.valueOf(transactionDto.getAmountBase()))){
-            throw new NotEnoughFundsException("I am sorry to inform you but you have no sufficient funds to execute transaction", sender.getId());
+
+
+        if( senderAccount.get().getAccount().getBalance() < Double.parseDouble(String.valueOf(transactionDto.getAmountBase()))){
+            throw new NotEnoughFundsException("I am sorry to inform you but you have no sufficient funds to execute transaction", senderAccount.get().getId());
         }
-        senderAccount.reduceAccount(Double.parseDouble(String.valueOf(transactionDto.getAmountBase())));
-
+    senderAccount.get().getAccount().setBalance( senderAccount.get().getAccount().getBalance() - Double.parseDouble(String.valueOf(transactionDto.getAmountBase())));
+//
         Optional<Account> receiverAccountNumber = this.accountRepository.findByAccountNumber(transactionDto.getAccountNumber());
         Account receiverAccount = receiverAccountNumber.get();
 
-        BigDecimal convertAmount = this.exchangeRateService.convert(String.valueOf(senderAccount.getCurrency()), String.valueOf(transactionDto.getCurrency()), transactionDto.getAmountBase());
+
+
+        BigDecimal convertAmount = this.exchangeRateService.convert(String.valueOf(senderAccount.get().getAccount().getCurrency()), String.valueOf(transactionDto.getCurrency()), transactionDto.getAmountBase());
         if(!receiverAccount.getCurrency().equals(transactionDto.getCurrency())) {
              convertAmount = this.exchangeRateService.convert(String.valueOf(transactionDto.getCurrency()), String.valueOf(receiverAccount.getCurrency()), convertAmount);
         }
-        receiverAccount.addIntoAccount(Double.parseDouble(String.valueOf(convertAmount)));
+        receiverAccountNumber.get().setBalance(receiverAccountNumber.get().getBalance() + Double.parseDouble(String.valueOf(convertAmount)));
 
 
     }

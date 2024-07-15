@@ -101,6 +101,13 @@ main {
     display: block;
     font-size: 1rem;
 }
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.invalid-feedback {
+    font-size: 0.875rem;
+}
 /* footer */
 footer {
     background-color: #000;

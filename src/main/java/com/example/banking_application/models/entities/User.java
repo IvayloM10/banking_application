@@ -33,9 +33,9 @@ public class User {
     @Column(unique = true,nullable = false)
     private String password;
 
-//    @OneToOne
-//    @JoinColumn(name = "account_id", unique = true)
-//    private Account account;
+    @OneToOne
+    @JoinColumn(name = "account_id", unique = true)
+    private Account account;
 
     @OneToOne(mappedBy = "cardHolder")
     private Card card;

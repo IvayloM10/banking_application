@@ -75,7 +75,9 @@ public class HomeController {
         }
 
         this.userService.makeTransaction( transactionDto);
-
+        User currentUser1 = this.userService.getCurrentUser();
+        Account userAccount = this.accountService.getUserAccount(currentUser1);
+        System.out.println(userAccount.getBalance());
         return"redirect:/home";
     }
 

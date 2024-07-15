@@ -20,7 +20,6 @@ public class Account {
     private Currency currency;
    @OneToOne
     @JoinColumn(name = "user_id",unique = true,nullable = false)
-
     private User user;
 
     @Column(name ="account_number", unique = true,nullable = false)
@@ -42,12 +41,12 @@ public class Account {
 
 
     public void reduceAccount(double sum){
-        this.balance -= sum;
+        this.balance = this.balance - sum;
     }
 
 
     public void addIntoAccount(double sum){
-        this.balance += sum;
+        this.balance = this.balance + sum;
     }
 
 
