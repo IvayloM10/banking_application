@@ -129,28 +129,33 @@ private ExchangeRateService exchangeRateService;
 
     @Override
     public void makeTransaction( TransactionDto transactionDto) {
-        Optional<User> senderAccount = this.userRepository.findById(this.currentUser.getId());
-        Account account =  senderAccount.get().getAccount();
+        Long id = this.currentUser.getId();
+        Optional<User> senderAccounts = this.userRepository.findById(this.currentUser.getId());
+        Account senderAccount =  this.accountRepository.findByUser(senderAccounts.get());
 
 
 
-        if( senderAccount.get().getAccount().getBalance() < Double.parseDouble(String.valueOf(transactionDto.getAmountBase()))){
-            throw new NotEnoughFundsException("I am sorry to inform you but you have no sufficient funds to execute transaction", senderAccount.get().getId());
+        if( senderAccount.getBalance() < Double.parseDouble(String.valueOf(transactionDto.getAmountBase()))){
+            throw new NotEnoughFundsException("I am sorry to inform you but you have no sufficient funds to execute transaction", senderAccount.getUser().getId());
         }
-    senderAccount.get().getAccount().setBalance( senderAccount.get().getAccount().getBalance() - Double.parseDouble(String.valueOf(transactionDto.getAmountBase())));
-//
+
+
+    senderAccount.setBalance( senderAccount.getBalance() - Double.parseDouble(String.valueOf(transactionDto.getAmountBase())));
+
+        this.accountRepository.save(senderAccount);
+
         Optional<Account> receiverAccountNumber = this.accountRepository.findByAccountNumber(transactionDto.getAccountNumber());
         Account receiverAccount = receiverAccountNumber.get();
 
 
 
-        BigDecimal convertAmount = this.exchangeRateService.convert(String.valueOf(senderAccount.get().getAccount().getCurrency()), String.valueOf(transactionDto.getCurrency()), transactionDto.getAmountBase());
+        BigDecimal convertAmount = this.exchangeRateService.convert(String.valueOf(senderAccount.getCurrency()), String.valueOf(transactionDto.getCurrency()), transactionDto.getAmountBase());
         if(!receiverAccount.getCurrency().equals(transactionDto.getCurrency())) {
              convertAmount = this.exchangeRateService.convert(String.valueOf(transactionDto.getCurrency()), String.valueOf(receiverAccount.getCurrency()), convertAmount);
         }
         receiverAccountNumber.get().setBalance(receiverAccountNumber.get().getBalance() + Double.parseDouble(String.valueOf(convertAmount)));
 
-
+        this.accountRepository.save(receiverAccount);
     }
 
 
