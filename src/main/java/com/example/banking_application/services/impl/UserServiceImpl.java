@@ -134,7 +134,6 @@ private ExchangeRateService exchangeRateService;
         Account senderAccount =  this.accountRepository.findByUser(senderAccounts.get());
 
 
-
         if( senderAccount.getBalance() < Double.parseDouble(String.valueOf(transactionDto.getAmountBase()))){
             throw new NotEnoughFundsException("I am sorry to inform you but you have no sufficient funds to execute transaction", senderAccount.getUser().getId());
         }
