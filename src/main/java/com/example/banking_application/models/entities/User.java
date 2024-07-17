@@ -37,7 +37,7 @@ public class User {
     @JoinColumn(name = "account_id", unique = true)
     private Account account;
 
-    @OneToOne(mappedBy = "cardHolder")
+    @OneToOne(mappedBy = "cardHolder",cascade = CascadeType.ALL)
     private Card card;
 
     @ManyToMany(fetch = FetchType.EAGER)

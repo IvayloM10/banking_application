@@ -70,7 +70,6 @@ private ExchangeRateService exchangeRateService;
         user.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
         Branch regionBranch = this.branchRepository.findByRegion(userRegisterDto.getRegion());
         user.setBranch(regionBranch);
-        user.setAccount(new Account());
         this.userRepository.save(user);
         this.currentUser.setUsername(userRegisterDto.getUsername());
         return true;

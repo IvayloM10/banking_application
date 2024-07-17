@@ -8,35 +8,43 @@
     <link rel="stylesheet" href="/css/fragments"/>
 </head>
 <nav>
+
     <ul>
         <div class="left-buttons">
             <li><a href ="/"><img src="/img/logo.jpg" alt="Logo" width="50" height="50"></a></li>
-
+            <form action="/change-language" method="get">
+                <select name="lang" id="lang">
+                    <option value="en">English</option>
+                    <option value="bg">Bulgarian</option>
+                    <option value="de">German</option>
+                </select>
+                <button type="submit">Change Language</button>
+            </form>
         </div>
         <div class="right-buttons">
             <li>
                 <form>
-                    <a class="nav-button" th:href="@{/home}" >Home</a>
+                    <a class="nav-button" th:href="@{/home}" th:text="#{nav_bar_home}">Profile</a>
                 </form>
             </li>
             <li>
                 <form>
-                    <a  class="nav-button" th:href="@{/transaction}"> Make Transaction</a>
+                    <a  class="nav-button" th:href="@{/transaction}" th:text="#{nav_bar_transaction}" > Make Transaction</a>
                 </form>
             </li>
             <li>
                 <form>
-                    <a  class="nav-button" th:href="@{/users/register}">Register </a>
+                    <a  class="nav-button" th:href="@{/users/register}" th:text="#{nav_bar_register}">Register </a>
                 </form>
             </li>
             <li>
                 <form>
-                    <a  class="nav-button" th:href="@{/users/login}"> Login</a>
+                    <a  class="nav-button" th:href="@{/users/login}" th:text="#{nav_bar_login}"> Login</a>
                 </form>
             </li>
             <li>
                 <form>
-                    <a  class="nav-button" th:href="@{/users/logout}"> Logout </a>
+                    <a  class="nav-button" th:href="@{/users/logout}" th:text="#{nav_bar_logout}"> Logout </a>
                 </form>
             </li>
         </div>
@@ -45,31 +53,31 @@
 <footer>
     <div class="footer-container">
         <div class="footer-section">
-            <h3>About Us</h3>
+            <h3 th:text="#{footer_about_us}">About Us</h3>
             <ul class="social-media">
-                <li><a href="/">Our Story</a></li>
-                <li><a href="/">Careers</a></li>
-                <li><a href="/">Press</a></li>
+                <li><a href="/" th:text="#{footer_our_story}">Our Story</a></li>
+                <li><a href="/" th:text="#{footer_about_us}" >Careers</a></li>
+                <li><a href="/" th:text="#{footer_press}">Press</a></li>
             </ul>
         </div>
         <div class="footer-section">
-            <h3>Customer Service</h3>
+            <h3 th:text="#{footer_customer_service}">Customer Service</h3>
             <ul class="social-media">
-                <li><a href="/">Contact Us</a></li>
-                <li><a href="/">FAQ</a></li>
-                <li><a href="/">Support Center</a></li>
+                <li><a href="/" th:text="#{footer_contact_us}">Contact Us</a></li>
+                <li><a href="/" th:text="#{footer_faq}">FAQ</a></li>
+                <li><a href="/" th:text="#{footer_support_center}">Support Center</a></li>
             </ul>
         </div>
         <div class="footer-section">
-            <h3>Legal</h3>
+            <h3 th:text="#{footer_legal}">Legal</h3>
             <ul class="social-media">
-                <li><a href="/">Privacy Policy</a></li>
-                <li><a href="/">Terms of Service</a></li>
-                <li><a href="/">Security</a></li>
+                <li><a href="/" th:text="#{footer_privacy_policy}">Privacy Policy</a></li>
+                <li><a href="/" th:text="#{footer_terms_of_service}">Terms of Service</a></li>
+                <li><a href="/" th:text="#{footer_security}">Security</a></li>
             </ul>
         </div>
         <div class="footer-section">
-            <h3>Connect with Us</h3>
+            <h3 th:text="#{footer_connect_with_us}">Connect with Us</h3>
             <ul class="social-media">
                 <li><a href="/"><img src="/img/facebookWhite.png" alt="Facebook"></a></li>
                 <li><a href="/"><img src="twitter-icon.png" alt="Twitter"></a></li>
