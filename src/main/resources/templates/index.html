@@ -11,7 +11,9 @@
 <h1 th:text="#{greeting}">Default Greeting</h1>
 <article class="first_section">
     <div class="text-box">
-        <p>People have always perceived banks as evil entities with hidden fees and ways of taking our money. We are here to show that this doesn't have to be the case anymore.
+        <h2><a href="/">UB Bank</a></h2>
+        <p th:text="#{ub_summary}">
+            UB is here to change the perception of banks as malevolent entities with hidden fees and tricky practices. Our mission is to demonstrate transparency and trustworthiness, showing that banking can be fair and straightforward.
         </p>
     </div>
     <div class="image-container">
@@ -30,7 +32,7 @@
         </div>
     </div>
     <div class="text-box">
-        <h2><a href="/">Meet Jane</a></h2>
+        <h2><a href="/" th:text="#{meet_customer}">Meet Jane</a></h2>
         <p>Jane, initially skeptical about banks, had her perception changed by Horizon Bank. With Maria's help, she secured a favorable loan and received exceptional support for her bakery. The bank's transparency and user-friendly services restored Jane's faith in banking, leading her to recommend Horizon Bank to others
         </p>
     </div>
@@ -61,7 +63,7 @@
         </li>
         <li class="postcard">
             <div class="postcard-content">
-                <img src="/img/payment.png" alt="/" width="250" height="200">
+                <img src="/img/payment.jpg" alt="/" width="250" height="200">
                 <div class="postcard-text">
                     <h2>Payments</h2>
                     <p>Insights on the 2024 U.S. general election, including potential outcomes, policy agendas, and investment implications, to help investors navigate this election cycle in their portfolios.</p>
