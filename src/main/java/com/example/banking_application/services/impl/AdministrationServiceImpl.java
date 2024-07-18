@@ -64,11 +64,17 @@ public class AdministrationServiceImpl implements AdministrationService {
         Administrator administrator = searchAdministrator.get();
         this.currentUser = this.modelMapper.map(userLoginDto, CurrentUser.class);
         this.currentUser.setId(administrator.getId());
+
         return true;
     }
 
     @Override
     public Administrator getCurrentAdmin(Long id) {
         return this.administratorRepository.findById(id).get();
+    }
+
+    @Override
+    public CurrentUser getCurrentUser() {
+        return this.currentUser;
     }
 }

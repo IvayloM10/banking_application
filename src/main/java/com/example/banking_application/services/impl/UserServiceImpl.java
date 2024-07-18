@@ -114,6 +114,7 @@ private ExchangeRateService exchangeRateService;
         byId.setCard(card);
 
         VirtualCard virtualCard = this.modelMapper.map(card, VirtualCard.class);
+        virtualCard.setCardNumber(generateCardNumber());
         virtualCard.setBalance(50);
         virtualCard.setType(CardType.valueOf(cardDetails.getCardType()));
 

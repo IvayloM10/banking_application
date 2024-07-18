@@ -5,15 +5,14 @@ import com.example.banking_application.services.AdministrationService;
 import com.example.banking_application.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/users")
+@SessionAttributes("currentUser")
 public class LoginController {
 
     private UserService userService;
@@ -35,10 +34,11 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid UserLoginDto userLoginDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+    public String login(@Valid UserLoginDto userLoginDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model){
 
         boolean adminLog = this.administrationService.loginAdmin(userLoginDto);
         if(adminLog){
+            model.addAttribute("currentUser",this.administrationService.getCurrentUser());
             return "redirect:/admin/home";
         }
         if(bindingResult.hasErrors()){
