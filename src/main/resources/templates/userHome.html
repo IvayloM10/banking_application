@@ -18,19 +18,19 @@
     <section class="account-info">
         <h2>Account Information</h2>
         <p>Account Number: <span th:text="${account.getAccountNumber()}"></span> - Currency: <span th:text="${account.getCurrency()}"></span></p>
-        <p>Balance: <span th:text="${account.getBalance()}"></span></p>
+        <p>Balance: <span th:text="${#numbers.formatDecimal(account.getBalance(), 1, 'COMMA', 2, 'POINT')}"></span></p>
         <img src="account-card.jpg" alt="Account Card" class="account-card-image">
     </section>
     <section class="account-info">
         <h2>Card</h2>
         <p>Card Number: <span th:text="${physicalCard.getCardNumber()}"></span> - Currency: <span th:text="${physicalCard.getCurrency()}"></span></p>
-        <p>Balance: <span th:text="${physicalCard.getBalance()}"></span></p>
+        <p>Balance: <span th:text="${#numbers.formatDecimal(physicalCard.getBalance(), 1, 'COMMA', 2, 'POINT')}"></span></p>
         <img src="account-card.jpg" alt="Account Card" class="account-card-image">
     </section>
     <section class="account-info">
         <h2>Virtual Card</h2>
         <p>Virtual Card Number: <span th:text="${virtualCard.getCardNumber()}"></span> - Currency: <span th:text="${virtualCard.getCurrency()}"></span></p>
-        <p>Balance: <span th:text="${virtualCard.getBalance()}"></span></p>
+        <p>Balance: <span th:text="${#numbers.formatDecimal(virtualCard.getBalance(), 1, 'COMMA', 2, 'POINT')}"></span></p>
         <img src="account-card.jpg" alt="Account Card" class="account-card-image">
     </section>
 
@@ -57,14 +57,14 @@
             </thead>
             <tbody>
             <tr th:each="transaction : ${transactions}">
-                <td th:text="${transaction.date}">2024-06-01</td>
-                <td th:text="${transaction.description}">Deposit</td>
+                <td th:text="${transaction.date}"></td>
+                <td th:text="${transaction.description}"></td>
                 <td>
-                    <span th:text="${transaction.sign}">+</span>
+                    <span th:text="${transaction.sign}"></span>
                     <span th:text="${transaction.amount}"></span>
                     <span th:text="${transaction.currency}"></span>
                 </td>
-                <td th:text="${transaction.status}">Completed</td>
+                <td th:text="${transaction.status}"></td>
             </tr>
             </tbody>
         </table>

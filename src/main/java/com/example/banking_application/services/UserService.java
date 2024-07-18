@@ -23,4 +23,7 @@ public interface UserService {
     User getUser(String username);
 
     void makeTransaction(TransactionDto transactionDto);
+
+    void logout();
+
 }

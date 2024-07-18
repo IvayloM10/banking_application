@@ -43,8 +43,8 @@
                 </form>
             </li>
             <li>
-                <form>
-                    <a  class="nav-button" th:href="@{/users/logout}" th:text="#{nav_bar_logout}"> Logout </a>
+                <form th:action="@{/users/logout}" th:method="POST">
+                    <button type="submit" class="nav-button" th:text="#{nav_bar_logout}">Logout</button>
                 </form>
             </li>
         </div>

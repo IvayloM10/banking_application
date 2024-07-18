@@ -172,6 +172,13 @@ private ExchangeRateService exchangeRateService;
         }
     }
 
+    @Override
+    public void logout() {
+        this.currentUser.setId(0L);
+        this.currentUser.setUsername("guest");
+        this.currentUser.setFullName("");
+    }
+
     private void cardReduction(Account senderAccount,TransactionDto transactionDto, Card receiverCard, Long transactionId) {
 
         BigDecimal convertAmount = this.exchangeRateService.convert(String.valueOf(senderAccount.getCurrency()), String.valueOf(transactionDto.getCurrency()), transactionDto.getAmountBase());
