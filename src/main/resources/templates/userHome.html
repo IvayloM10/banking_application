@@ -47,22 +47,26 @@
     <section class="transactions-history">
         <h2>Transaction History</h2>
         <table>
+            <thead>
             <tr>
                 <th>Date</th>
                 <th>Description</th>
                 <th>Amount</th>
+                <th>Status</th>
             </tr>
-            <tr>
-                <td>2024-06-01</td>
-                <td>Deposit</td>
-                <td>+1000 USD</td>
+            </thead>
+            <tbody>
+            <tr th:each="transaction : ${transactions}">
+                <td th:text="${transaction.date}">2024-06-01</td>
+                <td th:text="${transaction.description}">Deposit</td>
+                <td>
+                    <span th:text="${transaction.sign}">+</span>
+                    <span th:text="${transaction.amount}"></span>
+                    <span th:text="${transaction.currency}"></span>
+                </td>
+                <td th:text="${transaction.status}">Completed</td>
             </tr>
-            <tr>
-                <td>2024-06-02</td>
-                <td>Purchase</td>
-                <td>-50 USD</td>
-            </tr>
-            <!-- More rows as needed -->
+            </tbody>
         </table>
     </section>
 </main>

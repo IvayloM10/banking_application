@@ -43,7 +43,7 @@
             <small class="invalid-feedback text-danger">Amount error message</small>
 
             <label for="accountId">Account Number:</label>
-            <input th:field = "*{accountNumber}"
+            <input th:field = "*{cardNumber}"
                    type="text"
                    id="accountId"
                    name="accountId"
@@ -60,6 +60,18 @@
                    required>
             <small class="invalid-feedback text-danger">Account Holder Name error message</small>
 
+            <label for="pin">PIN:</label>
+            <input th:field="*{pin}"
+                   type="password"
+                   id="pin"
+                   name="pin"
+                   pattern="\d{4}"
+                   maxlength="4"
+                   th:errorclass="'is-invalid alert-danger'"
+                   required>
+            <small class="invalid-feedback text-danger">PIN must be a 4-digit number</small>
+
+
             <label for="description">Description:</label>
             <textarea th:field = "*{description}"
                       id="description"
@@ -74,7 +86,7 @@
 
 </main>
 
-
++
 
 <footer th:replace="~{fragments/commons::footer}"></footer>
 </body>

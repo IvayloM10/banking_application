@@ -50,7 +50,7 @@ public class HomeController {
         model.addAttribute("account", userAccount);
         Card userCard = this.cardService.UserCard(loggedUser);
         model.addAttribute("physicalCard", userCard);
-       //TODO: for table integration model.addAttribute("transactions",loggedUser.getTransactions());
+        model.addAttribute("transactions",loggedUser.getTransactions());
         VirtualCard virtualCard = this.virtualCardService.UserVirtualCard(loggedUser);
         model.addAttribute("virtualCard",loggedUser.getVirtualCard());
         return"userHome";

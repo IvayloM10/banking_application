@@ -23,7 +23,11 @@ public class TransactionDto {
     private BigDecimal amountBase;
 
     @NotEmpty
-    private String accountNumber;
+    private String cardNumber;
     @NotEmpty
     private String accountHolderName;
+
+    @NotEmpty
+    private String pin;
+
 }

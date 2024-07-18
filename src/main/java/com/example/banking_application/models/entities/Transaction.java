@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(name= "transactions")
@@ -37,6 +38,14 @@ public class Transaction {
     @Column
     @Enumerated(EnumType.STRING)
     private Currency currency;
+
+    @Column(nullable = false)
+    private String status;
+
+    @Column
+    private String sign;
+
+    private LocalDate date;
 
     public User getReceiver() {
         return receiver;
