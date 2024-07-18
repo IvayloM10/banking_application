@@ -147,15 +147,24 @@ private ExchangeRateService exchangeRateService;
         Account senderAccount =  this.accountRepository.findByUser(sender);
 
         Transaction transaction = this.modelMapper.map(transactionDto, Transaction.class);
-
-        transaction.setStatus("Received!");
+        User reciever = new User();
+        Optional<Card> recieverCard = this.cardRepository.findByCardNumber(transactionDto.getCardNumber());
+        if(recieverCard.isPresent()){
+            reciever=  recieverCard.get().getCardHolder();
+        }
+        Optional<VirtualCard> recieverVirtualCard = this.virtualCardRepository.findByCardNumber(transactionDto.getCardNumber());
+        if(recieverCard.isPresent()){
+            reciever=  recieverVirtualCard.get().getCardHolder();
+        }
+        transaction.setStatus("Waiting....");
         transaction.setSign("-");
         transaction.setDate(LocalDate.now());
+        transaction.setMaker(sender);
+        transaction.setReceiver(reciever);
         this.transactionRepository.save(transaction);
         sender.getTransactions().add(transaction);
         this.userRepository.save(sender);
-        if(transactionDto.getAmountBase().compareTo(BigDecimal.valueOf(10000.0)) > 0){
-            transaction.setStatus("Waiting....");
+        if(transactionDto.getAmountBase().compareTo(BigDecimal.valueOf(10.0)) > 0){
             Branch senderBranch = sender.getBranch();
                    senderBranch .getTransaction().add(transaction);
             this.branchRepository.save(senderBranch);
@@ -192,6 +201,7 @@ private ExchangeRateService exchangeRateService;
 
             senderAccount.setBalance(senderAccount.getBalance() - Double.parseDouble(String.valueOf(convertAmount)));
 
+        //TODO make it come from virtualCard
         Card senderCard = this.cardRepository.findByCardHolder(sender);
         Optional<Transaction> byId = this.transactionRepository.findById(transactionId);
 

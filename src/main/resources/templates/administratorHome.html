@@ -29,17 +29,20 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>Test testov</td>
-                <td>Kaloyan Ivanov</td>
-                <td>1000</td>
-                <td>USD</td>
+            <tr th:each="transaction : ${transactions}">
+                <td th:text="${transaction.maker.getFullName()}">Test testov</td>
+                <td th:text="${transaction.receiver.getFullName()}">Kaloyan Ivanov</td>
+                <td th:text="${transaction.amount}">1000</td>
+                <td th:text="${transaction.currency}">USD</td>
                 <td>
-                    <button class="btn-approve">Approve</button>
-                    <button class="btn-reject">Reject</button>
+                    <form>
+                        <button class="btn-approve" type="submit">Approve</button>
+                    </form>
+                    <form>
+                        <button class="btn-reject" type="submit">Reject</button>
+                    </form>
                 </td>
             </tr>
-
             </tbody>
         </table>
 

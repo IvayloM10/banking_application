@@ -28,7 +28,10 @@ public class AdministratorController {
     @GetMapping("/home")
     public String adminView(@SessionAttribute("currentUser") CurrentUser currentUser, Model model){
         Administrator currentAdmin = this.administrationService.getCurrentAdmin(currentUser.getId());
+        model.addAttribute("transactions",currentAdmin.getBranch().getTransaction());
         model.addAttribute("admin",currentAdmin);
         return "administratorHome";
     }
+
+
 }
