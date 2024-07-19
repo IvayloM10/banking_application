@@ -2,30 +2,51 @@ package com.example.banking_application.services.impl;
 
 import com.example.banking_application.config.CurrentUser;
 import com.example.banking_application.models.dtos.UserLoginDto;
-import com.example.banking_application.models.entities.Administrator;
-import com.example.banking_application.models.entities.Branch;
+import com.example.banking_application.models.entities.*;
 import com.example.banking_application.models.entities.enums.Currency;
-import com.example.banking_application.repositories.AdministratorRepository;
-import com.example.banking_application.repositories.BranchRepository;
+import com.example.banking_application.repositories.*;
 import com.example.banking_application.services.AdministrationService;
+import com.example.banking_application.services.ExchangeRateService;
+import com.example.banking_application.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class AdministrationServiceImpl implements AdministrationService {
-    private AdministratorRepository administratorRepository;
+    private final AdministratorRepository administratorRepository;
     private CurrentUser currentUser;
 
-    private ModelMapper modelMapper;
-    private BranchRepository branchRepository;
+    private final ModelMapper modelMapper;
+    private final BranchRepository branchRepository;
 
-    public AdministrationServiceImpl(AdministratorRepository administratorRepository, ModelMapper modelMapper, BranchRepository branchRepository) {
+    private final TransactionRepository transactionRepository;
+
+
+    private final AccountRepository accountRepository;
+
+    private UserRepository userRepository;
+
+    private UserService userService;
+
+    private CardRepository cardRepository;
+
+    private VirtualCardRepository virtualCardRepository;
+
+    public AdministrationServiceImpl(AdministratorRepository administratorRepository, ModelMapper modelMapper, BranchRepository branchRepository, TransactionRepository transactionRepository, AccountRepository accountRepository, UserRepository userRepository, UserService userService, CardRepository cardRepository, VirtualCardRepository virtualCardRepository) {
         this.administratorRepository = administratorRepository;
         this.modelMapper = modelMapper;
         this.branchRepository = branchRepository;
+        this.transactionRepository = transactionRepository;
+
+        this.accountRepository = accountRepository;
+        this.userRepository = userRepository;
+        this.userService = userService;
+        this.cardRepository = cardRepository;
+        this.virtualCardRepository = virtualCardRepository;
     }
 
     @Override
@@ -77,4 +98,40 @@ public class AdministrationServiceImpl implements AdministrationService {
     public CurrentUser getCurrentUser() {
         return this.currentUser;
     }
+
+    @Override
+    public void approveTransaction(Long id, CurrentUser currentUser) {
+        Optional<Transaction> searchedTransaction = this.transactionRepository.findById(id);
+        if (searchedTransaction.isEmpty()) {
+            throw new IllegalArgumentException("Invalid transaction ID");
+        }
+
+        Transaction transaction = searchedTransaction.get();
+
+        User sender = transaction.getMaker();
+        User receiver = transaction.getReceiver();
+        String cardNumber = "";
+        if(transaction.getRecieverCardType().equals("card")){
+           cardNumber = this.cardRepository.findByCardHolder(receiver).getCardNumber();
+        }else if(transaction.getRecieverCardType().equals("Virtual card")){
+            cardNumber = this.virtualCardRepository.findByCardHolder(receiver).getCardNumber();
+        }
+        Account senderAccount = this.accountRepository.findByUser(sender);
+        this.userService.handleRegularTransaction(senderAccount, cardNumber, transaction);
+
+        transaction.setStatus("Approved");
+        this.transactionRepository.save(transaction);
+        Administrator currentAdmin = getCurrentAdmin(currentUser.getId());
+        Branch branch = currentAdmin.getBranch();
+        branch.getTransaction().remove(Integer.parseInt(String.valueOf(transaction.getId())) - 1);
+        currentAdmin.setBranch(branch);
+        this.branchRepository.save(branch);
+    }
+
+    @Override
+    public void rejectTransaction(Long id) {
+
+    }
+
+
 }

@@ -4,10 +4,7 @@ import com.example.banking_application.models.dtos.CardDto;
 import com.example.banking_application.models.dtos.TransactionDto;
 import com.example.banking_application.models.dtos.UserLoginDto;
 import com.example.banking_application.models.dtos.UserRegisterDto;
-import com.example.banking_application.models.entities.Account;
-import com.example.banking_application.models.entities.Card;
-import com.example.banking_application.models.entities.User;
-import com.example.banking_application.models.entities.VirtualCard;
+import com.example.banking_application.models.entities.*;
 
 public interface UserService {
     boolean register(UserRegisterDto userRegisterDto);
@@ -23,6 +20,8 @@ public interface UserService {
     User getUser(String username);
 
     void makeTransaction(TransactionDto transactionDto);
+
+    void handleRegularTransaction(Account senderAccount, String receiverCardNumber, Transaction transaction);
 
     void logout();
 

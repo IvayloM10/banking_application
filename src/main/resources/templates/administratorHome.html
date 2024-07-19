@@ -35,10 +35,10 @@
                 <td th:text="${transaction.amount}">1000</td>
                 <td th:text="${transaction.currency}">USD</td>
                 <td>
-                    <form>
+                    <form th:action="@{/admin/transactions/approve/{id}(id=${transaction.id})}" method="post">
                         <button class="btn-approve" type="submit">Approve</button>
                     </form>
-                    <form>
+                    <form th:action="@{/admin/transactions/reject/{id}(id=${transaction.id})}" method="post">
                         <button class="btn-reject" type="submit">Reject</button>
                     </form>
                 </td>

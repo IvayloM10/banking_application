@@ -6,10 +6,7 @@ import com.example.banking_application.services.AdministrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.SessionScope;
 
 @Controller
@@ -19,6 +16,7 @@ public class AdministratorController {
 
 
     private AdministrationService administrationService;
+
 
     public AdministratorController(AdministrationService administrationService) {
 
@@ -33,5 +31,16 @@ public class AdministratorController {
         return "administratorHome";
     }
 
+    @PostMapping("/transactions/approve/{id}")
+    public String approveTransaction(@SessionAttribute("currentUser") CurrentUser currentUser,@PathVariable Long id) {
+        this.administrationService.approveTransaction(id, currentUser);
+        return "redirect:/admin/home";
+    }
+
+    @PostMapping("/admin/transactions/reject/{id}")
+    public String rejectTransaction(@PathVariable Long id) {
+        this.administrationService.rejectTransaction(id);
+        return "redirect:/admin/home";
+    }
 
 }

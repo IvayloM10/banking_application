@@ -45,7 +45,15 @@ public class Transaction {
     @Column
     private String sign;
 
+    @Column
     private LocalDate date;
+
+    @Column
+    private String senderCardType;
+
+    @Column
+    private String recieverCardType;
+
 
     public User getReceiver() {
         return receiver;

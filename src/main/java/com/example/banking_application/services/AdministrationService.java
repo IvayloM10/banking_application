@@ -13,4 +13,9 @@ public interface AdministrationService {
     Administrator getCurrentAdmin(Long id);
 
     CurrentUser getCurrentUser();
+
+    void approveTransaction(Long id,CurrentUser currentUser);
+
+    void rejectTransaction(Long id);
+
 }
