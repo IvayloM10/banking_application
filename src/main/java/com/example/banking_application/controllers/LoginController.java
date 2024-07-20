@@ -41,6 +41,7 @@ public class LoginController {
             model.addAttribute("currentUser",this.administrationService.getCurrentUser());
             return "redirect:/admin/home";
         }
+
         if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("userLogin",userLoginDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userLogin",bindingResult);
@@ -48,7 +49,14 @@ public class LoginController {
             return "redirect:/users/login";
         }
 
-        this.userService.login(userLoginDto);
+        boolean loginSuccess = this.userService.login(userLoginDto);
+
+        if(!loginSuccess){
+            redirectAttributes.addFlashAttribute("userLogin",userLoginDto);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userLogin",bindingResult);
+            redirectAttributes.addFlashAttribute("loginError", true);
+            return "redirect:/users/login";
+        }
 
 
         return "redirect:/home";
