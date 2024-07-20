@@ -38,8 +38,8 @@ public class AdministratorController {
     }
 
     @PostMapping("/transactions/reject/{id}")
-    public String rejectTransaction(@PathVariable Long id) {
-        this.administrationService.rejectTransaction(id);
+    public String rejectTransaction(@SessionAttribute("currentUser") CurrentUser currentUser,@PathVariable Long id) {
+        this.administrationService.rejectTransaction(id,currentUser);
         return "redirect:/admin/home";
     }
 

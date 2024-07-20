@@ -16,6 +16,6 @@ public interface AdministrationService {
 
     void approveTransaction(Long id,CurrentUser currentUser);
 
-    void rejectTransaction(Long id);
+    void rejectTransaction(Long id, CurrentUser currentUser);
 
 }

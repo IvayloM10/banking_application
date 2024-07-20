@@ -126,7 +126,6 @@ public class AdministrationServiceImpl implements AdministrationService {
         Branch branch = currentAdmin.getBranch();
         List<Transaction> transactions = branch.getTransaction();
 
-
         int indexToRemove = IntStream.range(0, transactions.size())
                 .filter(i -> transactions.get(i).getTransactionIdentifier().equals(transaction.getTransactionIdentifier()))
                 .findFirst()
@@ -141,8 +140,46 @@ public class AdministrationServiceImpl implements AdministrationService {
     }
 
     @Override
-    public void rejectTransaction(Long id) {
+    public void rejectTransaction(Long id,CurrentUser currentUser) {
+        Optional<Transaction> searchedTransaction = this.transactionRepository.findById(id);
+        if (searchedTransaction.isEmpty()) {
+            throw new IllegalArgumentException("Invalid transaction ID");
+        }
 
+        Transaction transaction = searchedTransaction.get();
+        transaction.setStatus("Rejected");
+
+        this.transactionRepository.save(transaction);
+
+        User maker = transaction.getMaker();
+
+        TransactionDetails senderDetail = new TransactionDetails();
+        senderDetail.setTransactionId(transaction.getId());
+        senderDetail.setDate(transaction.getDate());
+        senderDetail.setDescription(transaction.getDescription());
+        senderDetail.setCurrency(String.valueOf(transaction.getCurrency()));
+        senderDetail.setStatus("Rejected!");
+        senderDetail.setUser(maker);
+        senderDetail.setAmount(Double.parseDouble(String.valueOf(transaction.getAmount())));
+        senderDetail.setSign('-');
+        maker.getTransactions().add(senderDetail);
+        this.userRepository.save(maker);
+
+        Administrator currentAdmin = getCurrentAdmin(currentUser.getId());
+        Branch branch = currentAdmin.getBranch();
+        List<Transaction> transactions = branch.getTransaction();
+
+        int indexToRemove = IntStream.range(0, transactions.size())
+                .filter(i -> transactions.get(i).getTransactionIdentifier().equals(transaction.getTransactionIdentifier()))
+                .findFirst()
+                .orElse(-1);
+
+        if (indexToRemove != -1) {
+            transactions.remove(indexToRemove);
+        }
+
+        currentAdmin.setBranch(branch);
+        this.branchRepository.save(branch);
     }
 
 

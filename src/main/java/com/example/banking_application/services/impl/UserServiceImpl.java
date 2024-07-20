@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = searchedUser.get();
 
-        if(!passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())){
+        if(!passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword()) || !user.getUsername().equals(userLoginDto.getUsername())){
             return false;
         }
 
@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService {
         Account senderAccount = this.accountRepository.findByUser(sender);
 
         Transaction transaction = getTransaction(transactionDto, sender);
-      //  this.transactionRepository.save(transaction);
+
 
         if (transactionDto.getAmountBase().compareTo(BigDecimal.valueOf(10.0)) > 0) {
             handleBranchTransaction(sender, transaction);
@@ -162,6 +162,8 @@ public class UserServiceImpl implements UserService {
         transaction.setSign("-");
         transaction.setDate(LocalDate.now());
         transaction.setMaker(sender);
+        transaction.setTransactionIdentifier(UUID.randomUUID().toString()); // Ensure uniqueness for every transaction, so it could be found later in the admin controller when approved or rejected
+
 
         User receiver = getReceiverAndSetCardType(transactionDto, transaction);
         transaction.setReceiver(receiver);
@@ -211,7 +213,7 @@ public class UserServiceImpl implements UserService {
     public void handleRegularTransaction(Account senderAccount, String receiverCardNumber, Transaction transaction) {
 
         transaction.setStatus("Received!");
-        transaction.setTransactionIdentifier(UUID.randomUUID().toString()); // Ensure uniqueness
+       // transaction.setTransactionIdentifier(UUID.randomUUID().toString()); // Ensure uniqueness for every transaction, so it could be found later in the admin controller when approved or rejected
 
         // Ensure that the maker and receiver are set
         User maker = userRepository.findByUsername(transaction.getMaker().getUsername())
