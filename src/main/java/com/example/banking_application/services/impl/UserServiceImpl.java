@@ -196,7 +196,9 @@ public class UserServiceImpl implements UserService {
         throw new IllegalArgumentException("Receiver not found");
     }
 
+    @Transient
     private void handleBranchTransaction(User sender, Transaction transaction) {
+        this.transactionRepository.save(transaction);
         Branch senderBranch = sender.getBranch();
         senderBranch.getTransaction().add(transaction);
         this.branchRepository.save(senderBranch);
@@ -229,6 +231,7 @@ public class UserServiceImpl implements UserService {
 
             TransactionDetails senderDetail = new TransactionDetails();
             senderDetail.setTransactionId(transaction.getId());
+            senderDetail.setDate(transaction.getDate());
             senderDetail.setDescription(transaction.getDescription());
             senderDetail.setCurrency(String.valueOf(transaction.getCurrency()));
             senderDetail.setStatus("Received!");
@@ -248,6 +251,7 @@ public class UserServiceImpl implements UserService {
 
             TransactionDetails receiverDetail = new TransactionDetails();
             receiverDetail.setTransactionId(transaction.getId());
+            receiverDetail.setDate(transaction.getDate());
             receiverDetail.setDescription(transaction.getDescription());
            receiverDetail.setCurrency(String.valueOf(transaction.getCurrency()));
            receiverDetail.setStatus("Received!");

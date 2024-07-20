@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Service
 public class AdministrationServiceImpl implements AdministrationService {
@@ -123,7 +124,18 @@ public class AdministrationServiceImpl implements AdministrationService {
         this.transactionRepository.save(transaction);
         Administrator currentAdmin = getCurrentAdmin(currentUser.getId());
         Branch branch = currentAdmin.getBranch();
-        branch.getTransaction().remove(Integer.parseInt(String.valueOf(transaction.getId())) - 1);
+        List<Transaction> transactions = branch.getTransaction();
+
+
+        int indexToRemove = IntStream.range(0, transactions.size())
+                .filter(i -> transactions.get(i).getTransactionIdentifier().equals(transaction.getTransactionIdentifier()))
+                .findFirst()
+                .orElse(-1);
+
+        if (indexToRemove != -1) {
+            transactions.remove(indexToRemove);
+        }
+
         currentAdmin.setBranch(branch);
         this.branchRepository.save(branch);
     }
