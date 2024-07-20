@@ -34,6 +34,11 @@
             </li>
             <li>
                 <form>
+                    <a  class="nav-button" th:href="@{/users/submit-loan}" th:text="#{nav_bar_take_loan}" > Take Loan</a>
+                </form>
+            </li>
+            <li>
+                <form>
                     <a  class="nav-button" th:href="@{/users/register}" th:text="#{nav_bar_register}">Register </a>
                 </form>
             </li>
@@ -64,7 +69,7 @@
             <h3 th:text="#{footer_customer_service}">Customer Service</h3>
             <ul class="social-media">
                 <li><a href="/" th:text="#{footer_contact_us}">Contact Us</a></li>
-                <li><a href="/" th:text="#{footer_faq}">FAQ</a></li>
+                <li><a href="/FAQ" th:text="#{footer_faq}">FAQ</a></li>
                 <li><a href="/" th:text="#{footer_support_center}">Support Center</a></li>
             </ul>
         </div>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ</title>
+    <link rel="stylesheet" href="/css/FAQ.css">
+</head>
+<body>
+<header>
+    <nav th:replace="~{fragments/commons::nav}"></nav>
+</header>
+
+
+<main>
+    <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">FAQ</span></h1>
+    <hr class="hr-3 w-25 white"/>
+
+    <section class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+            <button class="faq-question">
+                <span>What is UB Bank?</span>
+                <span class="arrow">&#9654;</span>
+            </button>
+            <div class="faq-answer">
+                <p>UB is a community-focused bank offering a variety of financial services including personal and business banking, loans. We have revolutionised online banking thorough our unique online banking</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question">
+                <span>How do I open a new account?</span>
+                <span class="arrow">&#9654;</span>
+            </button>
+            <div class="faq-answer">
+                <p>Opening a new account is simple! You can visit our nearest branch or apply online through our website. <a  th:href="@{/users/register}">Click here!</a>
+                </p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question">
+                <span>What types of loans are available?</span>
+                <span class="arrow">&#9654;</span>
+            </button>
+            <div class="faq-answer">
+                <p>We offer various types of loans including personal loans, home loans, auto loans, and small business loans. However, through our online app we offer only personal loans with mac amount of 5000. </p>
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<footer th:replace="~{fragments/commons::footer}"></footer>
+
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const questions = document.querySelectorAll('.faq-question');
+
+            questions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const arrow = question.querySelector('.arrow');
+
+                    if (answer.style.display === 'block') {
+                        answer.style.display = 'none';
+                        arrow.innerHTML = '&#9654;';
+                    } else {
+                        answer.style.display = 'block';
+                        arrow.innerHTML = '&#9660;';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

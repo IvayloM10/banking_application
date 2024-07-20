@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Loan</title>
+    <link rel="stylesheet" href="/css/takeLoan.css">
+</head>
+<body>
+<header>
+    <nav th:replace="~{fragments/commons::nav}"></nav>
+</header>
+
+<main>
+    <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Take Out Loan</span></h1>
+    <hr class="hr-3 w-25 white"/>
+
+    <form class="loan-form"
+          th:action="@{/users/submit-loan}"
+          th:method="POST"
+
+    >
+        <div class="form-group">
+            <label for="amount" class="form-label">Amount</label>
+            <input type="number" id="amount" name="amount" class="form-control" max="5000" required>
+        </div>
+
+        <div class="form-group">
+            <label for="currency" class="form-label">Currency</label>
+            <select id="currency" name="currency" class="form-control" required>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="BGN">BGN</option>
+                <option value="JPY">JPY</option>
+
+            </select>
+        </div>
+
+        <div class="button-holder">
+            <button type="submit" class="btn btn-warning">Apply for Loan</button>
+        </div>
+    </form>
+</main>
+<footer th:replace="~{fragments/commons::footer}"></footer>
+</body>
+</html>
