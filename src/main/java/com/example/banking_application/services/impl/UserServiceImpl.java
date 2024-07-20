@@ -17,11 +17,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.annotation.Transient;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -35,10 +37,10 @@ public class UserServiceImpl implements UserService {
 
     private VirtualCardRepository virtualCardRepository;
 
-    private BranchRepository branchRepository;
+    private final BranchRepository branchRepository;
     private TransactionRepository transactionRepository;
 
-private ExchangeRateService exchangeRateService;
+    private ExchangeRateService exchangeRateService;
 
 
     private CurrentUser currentUser;
@@ -142,18 +144,8 @@ private ExchangeRateService exchangeRateService;
         User sender = validateSenderPin(transactionDto);
         Account senderAccount = this.accountRepository.findByUser(sender);
 
-        Transaction transaction = this.modelMapper.map(transactionDto, Transaction.class);
-        transaction.setStatus("Waiting....");
-        transaction.setAmount(transactionDto.getAmountBase());
-        transaction.setSign("-");
-        transaction.setDate(LocalDate.now());
-        transaction.setMaker(sender);
-        User receiver = getReceiverAndSetCardType(transactionDto, transaction);
-        transaction.setReceiver(receiver);
-       this.transactionRepository.save(transaction);
-
-        sender.getTransactions().add(transaction);
-        this.userRepository.save(sender);
+        Transaction transaction = getTransaction(transactionDto, sender);
+      //  this.transactionRepository.save(transaction);
 
         if (transactionDto.getAmountBase().compareTo(BigDecimal.valueOf(10.0)) > 0) {
             handleBranchTransaction(sender, transaction);
@@ -162,8 +154,23 @@ private ExchangeRateService exchangeRateService;
         }
     }
 
+    @Transient
+    private Transaction getTransaction(TransactionDto transactionDto, User sender) {
+        Transaction transaction = this.modelMapper.map(transactionDto, Transaction.class);
+        transaction.setStatus("Waiting....");
+        transaction.setAmount(transactionDto.getAmountBase());
+        transaction.setSign("-");
+        transaction.setDate(LocalDate.now());
+        transaction.setMaker(sender);
+
+        User receiver = getReceiverAndSetCardType(transactionDto, transaction);
+        transaction.setReceiver(receiver);
+
+        return transaction;
+    }
+
     private User validateSenderPin(TransactionDto transactionDto) {
-        Optional<User> senderAccounts = userRepository.findById(currentUser.getId());
+        Optional<User> senderAccounts = this.userRepository.findById(this.currentUser.getId());
         User sender = senderAccounts.orElseThrow(() -> new IllegalArgumentException("Sender can not found"));
         if (!sender.getCard().getPin().equals(transactionDto.getPin())) {
             throw new InvalidPinException("Invalid pin for card", transactionDto.getCardNumber());
@@ -193,19 +200,76 @@ private ExchangeRateService exchangeRateService;
         Branch senderBranch = sender.getBranch();
         senderBranch.getTransaction().add(transaction);
         this.branchRepository.save(senderBranch);
-        //TODO can remove it
-        this.transactionRepository.save(transaction);
+
+
     }
 
     @Override
+    @Transactional
     public void handleRegularTransaction(Account senderAccount, String receiverCardNumber, Transaction transaction) {
-        boolean cardType = receiverCardType(receiverCardNumber);
-        if (cardType) {
-            Optional<Card> receiverCard = this.cardRepository.findByCardNumber(receiverCardNumber);
-            receiverCard.ifPresent(card -> cardReduction(senderAccount, transaction, card));
-        } else {
-            Optional<VirtualCard> receiverVirtualCard = this.virtualCardRepository.findByCardNumber(receiverCardNumber);
-            receiverVirtualCard.ifPresent(card -> cardReduction(senderAccount, transaction, card));
+
+        transaction.setStatus("Received!");
+        transaction.setTransactionIdentifier(UUID.randomUUID().toString()); // Ensure uniqueness
+
+        // Ensure that the maker and receiver are set
+        User maker = userRepository.findByUsername(transaction.getMaker().getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("Maker not found"));
+        User receiver = userRepository.findByUsername(transaction.getReceiver().getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("Receiver not found"));
+
+        transaction.setMaker(maker);
+        transaction.setReceiver(receiver);
+
+        transaction = this.transactionRepository.save(transaction);
+
+        // Handle the sender
+        Optional<User> senderOp = this.userRepository.findByUsername(transaction.getMaker().getUsername());
+        if (senderOp.isPresent()) {
+
+
+            TransactionDetails senderDetail = new TransactionDetails();
+            senderDetail.setTransactionId(transaction.getId());
+            senderDetail.setDescription(transaction.getDescription());
+            senderDetail.setCurrency(String.valueOf(transaction.getCurrency()));
+            senderDetail.setStatus("Received!");
+            senderDetail.setUser(maker);
+            senderDetail.setAmount(Double.parseDouble(String.valueOf(transaction.getAmount())));
+            senderDetail.setSign('-');
+
+            maker.getMadeTransactions().add(transaction);
+            maker.getTransactions().add(senderDetail);
+            this.userRepository.save(maker);
+        }
+
+
+        Optional<User> receiverOp = this.userRepository.findByUsername(transaction.getReceiver().getUsername());
+        if (receiverOp.isPresent()) {
+
+
+            TransactionDetails receiverDetail = new TransactionDetails();
+            receiverDetail.setTransactionId(transaction.getId());
+            receiverDetail.setDescription(transaction.getDescription());
+           receiverDetail.setCurrency(String.valueOf(transaction.getCurrency()));
+           receiverDetail.setStatus("Received!");
+            receiverDetail.setUser(receiver);
+            receiverDetail.setAmount(Double.parseDouble(String.valueOf(transaction.getAmount())));
+            receiverDetail.setSign('+');
+
+            receiver.getReceivedTransactions().add(transaction);
+            receiver.getTransactions().add(receiverDetail);
+            this.userRepository.save(receiver);
+
+
+            boolean cardType = receiverCardType(receiverCardNumber);
+            if (cardType) {
+                Optional<Card> receiverCard = this.cardRepository.findByCardNumber(receiverCardNumber);
+                Transaction finalTransaction = transaction;
+                receiverCard.ifPresent(card -> cardReduction(senderAccount, finalTransaction, card));
+            } else {
+                Optional<VirtualCard> receiverVirtualCard = this.virtualCardRepository.findByCardNumber(receiverCardNumber);
+                Transaction finalTransaction1 = transaction;
+                receiverVirtualCard.ifPresent(card -> cardReduction(senderAccount, finalTransaction1, card));
+            }
         }
     }
 
@@ -222,6 +286,8 @@ private ExchangeRateService exchangeRateService;
         this.currentUser.setFullName("");
     }
 
+
+@Transient
     private void cardReduction(Account senderAccount,Transaction transaction, Card receiverCard) {
 
         BigDecimal convertAmount = convertAmount(transaction.getAmount(),String.valueOf(senderAccount.getCurrency()), String.valueOf(transaction.getCurrency()));
@@ -233,12 +299,13 @@ private ExchangeRateService exchangeRateService;
 
         deductFunds(senderAccount,convertAmount);
 
-        transactionSave(transaction.getId(), "Received", "-", sender);
+
         this.userRepository.save(sender);
 
 
+
         User cardHolder = receiverCard.getCardHolder();
-        transactionSave(transaction.getId(), "Received", "+", cardHolder);
+
         this.userRepository.save(cardHolder);
 
         Account account = this.accountRepository.findByUser(cardHolder);
@@ -246,7 +313,10 @@ private ExchangeRateService exchangeRateService;
 
          this.accountRepository.save(account);
 
-        receiverCard.setBalance(receiverCard.getBalance() + Double.parseDouble(String.valueOf(convertAmount)));
+
+
+
+    receiverCard.setBalance(receiverCard.getBalance() + Double.parseDouble(String.valueOf(convertAmount)));
         this.cardRepository.save(receiverCard);
     };
 
@@ -259,12 +329,18 @@ private ExchangeRateService exchangeRateService;
        userHasEnoughMoney(senderAccount,transaction);
 
         User sender = senderAccount.getUser();
-        transactionSave(transaction.getId(), "Received!", "-", sender);
+
+
+
+        this.userRepository.save(sender);
         deductFunds(senderAccount,convertAmount);
 
         User cardHolder = receiverCard.getCardHolder();
 
-        transactionSave(transaction.getId(), "Received!", "+", cardHolder);
+
+
+
+        this.userRepository.save(cardHolder);
         receiverCard.setBalance(receiverCard.getBalance() + Double.parseDouble(String.valueOf(convertAmount)));
         Account recieverAccount = this.accountRepository.findByUser(cardHolder);
         recieverAccount.setBalance(recieverAccount.getBalance() + Double.parseDouble(String.valueOf(convertAmount)));
@@ -272,14 +348,7 @@ private ExchangeRateService exchangeRateService;
         this.virtualCardRepository.save(receiverCard);
     }
 
-    private void transactionSave(Long transactionId, String status, String sign, User cardHolder) {
-        Optional<Transaction> searchTransaction = this.transactionRepository.findById(transactionId);
-        Transaction transaction = searchTransaction.get();
-        transaction.setStatus(status);
-        transaction.setSign(sign);
-        cardHolder.getTransactions().add(transaction);
-        this.userRepository.save(cardHolder);
-    }
+
 
 
 
@@ -326,7 +395,8 @@ private ExchangeRateService exchangeRateService;
             this.cardRepository.save(physicalCard);
             this.virtualCardRepository.save(virtualCard);
         }
-
+          senderAccount.getUser().setCard(physicalCard);
+        senderAccount.getUser().setVirtualCard(virtualCard);
         senderAccount.setBalance(senderAccount.getBalance() - Double.parseDouble(String.valueOf(amount)));
         this.accountRepository.save(senderAccount);
     }

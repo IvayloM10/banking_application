@@ -40,8 +40,8 @@ public class User {
     @OneToOne(mappedBy = "cardHolder",cascade = CascadeType.ALL)
     private Card card;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<Transaction> transactions = new ArrayList<>();
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private List<TransactionDetails> transactions = new ArrayList<>();
 
     @OneToMany(mappedBy = "requester",fetch = FetchType.EAGER)
     private List<Loan> loans;
@@ -52,6 +52,12 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "branch_id")
     private Branch branch;
+
+    @OneToMany(mappedBy = "maker", fetch = FetchType.EAGER)
+    private List<Transaction> madeTransactions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiver",fetch = FetchType.EAGER)
+    private List<Transaction> receivedTransactions = new ArrayList<>();
 
     public String getFullName(){
         return String.join(" ", this.firstName, this.lastName);

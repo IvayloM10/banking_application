@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -50,6 +51,7 @@ public class HomeController {
         model.addAttribute("account", userAccount);
         Card userCard = this.cardService.UserCard(loggedUser);
         model.addAttribute("physicalCard", userCard);
+        int size = loggedUser.getTransactions().size();
         model.addAttribute("transactions",loggedUser.getTransactions());
         VirtualCard virtualCard = this.virtualCardService.UserVirtualCard(loggedUser);
         model.addAttribute("virtualCard",loggedUser.getVirtualCard());
@@ -75,7 +77,6 @@ public class HomeController {
         }
 
         this.userService.makeTransaction( transactionDto);
-        User currentUser1 = this.userService.getCurrentUser();
         return"redirect:/home";
     }
 

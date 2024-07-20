@@ -37,7 +37,7 @@ public class AdministratorController {
         return "redirect:/admin/home";
     }
 
-    @PostMapping("/admin/transactions/reject/{id}")
+    @PostMapping("/transactions/reject/{id}")
     public String rejectTransaction(@PathVariable Long id) {
         this.administrationService.rejectTransaction(id);
         return "redirect:/admin/home";

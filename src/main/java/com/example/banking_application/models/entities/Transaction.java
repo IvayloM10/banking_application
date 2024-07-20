@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name= "transactions")
@@ -23,13 +25,15 @@ public class Transaction {
 
     @Column(nullable = false)
     private String description;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "maker_id")
     private User maker;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "receiver_id")
     private User receiver;
+    @Column(unique = true)
+    private String transactionIdentifier;
 
     @Column(nullable = false)
     @Positive
@@ -47,6 +51,7 @@ public class Transaction {
 
     @Column
     private LocalDate date;
+
 
     @Column
     private String senderCardType;

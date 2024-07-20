@@ -57,14 +57,14 @@
             </thead>
             <tbody>
             <tr th:each="transaction : ${transactions}">
-                <td th:text="${transaction.date}"></td>
-                <td th:text="${transaction.description}"></td>
+                <td th:text="${transaction.getDate()}"></td>
+                <td th:text="${transaction.getDescription()}"></td>
                 <td>
                     <span th:text="${transaction.sign}"></span>
                     <span th:text="${transaction.amount}"></span>
-                    <span th:text="${transaction.currency}"></span>
+                    <span th:text="${transaction.getCurrency()}"></span>
                 </td>
-                <td th:text="${transaction.status}"></td>
+                <td th:text="${transaction.getStatus()}"></td>
             </tr>
             </tbody>
         </table>
