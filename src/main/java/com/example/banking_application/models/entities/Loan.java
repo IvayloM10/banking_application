@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 @Entity
 @Table
 @NoArgsConstructor
@@ -19,13 +22,33 @@ public class Loan {
     private boolean isAuthorized;
 
     @Column(nullable = false)
-    private int amount;
+    private BigDecimal amount;
 
-    @ManyToOne
-    @JoinColumn(name = "administrator_id")
-    private Administrator administrator;
+    @Column(nullable = false)
+    private BigDecimal returnAmount;
+;
 
     @ManyToOne
     @JoinColumn(name = "requester_id")
     private User requester;
+
+    @ManyToOne
+    private Branch branch;
+
+    @Column
+    private double rate;
+
+    @Column
+    private String term;
+
+    @Column
+    private LocalDate date;
+
+    @Column
+    private String loanUniqueIdentifier;
+
+    @Column
+    private BigDecimal monthlyPayment;
+
+    private String status;
 }

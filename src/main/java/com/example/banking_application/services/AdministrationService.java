@@ -10,12 +10,12 @@ public interface AdministrationService {
 
     boolean loginAdmin(UserLoginDto userLoginDto);
 
-    Administrator getCurrentAdmin(Long id);
+    Administrator getCurrentAdmin(String id);
 
     CurrentUser getCurrentUser();
 
-    void approveTransaction(Long id,CurrentUser currentUser);
+    void approveTransaction(Long id,String username);
 
-    void rejectTransaction(Long id, CurrentUser currentUser);
+    void rejectTransaction(Long id, String username);
 
 }

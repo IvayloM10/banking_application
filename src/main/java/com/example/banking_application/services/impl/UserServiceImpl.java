@@ -14,6 +14,7 @@ import com.example.banking_application.services.UserService;
 import com.example.banking_application.services.exceptions.InvalidPinException;
 import com.example.banking_application.services.exceptions.NotEnoughFundsException;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Transient;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,12 +38,14 @@ public class UserServiceImpl implements UserService {
 
     private VirtualCardRepository virtualCardRepository;
 
+    @Autowired
     private final BranchRepository branchRepository;
     private TransactionRepository transactionRepository;
 
     private ExchangeRateService exchangeRateService;
 
 
+    @Autowired
     private CurrentUser currentUser;
 
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, CardRepository cardRepository, AccountRepository accountRepository, VirtualCardRepository virtualCardRepository, BranchRepository branchRepository, TransactionRepository transactionRepository, ExchangeRateService exchangeRateService, CurrentUser currentUser) {
@@ -140,7 +143,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void makeTransaction(TransactionDto transactionDto) {
+    public void makeTransaction(TransactionDto transactionDto, String username) {
+        this.currentUser = modelMapper.map(this.userRepository.findByUsername(username).get(),CurrentUser.class);
         User sender = validateSenderPin(transactionDto);
         Account senderAccount = this.accountRepository.findByUser(sender);
 
@@ -359,8 +363,9 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User getCurrentUser() {
-        return this.userRepository.findByUsername(this.currentUser.getUsername()).get();
+    public User getCurrentUser(String username) {
+
+        return this.userRepository.findByUsername(username).get();
     }
 
     private String generateAccountNumber() {

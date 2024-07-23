@@ -6,12 +6,11 @@ import com.example.banking_application.models.entities.*;
 import com.example.banking_application.models.entities.enums.Currency;
 import com.example.banking_application.repositories.*;
 import com.example.banking_application.services.AdministrationService;
-import com.example.banking_application.services.ExchangeRateService;
 import com.example.banking_application.services.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -29,6 +28,8 @@ public class AdministrationServiceImpl implements AdministrationService {
 
     private final AccountRepository accountRepository;
 
+    private PasswordEncoder passwordEncoder;
+
     private UserRepository userRepository;
 
     private UserService userService;
@@ -37,13 +38,14 @@ public class AdministrationServiceImpl implements AdministrationService {
 
     private VirtualCardRepository virtualCardRepository;
 
-    public AdministrationServiceImpl(AdministratorRepository administratorRepository, ModelMapper modelMapper, BranchRepository branchRepository, TransactionRepository transactionRepository, AccountRepository accountRepository, UserRepository userRepository, UserService userService, CardRepository cardRepository, VirtualCardRepository virtualCardRepository) {
+    public AdministrationServiceImpl(AdministratorRepository administratorRepository, ModelMapper modelMapper, BranchRepository branchRepository, TransactionRepository transactionRepository, AccountRepository accountRepository, PasswordEncoder passwordEncoder, UserRepository userRepository, UserService userService, CardRepository cardRepository, VirtualCardRepository virtualCardRepository) {
         this.administratorRepository = administratorRepository;
         this.modelMapper = modelMapper;
         this.branchRepository = branchRepository;
         this.transactionRepository = transactionRepository;
 
         this.accountRepository = accountRepository;
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.userService = userService;
         this.cardRepository = cardRepository;
@@ -61,7 +63,7 @@ public class AdministrationServiceImpl implements AdministrationService {
             Administrator administrator = new Administrator();
             administrator.setId(id);
             administrator.setUsername(String.join(" ", String.valueOf(currencies.get(i))));
-            administrator.setPassword(String.join("",String.valueOf(i),String.valueOf(i),String.valueOf(i),String.valueOf(i)));
+            administrator.setPassword(passwordEncoder.encode(String.join("",String.valueOf(i),String.valueOf(i),String.valueOf(i),String.valueOf(i))));
             administrator.setCurrency(currencies.get(i));
             Branch branch;
             if(currencies.get(i).equals(Currency.BGN)){
@@ -91,8 +93,8 @@ public class AdministrationServiceImpl implements AdministrationService {
     }
 
     @Override
-    public Administrator getCurrentAdmin(Long id) {
-        return this.administratorRepository.findById(id).get();
+    public Administrator getCurrentAdmin(String id) {
+        return this.administratorRepository.findByUsername(id).get();
     }
 
     @Override
@@ -101,7 +103,8 @@ public class AdministrationServiceImpl implements AdministrationService {
     }
 
     @Override
-    public void approveTransaction(Long id, CurrentUser currentUser) {
+    public void approveTransaction(Long id, String username) {
+        getCurrentUserInfo(username);
         Optional<Transaction> searchedTransaction = this.transactionRepository.findById(id);
         if (searchedTransaction.isEmpty()) {
             throw new IllegalArgumentException("Invalid transaction ID");
@@ -122,7 +125,7 @@ public class AdministrationServiceImpl implements AdministrationService {
 
         transaction.setStatus("Approved");
         this.transactionRepository.save(transaction);
-        Administrator currentAdmin = getCurrentAdmin(currentUser.getId());
+        Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
         Branch branch = currentAdmin.getBranch();
         List<Transaction> transactions = branch.getTransaction();
 
@@ -139,8 +142,13 @@ public class AdministrationServiceImpl implements AdministrationService {
         this.branchRepository.save(branch);
     }
 
+    private void getCurrentUserInfo(String username) {
+        this.currentUser = modelMapper.map(this.administratorRepository.findByUsername(username),CurrentUser.class);
+    }
+
     @Override
-    public void rejectTransaction(Long id,CurrentUser currentUser) {
+    public void rejectTransaction(Long id,String username) {
+        getCurrentUserInfo(username);
         Optional<Transaction> searchedTransaction = this.transactionRepository.findById(id);
         if (searchedTransaction.isEmpty()) {
             throw new IllegalArgumentException("Invalid transaction ID");
@@ -165,7 +173,7 @@ public class AdministrationServiceImpl implements AdministrationService {
         maker.getTransactions().add(senderDetail);
         this.userRepository.save(maker);
 
-        Administrator currentAdmin = getCurrentAdmin(currentUser.getId());
+        Administrator currentAdmin = getCurrentAdmin(currentUser.getUsername());
         Branch branch = currentAdmin.getBranch();
         List<Transaction> transactions = branch.getTransaction();
 

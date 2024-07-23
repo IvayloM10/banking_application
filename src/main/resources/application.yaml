@@ -43,4 +43,9 @@ spring:
   #api-key:
   #api-secret:
   #cloud-name:
+  logging:
+    level:
+      org:
+        springframework:
+          security=DEBUG:
 

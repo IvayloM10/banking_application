@@ -15,24 +15,59 @@
     <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Take Out Loan</span></h1>
     <hr class="hr-3 w-25 white"/>
 
-    <form class="loan-form"
-          th:action="@{/users/submit-loan}"
-          th:method="POST"
-
+    <form class="loan-form" th:action="@{/users/submit-loan}" th:method="POST" th:object="${loan}"
     >
         <div class="form-group">
             <label for="amount" class="form-label">Amount</label>
-            <input type="number" id="amount" name="amount" class="form-control" max="5000" required>
+            <input th:field="*{amount}"
+                    type="number"
+                   id="amount"
+                   name="amount"
+                   class="form-control"
+                   max="5000" required>
+        </div>
+
+        <div class="form-group">
+            <label for="term" class="form-label">Term (Months)</label>
+            <select th:field="*{term}"
+                    id="term"
+                    name="term"
+                    class="form-control"
+                    required>
+                <option value="6" selected>6</option>
+                <option value="12">12</option>
+                <option value="24">24</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="returnAmount" class="form-label">Amount with Return Rate</label>
+            <input th:field="*{returnAmount}"
+                    type="number"
+                    id="returnAmount"
+                    class="form-control" readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="monthlyPayment" class="form-label">Monthly Payment</label>
+            <input th:field="*{monthlyPayment}"
+                    type="number"
+                   id="monthlyPayment"
+                   class="form-control"
+                   readonly>
         </div>
 
         <div class="form-group">
             <label for="currency" class="form-label">Currency</label>
-            <select id="currency" name="currency" class="form-control" required>
+            <select  th:field="*{currency}"
+                    id="currency"
+                     name="currency"
+                     class="form-control"
+                     required>
                 <option value="USD">USD</option>
                 <option value="EUR">EUR</option>
                 <option value="BGN">BGN</option>
                 <option value="JPY">JPY</option>
-
             </select>
         </div>
 
@@ -40,7 +75,79 @@
             <button type="submit" class="btn btn-warning">Apply for Loan</button>
         </div>
     </form>
+
+    <table class="repayment-table">
+        <thead>
+        <tr>
+            <th>Term</th>
+            <th>Total Amount</th>
+            <th>Monthly Payment</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>6 Months</td>
+            <td id="total6"></td>
+            <td id="monthly6"></td>
+        </tr>
+        <tr>
+            <td>12 Months</td>
+            <td id="total12"></td>
+            <td id="monthly12"></td>
+        </tr>
+        <tr>
+            <td>24 Months</td>
+            <td id="total24"></td>
+            <td id="monthly24"></td>
+        </tr>
+        </tbody>
+    </table>
 </main>
 <footer th:replace="~{fragments/commons::footer}"></footer>
+
+<script>
+    document.getElementById('amount').addEventListener('input', updateTable);
+    document.getElementById('term').addEventListener('change', updateReturnAmount);
+
+    function updateTable() {
+        const amount = parseFloat(document.getElementById('amount').value) || 0;
+        updateAmounts(amount, 6, 1.05);
+        updateAmounts(amount, 12, 1.10);
+        updateAmounts(amount, 24, 1.20);
+        updateReturnAmount();
+    }
+
+    function updateAmounts(amount, term, rate) {
+        const returnAmount = amount * rate;
+        const monthlyPayment = returnAmount / term;
+
+        document.getElementById('total' + term).textContent = returnAmount.toFixed(2);
+        document.getElementById('monthly' + term).textContent = monthlyPayment.toFixed(2);
+    }
+
+    function updateReturnAmount() {
+        const amount = parseFloat(document.getElementById('amount').value) || 0;
+        const term = parseInt(document.getElementById('term').value);
+        let rate;
+
+        if (term === 6) {
+            rate = 1.05; // 5% return rate for 6 months
+        } else if (term === 12) {
+            rate = 1.10; // 10% return rate for 12 months
+        } else if (term === 24) {
+            rate = 1.20; // 20% return rate for 24 months
+        }
+
+        const returnAmount = amount * rate;
+        const monthlyPayment = returnAmount / term;
+
+        document.getElementById('returnAmount').value = returnAmount.toFixed(2);
+        document.getElementById('monthlyPayment').value = monthlyPayment.toFixed(2);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateTable();
+    });
+</script>
 </body>
 </html>

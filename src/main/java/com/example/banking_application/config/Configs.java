@@ -11,10 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class Configs {
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
-    }
+
 
     @Bean
     public ModelMapper modelMapper(){

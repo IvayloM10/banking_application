@@ -135,6 +135,7 @@ main {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     max-width: 500px;
     margin: 20px auto;
+    color: black;
 }
 
 .form-group {
@@ -172,6 +173,25 @@ main {
 
 .btn:hover {
     background-color: #e67e22;
+}
+
+.repayment-table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: white;
+    color: black;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.repayment-table, .repayment-table th, .repayment-table td {
+    border: 1px solid #ccc;
+}
+
+.repayment-table th, .repayment-table td {
+    padding: 10px;
+    text-align: center;
 }
 /* footer */
 footer {
