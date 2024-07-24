@@ -43,8 +43,8 @@ public class User {
     @OneToMany(mappedBy = "user",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<TransactionDetails> transactions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "requester",fetch = FetchType.EAGER)
-    private List<Loan> loans;
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Loan> loans = new ArrayList<>();
 
     @OneToOne(mappedBy = "cardHolder")
     private VirtualCard virtualCard;

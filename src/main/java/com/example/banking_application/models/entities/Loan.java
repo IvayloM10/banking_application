@@ -28,12 +28,9 @@ public class Loan {
     private BigDecimal returnAmount;
 ;
 
-    @ManyToOne
-    @JoinColumn(name = "requester_id")
-    private User requester;
 
-    @ManyToOne
-    private Branch branch;
+    @Column(name = "requester_id")
+    private Long requesterId;
 
     @Column
     private double rate;
@@ -50,5 +47,6 @@ public class Loan {
     @Column
     private BigDecimal monthlyPayment;
 
+    @Column
     private String status;
 }

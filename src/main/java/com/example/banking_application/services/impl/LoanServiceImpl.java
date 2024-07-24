@@ -36,13 +36,13 @@ public class LoanServiceImpl implements LoanService {
     public void sendLoanForConfirmation(LoanDto loanDto, Long id) {
         Optional<User> requesterOp = this.userRepository.findById(id);
         if (requesterOp.isEmpty()) {
-            throw new IllegalArgumentException("Invalid transaction ID");
+            throw new IllegalArgumentException("Invalid Loan Request ID");
         }
 
         Loan loan = this.modelMapper.map(loanDto, Loan.class);
 
         User requester = requesterOp.get();
-        loan.setRequester(requester);
+        loan.setRequesterId(requester.getId());
         loan.setDate(LocalDate.now());
         loan.setAuthorized(false);
         loan.setStatus("Waiting...");
@@ -64,7 +64,11 @@ public class LoanServiceImpl implements LoanService {
         if(loanRequest == null){
             throw new NullPointerException("Loan request could not be found!");
         }
-        User requester = loanRequest.getRequester();
+        User requester = this.userRepository.findById(loanRequest.getRequesterId()).orElse(null);
+        if(requester == null){
+            throw new NullPointerException("Loan request could not be found!");
+        }
+
         Card requesterCard = requester.getCard();
         requesterCard.setBalance(Double.parseDouble(String.valueOf(loanRequest.getAmount())) + requesterCard.getBalance());
         this.cardRepository.save(requesterCard);
@@ -76,6 +80,12 @@ public class LoanServiceImpl implements LoanService {
 
         requester.getLoans().add(loanRequest);
 
+        TransactionDetails loanTransactionShowing= new TransactionDetails();
+        loanTransactionShowing.setStatus("Received!");
+        loanTransactionShowing.setDate(loanRequest.getDate());
+        loanTransactionShowing.setDescription("Loan:" + loanRequest.getId());
+
+        requester.getTransactions().add(loanTransactionShowing);
         this.userRepository.save(requester);
     }
 

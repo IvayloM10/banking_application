@@ -41,6 +41,7 @@ public class LoanController {
     @PostMapping("/submit-loan")
     @PreAuthorize("hasAuthority('USER')")
     public String takeLoan(@SessionAttribute("current") User currentUser, @Valid LoanDto loanDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+
         if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("loan",loanDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.loan",bindingResult);

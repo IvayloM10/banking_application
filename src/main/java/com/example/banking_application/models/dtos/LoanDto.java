@@ -13,6 +13,8 @@ import java.math.RoundingMode;
 @NoArgsConstructor
 public class LoanDto {
     private BigDecimal amount;
+
+    private Long requesterId;
     private BigDecimal returnAmount;
     private double rate;
     private String term;

@@ -22,6 +22,10 @@ spring:
             key: ${FOREX_API_KEY:}
             url: ${FOREX_API_URL:}
             base: ${FOREX_API_BASE:}
+
+            loans:
+              api:
+                baseUrl: ${LOANS_BASE_URL:}
       #sql:
       #init:
       #mode: always
