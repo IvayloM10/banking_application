@@ -70,8 +70,12 @@
                 <td th:text="${loan.monthlyPayment}">8750</td>
                 <td th:text="${loan.term}">6</td>
                 <td>
-                    <button class="btn-approve">Approve</button>
-                    <button class="btn-reject">Reject</button>
+                    <form th:action="@{/admin/loans/approve/{id}(id=${loan.id})}" th:method="post">
+                        <button type="submit" class="btn-approve">Approve</button>
+                    </form>
+                    <form th:action="@{/admin/loans/reject/{id}(id=${loan.id})}" th:method="delete">
+                        <button type="submit" class="btn-reject">Reject</button>
+                    </form>
                 </td>
             </tr>
             </tbody>

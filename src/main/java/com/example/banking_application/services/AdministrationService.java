@@ -18,4 +18,7 @@ public interface AdministrationService {
 
     void rejectTransaction(Long id, String username);
 
+    void approveLoan(Long id, String username);
+
+    void rejectLoan(Long id, String username);
 }

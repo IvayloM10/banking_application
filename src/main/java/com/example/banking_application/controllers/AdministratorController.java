@@ -51,4 +51,18 @@ public class AdministratorController {
         return "redirect:/admin/home";
     }
 
+    @PostMapping("/loans/approve/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String approveLoan(@SessionAttribute("current") User currentUser, @PathVariable Long id){
+        this.administrationService.approveLoan(id, currentUser.getUsername());
+        return "redirect:/admin/home";
+    }
+
+
+    @DeleteMapping("/loans/reject/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String rejectLoan(@SessionAttribute("current") User currentUser, @PathVariable Long id){
+        this.administrationService.rejectLoan(id, currentUser.getUsername());
+        return "redirect:/admin/home";
+    }
 }

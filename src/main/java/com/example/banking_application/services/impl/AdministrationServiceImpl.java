@@ -6,6 +6,7 @@ import com.example.banking_application.models.entities.*;
 import com.example.banking_application.models.entities.enums.Currency;
 import com.example.banking_application.repositories.*;
 import com.example.banking_application.services.AdministrationService;
+import com.example.banking_application.services.LoanService;
 import com.example.banking_application.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,17 +29,19 @@ public class AdministrationServiceImpl implements AdministrationService {
 
     private final AccountRepository accountRepository;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private UserService userService;
+    private final UserService userService;
 
-    private CardRepository cardRepository;
+    private final CardRepository cardRepository;
 
-    private VirtualCardRepository virtualCardRepository;
+    private final VirtualCardRepository virtualCardRepository;
 
-    public AdministrationServiceImpl(AdministratorRepository administratorRepository, ModelMapper modelMapper, BranchRepository branchRepository, TransactionRepository transactionRepository, AccountRepository accountRepository, PasswordEncoder passwordEncoder, UserRepository userRepository, UserService userService, CardRepository cardRepository, VirtualCardRepository virtualCardRepository) {
+    private LoanService loanService;
+
+    public AdministrationServiceImpl(AdministratorRepository administratorRepository, ModelMapper modelMapper, BranchRepository branchRepository, TransactionRepository transactionRepository, AccountRepository accountRepository, PasswordEncoder passwordEncoder, UserRepository userRepository, UserService userService, CardRepository cardRepository, VirtualCardRepository virtualCardRepository, LoanService loanService) {
         this.administratorRepository = administratorRepository;
         this.modelMapper = modelMapper;
         this.branchRepository = branchRepository;
@@ -50,6 +53,7 @@ public class AdministrationServiceImpl implements AdministrationService {
         this.userService = userService;
         this.cardRepository = cardRepository;
         this.virtualCardRepository = virtualCardRepository;
+        this.loanService = loanService;
     }
 
     @Override
@@ -94,7 +98,7 @@ public class AdministrationServiceImpl implements AdministrationService {
 
     @Override
     public Administrator getCurrentAdmin(String id) {
-        return this.administratorRepository.findByUsername(id).get();
+        return this.administratorRepository.findByUsername(id).orElse(null);
     }
 
     @Override
@@ -173,7 +177,7 @@ public class AdministrationServiceImpl implements AdministrationService {
         maker.getTransactions().add(senderDetail);
         this.userRepository.save(maker);
 
-        Administrator currentAdmin = getCurrentAdmin(currentUser.getUsername());
+        Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
         Branch branch = currentAdmin.getBranch();
         List<Transaction> transactions = branch.getTransaction();
 
@@ -188,6 +192,57 @@ public class AdministrationServiceImpl implements AdministrationService {
 
         currentAdmin.setBranch(branch);
         this.branchRepository.save(branch);
+    }
+
+    @Override
+    public void approveLoan(Long id, String username) {
+        getCurrentUserInfo(username);
+
+        this.loanService.transferMoneyToUserAccount(id);
+
+        Loan currentLoan = this.loanService.getCurrentLoan(id);
+
+        Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
+        Branch branch = currentAdmin.getBranch();
+        List<Loan> loans = branch.getLoans();
+
+        int indexToRemove = IntStream.range(0,loans.size())
+                .filter(i ->loans.get(i).getLoanUniqueIdentifier().equals(currentLoan.getLoanUniqueIdentifier()))
+                .findFirst()
+                .orElse(-1);
+
+        if (indexToRemove != -1) {
+           loans.remove(indexToRemove);
+        }
+
+        currentAdmin.setBranch(branch);
+        this.branchRepository.save(branch);
+    }
+
+
+
+    @Override
+    public void rejectLoan(Long id, String username) {
+        getCurrentUserInfo(username);
+        Loan currentLoan = this.loanService.getCurrentLoan(id);
+
+        Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
+        Branch branch = currentAdmin.getBranch();
+        List<Loan> loans = branch.getLoans();
+
+        int indexToRemove = IntStream.range(0,loans.size())
+                .filter(i ->loans.get(i).getLoanUniqueIdentifier().equals(currentLoan.getLoanUniqueIdentifier()))
+                .findFirst()
+                .orElse(-1);
+
+        if (indexToRemove != -1) {
+            loans.remove(indexToRemove);
+        }
+
+        currentAdmin.setBranch(branch);
+        this.branchRepository.save(branch);
+
+        this.loanService.rejectLoan(id);
     }
 
 

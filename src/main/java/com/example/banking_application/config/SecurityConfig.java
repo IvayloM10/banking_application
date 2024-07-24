@@ -55,7 +55,7 @@ public class SecurityConfig{
                         // Accessible to logged-in users
                 .requestMatchers("/home", "/users/submit-loan", "/transaction").hasAuthority("USER")
                 // Accessible to logged-in administrators
-                .requestMatchers("/admin/home","/transactions/approve/**", "/transactions/reject/**").hasAuthority("ADMIN")
+                .requestMatchers("/admin/home","/transactions/approve/**", "/transactions/reject/**","/loans/reject/**","/loans/approve/**").hasAuthority("ADMIN")
                 //Other request needs to be authenticated
                 .anyRequest().authenticated()
         )
