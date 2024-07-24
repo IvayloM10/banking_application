@@ -19,7 +19,7 @@
     <div class="image-container">
         <img src="/img/banking experience.jpg" alt="Bank" width="500" height="600">
         <div class="image-text">
-            <p>Banking experience that changes lives</p>
+            <p th:text="#{ub_moto}">Banking experience that changes lives</p>
         </div>
     </div>
 </article>
@@ -28,47 +28,47 @@
     <div class="image-container">
         <img src="/img/Jane.jpg" alt="Bank" width="500" height="600">
         <div class="image-text">
-            <p>Our Customers stories</p>
+            <p th:text="#{customer_story_box}">Our Customers stories</p>
         </div>
     </div>
     <div class="text-box">
         <h2><a href="/" th:text="#{meet_customer}">Meet Jane</a></h2>
-        <p>Jane, initially skeptical about banks, had her perception changed by UB Bank. With Maria's help, she secured a favorable loan and received exceptional support for her bakery. The bank's transparency and user-friendly services restored Jane's faith in banking, leading her to recommend UB Bank to others
+        <p  th:text="#{person_story_summary}">Jane, initially skeptical about banks, had her perception changed by UB Bank. With Maria's help, she secured a favorable loan and received exceptional support for her bakery. The bank's transparency and user-friendly services restored Jane's faith in banking, leading her to recommend UB Bank to others.
         </p>
     </div>
 
 </article>
 
 <section>
-    <p class="middle-ground">Current events</p>
+    <p class="middle-ground" th:text="#{current_events}">Current events</p>
     <ul>
         <li class="postcard">
             <div class="postcard-content">
                 <img src="/img/elections.jpg" alt="/" width="250" height="200">
                 <div class="postcard-text">
-                    <h2>US election</h2>
-                    <p>Insights on the 2024 U.S. general election, including potential outcomes, policy agendas, and investment implications, to help investors navigate this election cycle in their portfolios.</p>
+                    <h2 th:text="#{first_event_header}">US election</h2>
+                    <p th:text="#{first_event_text}">Insights on the 2024 U.S. general election, including potential outcomes, policy agendas, and investment implications, to help investors navigate this election cycle in their portfolios.</p>
                 </div>
-                <button class="postcard-button">Read more</button>
+                <button class="postcard-button" th:text="#{read_more}">Read more</button>
             </div>
         <li class="postcard">
             <div class="postcard-content">
                 <img src="/img/personal_banking.jpg" alt="/" width="250" height="200">
                 <div class="postcard-text">
-                    <h2>Investments</h2>
-                    <p>Insights on the 2024 U.S. general election, including potential outcomes, policy agendas, and investment implications, to help investors navigate this election cycle in their portfolios.</p>
+                    <h2 th:text="#{second_event_header}">Investments</h2>
+                    <p th:text="#{second_event_text}">The investment landscape in 2024 is dynamic, with rapid tech advancements, an emphasis on sustainability, and evolving economic conditions. At UB Bank, we're here to help you navigate these changes and invest wisely.</p>
                 </div>
-                <button class="postcard-button">Read more</button>
+                <button class="postcard-button" th:text="#{read_more}">Read more</button>
             </div>
         </li>
         <li class="postcard">
             <div class="postcard-content">
                 <img src="/img/payment.jpg" alt="/" width="250" height="200">
                 <div class="postcard-text">
-                    <h2>Payments</h2>
-                    <p>Insights on the 2024 U.S. general election, including potential outcomes, policy agendas, and investment implications, to help investors navigate this election cycle in their portfolios.</p>
+                    <h2 th:text="#{third_event_header}">Payments</h2>
+                    <p th:text="#{third_event_text}">In 2024, digital wallets and contactless transactions dominate payments, driven by demand for convenience and security. Blockchain and DeFi technologies enhance transparency and efficiency in financial transactions.</p>
                 </div>
-                <button class="postcard-button">Read more</button>
+                <button class="postcard-button" th:text="#{read_more}">Read more</button>
             </div>
         </li>
         </li>
