@@ -63,7 +63,7 @@
             <tbody>
             <tr th:each="loan : ${loans}">
                 <td th:text="${loan.id}">12345</td>
-                <td th:text="${loan.getRequester().getFullName()}">Ivan Ivanov</td>
+                <td th:text="${loan.getRequesterId()}">Ivan Ivanov</td>
                 <td th:text="${loan.amount}">50000</td>
                 <td th:text="${loan.date}">2024-07-21</td>
                 <td th:text="${loan.returnAmount}">52500</td>

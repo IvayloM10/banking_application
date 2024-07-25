@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,9 +47,11 @@ public class LoanServiceImpl implements LoanService {
             throw new IllegalArgumentException("Invalid Loan Request ID");
         }
         User requester = requesterOp.get();
-          currentLoan.setStatus("Draft");
+          currentLoan.setStatus("Sent");
 
-        Loan loan = this.modelMapper.map(currentLoan, Loan.class);
+          this.loanCrudService.updateLoan(id, currentLoan);
+
+          Loan loan = this.modelMapper.map(currentLoan, Loan.class);
         Branch requesterBranch = requester.getBranch();
         requesterBranch.getLoans().add(loan);
 
@@ -103,11 +104,12 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public void rejectLoan(Long id) {
         this.loanCrudService.deleteLoan(id);
-//        Loan searchedLoan = this.loanRepository.findById(id).orElse(null);
-//
-//        if(searchedLoan == null){
-//            throw new NullPointerException("Loan not found!");
-//        }
-//        this.loanRepository.delete(searchedLoan);
+
+    }
+
+    @Override
+    public void deleteLoan(Long id) {
+        this.loanRepository.deleteById(id);
+        this.loanCrudService.deleteLoan(id);
     }
 }

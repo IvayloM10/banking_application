@@ -54,15 +54,24 @@ public class LoanController {
         Long currentUserId = this.userService.getCurrentUser(currentUser.getUsername()).getId();
         loanDto.setRequesterId(currentUserId);
        this.loanCrudService.createLoan(loanDto);
-   //TODO    this.loanService.syncUserLoans(currentUserId);
+
 
 
         return "redirect:/home";
     }
 
-    @PostMapping("//loans/send/{id}")
+    @PostMapping("/loans/send/{id}")
+    @PreAuthorize("hasAuthority('USER')")
     public String sendLoan(@PathVariable Long id){
         this.loanService.sendLoanForConfirmation(id);
+
+        return "redirect:/home";
+    }
+
+    @DeleteMapping("/loans/delete/{id}")
+    @PreAuthorize("hasAuthority('USER')")
+    public String deleteLoan(@PathVariable Long id){
+        this.loanService.deleteLoan(id);
 
         return "redirect:/home";
     }

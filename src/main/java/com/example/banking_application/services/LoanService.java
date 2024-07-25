@@ -15,4 +15,5 @@ public interface LoanService {
 
     void rejectLoan(Long id);
 
+    void deleteLoan(Long id);
 }
