@@ -1,6 +1,8 @@
 package com.example.banking_application.models.dtos;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +14,10 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
+//@Entity
 public class LoanDto {
-    @Id
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private boolean isAuthorized;
     private BigDecimal amount;
@@ -23,7 +26,6 @@ public class LoanDto {
     private double rate;
     private String term;
     private LocalDate date;
-    private String loanUniqueIdentifier;
     private BigDecimal monthlyPayment;
     private String status;
 }

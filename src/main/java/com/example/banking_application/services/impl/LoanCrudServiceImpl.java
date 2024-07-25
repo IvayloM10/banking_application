@@ -31,7 +31,7 @@ public class LoanCrudServiceImpl implements LoanCrudService {
 
     @Override
     public void createLoan(AddLoanDto addLoanDto) {
-        LOGGER.info("Creating new offer...");
+        LOGGER.info("Creating new loan {}", addLoanDto);
 
        this.loanRestClient
                 .post()
@@ -69,7 +69,7 @@ public class LoanCrudServiceImpl implements LoanCrudService {
 
     @Override
     public List<LoanDto> getAllLoans() {
-        LOGGER.info("Get all offers...");
+        LOGGER.info("Get all loans...");
 
         return   this.loanRestClient
                 .get()

@@ -205,10 +205,10 @@ public class AdministrationServiceImpl implements AdministrationService {
 
         Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
         Branch branch = currentAdmin.getBranch();
-        List<LoanDto> loans = branch.getLoans();
+        List<Loan> loans = branch.getLoans();
 
         int indexToRemove = IntStream.range(0,loans.size())
-                .filter(i ->loans.get(i).getLoanUniqueIdentifier().equals(currentLoan.getLoanUniqueIdentifier()))
+                .filter(i ->loans.get(i).getId().equals(currentLoan.getId()))
                 .findFirst()
                 .orElse(-1);
 
@@ -229,10 +229,10 @@ public class AdministrationServiceImpl implements AdministrationService {
 
         Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
         Branch branch = currentAdmin.getBranch();
-        List<LoanDto> loans = branch.getLoans();
+        List<Loan> loans = branch.getLoans();
 
         int indexToRemove = IntStream.range(0,loans.size())
-                .filter(i ->loans.get(i).getLoanUniqueIdentifier().equals(currentLoan.getLoanUniqueIdentifier()))
+                .filter(i ->loans.get(i).getId().equals(currentLoan.getId()))
                 .findFirst()
                 .orElse(-1);
 

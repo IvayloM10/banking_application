@@ -45,7 +45,7 @@ public class User {
     private List<TransactionDetails> transactions = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER)
-    private List<LoanDto> loans = new ArrayList<>();
+    private List<Loan> loans = new ArrayList<>();
 
     @OneToOne(mappedBy = "cardHolder")
     private VirtualCard virtualCard;

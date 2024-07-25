@@ -41,8 +41,6 @@ public class Loan {
     @Column
     private LocalDate date;
 
-    @Column
-    private String loanUniqueIdentifier;
 
     @Column
     private BigDecimal monthlyPayment;

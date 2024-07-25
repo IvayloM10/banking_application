@@ -34,7 +34,7 @@ public class Branch {
     private List<Transaction> transaction = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER)
-    private List<LoanDto> loans = new ArrayList<>();
+    private List<Loan> loans = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<User> users = new ArrayList<>();

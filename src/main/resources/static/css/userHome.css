@@ -166,7 +166,7 @@ flex-wrap: wrap;
     margin-top: 10px;
 }
 
-.transactions-history {
+.transactions-history, .loans-history{
     margin-top: 20px;
     background-color: white;
     padding: 20px;
@@ -175,7 +175,7 @@ flex-wrap: wrap;
     clear: both;
 }
 
-.transactions-history h2 {
+.transactions-history h2, .loans-history h2{
     text-align: center;
     margin-bottom: 20px;
 }
@@ -198,6 +198,36 @@ th, td {
 th {
     background-color: #000;
     color: white;
+}
+.action-form {
+    display: inline;
+    margin: 0;
+}
+
+.btn {
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-send {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-remove {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-send:hover {
+    background-color: #218838;
+}
+
+.btn-remove:hover {
+    background-color: #c82333;
 }
 /* footer */
 footer {

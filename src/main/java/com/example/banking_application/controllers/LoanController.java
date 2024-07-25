@@ -54,7 +54,7 @@ public class LoanController {
         Long currentUserId = this.userService.getCurrentUser(currentUser.getUsername()).getId();
         loanDto.setRequesterId(currentUserId);
        this.loanCrudService.createLoan(loanDto);
-       this.loanService.syncUserLoans();
+   //TODO    this.loanService.syncUserLoans(currentUserId);
 
 
         return "redirect:/home";

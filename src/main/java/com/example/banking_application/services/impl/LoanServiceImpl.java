@@ -50,31 +50,20 @@ public class LoanServiceImpl implements LoanService {
         User requester = requesterOp.get();
           currentLoan.setStatus("Draft");
 
+        Loan loan = this.modelMapper.map(currentLoan, Loan.class);
         Branch requesterBranch = requester.getBranch();
-        requesterBranch.getLoans().add(currentLoan);
+        requesterBranch.getLoans().add(loan);
 
         this.userRepository.save(requester);
         this.branchRepository.save(requesterBranch);
     }
 
-    public void syncUserLoans() {
-        List<LoanDto> allLoans = this.loanCrudService.getAllLoans();
-        List<User> users = this.userRepository.findAll();
-
-        for (User user : users) {
-            for (LoanDto currentLoanDto : allLoans) {
-                boolean loanExistsInUser = user.getLoans().stream()
-                        .anyMatch(e -> e.getId().equals(currentLoanDto.getId()));
-
-                if (!loanExistsInUser && currentLoanDto.getRequesterId().equals(user.getId())) {
-                    user.getLoans().add(currentLoanDto);
-//                    this.userRepository.save(user);
-                }
-            }
-        }
-
-//     TODO: find a way to get loans to user and then implement other logic   users.stream().forEach(user -> this.userRepository.save(user));
+    public List<Loan> syncUserLoans(Long id) {
+        List<Loan> allLoans = this.loanCrudService.getAllLoans().stream().filter(loan -> loan.getRequesterId().equals(id)).map(e -> this.modelMapper.map(e, Loan.class)).toList();
+        this.loanRepository.saveAllAndFlush(allLoans);
+        return allLoans;
     }
+
     @Override
     public void transferMoneyToUserAccount(Long id) {
         Loan loanRequest = this.loanRepository.findById(id).orElse(null);
