@@ -1,29 +1,26 @@
 package com.example.banking_application.models.dtos;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-public class LoanDto {
-    @Id
-    private Long id;
-    private boolean isAuthorized;
+public class AddLoanDto {
     private BigDecimal amount;
-    private BigDecimal returnAmount;
+
     private Long requesterId;
+    private BigDecimal returnAmount;
     private double rate;
     private String term;
-    private LocalDate date;
-    private String loanUniqueIdentifier;
+    private String currency;
     private BigDecimal monthlyPayment;
-    private String status;
+    private String pin;
+
+    private void setRateForTransaction(){
+        setRate(Double.parseDouble(String.valueOf(returnAmount.divide(amount))));
+    }
 }

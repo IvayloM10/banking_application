@@ -69,6 +69,38 @@
             </tbody>
         </table>
     </section>
+
+    <section class="loans-history">
+        <h2>Loans History</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Loan ID</th>
+                <th>Amount</th>
+                <th>Rate</th>
+                <th>Term</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="loan : ${loans}">
+                <td th:text="${loan.date}"></td>
+                <td th:text="${loan.loanUniqueIdentifier}"></td>
+                <td th:text="${loan.amount}"></td>
+                <td th:text="${loan.rate}"></td>
+                <td th:text="${loan.term}"></td>
+                <td th:text="${loan.status}"></td>
+                <td>
+                    <form th:action="@{/users/loans/send/{id}(id=${loan.id})}" th:method="post">
+                        <button type="submit" class="btn-reject">Send</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
 </main>
 
 <footer th:replace="~{fragments/commons::footer}"></footer>

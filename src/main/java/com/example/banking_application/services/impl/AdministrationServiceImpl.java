@@ -1,6 +1,7 @@
 package com.example.banking_application.services.impl;
 
 import com.example.banking_application.config.CurrentUser;
+import com.example.banking_application.models.dtos.LoanDto;
 import com.example.banking_application.models.dtos.UserLoginDto;
 import com.example.banking_application.models.entities.*;
 import com.example.banking_application.models.entities.enums.Currency;
@@ -204,7 +205,7 @@ public class AdministrationServiceImpl implements AdministrationService {
 
         Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
         Branch branch = currentAdmin.getBranch();
-        List<Loan> loans = branch.getLoans();
+        List<LoanDto> loans = branch.getLoans();
 
         int indexToRemove = IntStream.range(0,loans.size())
                 .filter(i ->loans.get(i).getLoanUniqueIdentifier().equals(currentLoan.getLoanUniqueIdentifier()))
@@ -228,7 +229,7 @@ public class AdministrationServiceImpl implements AdministrationService {
 
         Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
         Branch branch = currentAdmin.getBranch();
-        List<Loan> loans = branch.getLoans();
+        List<LoanDto> loans = branch.getLoans();
 
         int indexToRemove = IntStream.range(0,loans.size())
                 .filter(i ->loans.get(i).getLoanUniqueIdentifier().equals(currentLoan.getLoanUniqueIdentifier()))

@@ -1,18 +1,15 @@
-#        SQL: DEBUG
-#      nodeValue: WARN
-#    blog: WARN
-#server:
-#  port: 8080
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: "jdbc:mysql://localhost:3306/banking_application?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC"
     username: ${db_username}
     password: ${db_password}
+
   servlet:
     multipart:
       max-file-size: 1MB
       max-request-size: 5MB
+
   mvc:
     hiddenmethod:
       filter:
@@ -22,19 +19,16 @@ spring:
             key: ${FOREX_API_KEY:}
             url: ${FOREX_API_URL:}
             base: ${FOREX_API_BASE:}
+        loans:
+          api:
+            baseUrl: ${LOANS_BASE_URL:http://localhost:8081}
 
-            loans:
-              api:
-                baseUrl: ${LOANS_BASE_URL:}
-      #sql:
-      #init:
-      #mode: always
   jpa:
     # Choose either MySQL 8 or MySQL 5 below
     # For MySQL 8
     database-platform: org.hibernate.dialect.MySQL8Dialect
-    #For MySQL 5
-    #database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    # For MySQL 5
+    # database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: update
     open-in-view: false
@@ -42,14 +36,16 @@ spring:
       hibernate:
         format_sql: true
     defer-datasource-initialization: true
-  #Cloudinary Properties
-  #cloudinary:
-  #api-key:
-  #api-secret:
-  #cloud-name:
+
+  # Cloudinary Properties
+  # cloudinary:
+  #   api-key:
+  #   api-secret:
+  #   cloud-name:
+
   logging:
     level:
       org:
         springframework:
-          security=DEBUG:
+          security: DEBUG
 

@@ -1,7 +1,7 @@
 package com.example.banking_application.controllers;
 
-import com.example.banking_application.config.CurrentUser;
-import com.example.banking_application.models.dtos.LoanDto;
+import com.example.banking_application.models.dtos.AddLoanDto;
+import com.example.banking_application.services.LoanCrudService;
 import com.example.banking_application.services.LoanService;
 import com.example.banking_application.services.UserService;
 import jakarta.validation.Valid;
@@ -18,17 +18,21 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class LoanController {
 
 
+    private LoanCrudService loanCrudService;
+
     private LoanService loanService;
     private UserService userService;
 
 
     @ModelAttribute("loan")
     @PreAuthorize("hasAuthority('USER')")
-    public LoanDto loanDto(){
-        return new LoanDto();
+    public AddLoanDto loanDto(){
+        return new AddLoanDto();
     }
-    public LoanController(LoanService loanService, UserService userService) {
+    public LoanController(LoanCrudService loanCrudService, LoanService loanService, UserService userService) {
+        this.loanCrudService = loanCrudService;
         this.loanService = loanService;
+
         this.userService = userService;
     }
 
@@ -40,15 +44,25 @@ public class LoanController {
 
     @PostMapping("/submit-loan")
     @PreAuthorize("hasAuthority('USER')")
-    public String takeLoan(@SessionAttribute("current") User currentUser, @Valid LoanDto loanDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+    public String takeLoan(@SessionAttribute("current") User currentUser, @Valid AddLoanDto loanDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
 
         if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("loan",loanDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.loan",bindingResult);
             return "redirect:/users/createCard";
         }
+        Long currentUserId = this.userService.getCurrentUser(currentUser.getUsername()).getId();
+        loanDto.setRequesterId(currentUserId);
+       this.loanCrudService.createLoan(loanDto);
+       this.loanService.syncUserLoans();
 
-        this.loanService.sendLoanForConfirmation(loanDto,this.userService.getCurrentUser(currentUser.getUsername()).getId());
+
+        return "redirect:/home";
+    }
+
+    @PostMapping("//loans/send/{id}")
+    public String sendLoan(@PathVariable Long id){
+        this.loanService.sendLoanForConfirmation(id);
 
         return "redirect:/home";
     }

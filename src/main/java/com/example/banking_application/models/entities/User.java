@@ -1,5 +1,6 @@
 package com.example.banking_application.models.entities;
 
+import com.example.banking_application.models.dtos.LoanDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,7 +45,7 @@ public class User {
     private List<TransactionDetails> transactions = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER)
-    private List<Loan> loans = new ArrayList<>();
+    private List<LoanDto> loans = new ArrayList<>();
 
     @OneToOne(mappedBy = "cardHolder")
     private VirtualCard virtualCard;

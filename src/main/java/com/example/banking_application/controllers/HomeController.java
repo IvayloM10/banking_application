@@ -51,8 +51,8 @@ public class HomeController {
         model.addAttribute("account", userAccount);
         Card userCard = this.cardService.UserCard(loggedUser);
         model.addAttribute("physicalCard", userCard);
-        int size = loggedUser.getTransactions().size();
         model.addAttribute("transactions",loggedUser.getTransactions());
+        model.addAttribute("loans", loggedUser.getLoans());
         VirtualCard virtualCard = this.virtualCardService.UserVirtualCard(loggedUser);
         model.addAttribute("virtualCard",loggedUser.getVirtualCard());
         return"userHome";

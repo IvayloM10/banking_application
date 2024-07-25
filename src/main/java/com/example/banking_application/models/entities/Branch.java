@@ -1,5 +1,6 @@
 package com.example.banking_application.models.entities;
 
+import com.example.banking_application.models.dtos.LoanDto;
 import com.example.banking_application.models.entities.enums.Currency;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -33,7 +34,7 @@ public class Branch {
     private List<Transaction> transaction = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER)
-    private List<Loan> loans = new ArrayList<>();
+    private List<LoanDto> loans = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<User> users = new ArrayList<>();

@@ -1,15 +1,19 @@
 package com.example.banking_application.services.impl;
 
+import com.example.banking_application.models.dtos.AddLoanDto;
 import com.example.banking_application.models.dtos.LoanDto;
 import com.example.banking_application.models.entities.*;
 import com.example.banking_application.repositories.*;
+import com.example.banking_application.services.LoanCrudService;
 import com.example.banking_application.services.LoanService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class LoanServiceImpl implements LoanService {
@@ -23,41 +27,54 @@ public class LoanServiceImpl implements LoanService {
     private CardRepository cardRepository;
 
     private AccountRepository accountRepository;
-    public LoanServiceImpl(LoanRepository loanRepository, UserRepository userRepository, ModelMapper modelMapper, BranchRepository branchRepository, CardRepository cardRepository, AccountRepository accountRepository) {
+
+    private LoanCrudService loanCrudService;
+    public LoanServiceImpl(LoanRepository loanRepository, UserRepository userRepository, ModelMapper modelMapper, BranchRepository branchRepository, CardRepository cardRepository, AccountRepository accountRepository, LoanCrudService loanCrudService) {
         this.loanRepository = loanRepository;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.branchRepository = branchRepository;
         this.cardRepository = cardRepository;
         this.accountRepository = accountRepository;
+        this.loanCrudService = loanCrudService;
     }
 
     @Override
-    public void sendLoanForConfirmation(LoanDto loanDto, Long id) {
-        Optional<User> requesterOp = this.userRepository.findById(id);
+    public void sendLoanForConfirmation(Long id) {
+        LoanDto currentLoan = this.loanCrudService.getCurrentLoan(id);
+        Optional<User> requesterOp = this.userRepository.findById(currentLoan.getRequesterId());
+
         if (requesterOp.isEmpty()) {
             throw new IllegalArgumentException("Invalid Loan Request ID");
         }
-
-        Loan loan = this.modelMapper.map(loanDto, Loan.class);
-
         User requester = requesterOp.get();
-        loan.setRequesterId(requester.getId());
-        loan.setDate(LocalDate.now());
-        loan.setAuthorized(false);
-        loan.setStatus("Waiting...");
-        loan.setLoanUniqueIdentifier(UUID.randomUUID().toString()); // Ensure uniqueness for every transaction, so it could be found later in the admin controller when approved or rejected
+          currentLoan.setStatus("Draft");
 
-
-        requester.getLoans().add(loan);
         Branch requesterBranch = requester.getBranch();
-        requesterBranch.getLoans().add(loan);
+        requesterBranch.getLoans().add(currentLoan);
 
-        this.loanRepository.save(loan);
         this.userRepository.save(requester);
         this.branchRepository.save(requesterBranch);
     }
 
+    public void syncUserLoans() {
+        List<LoanDto> allLoans = this.loanCrudService.getAllLoans();
+        List<User> users = this.userRepository.findAll();
+
+        for (User user : users) {
+            for (LoanDto currentLoanDto : allLoans) {
+                boolean loanExistsInUser = user.getLoans().stream()
+                        .anyMatch(e -> e.getId().equals(currentLoanDto.getId()));
+
+                if (!loanExistsInUser && currentLoanDto.getRequesterId().equals(user.getId())) {
+                    user.getLoans().add(currentLoanDto);
+//                    this.userRepository.save(user);
+                }
+            }
+        }
+
+//     TODO: find a way to get loans to user and then implement other logic   users.stream().forEach(user -> this.userRepository.save(user));
+    }
     @Override
     public void transferMoneyToUserAccount(Long id) {
         Loan loanRequest = this.loanRepository.findById(id).orElse(null);
@@ -78,7 +95,7 @@ public class LoanServiceImpl implements LoanService {
         requesterAccount.addIntoAccount(Double.parseDouble(String.valueOf(loanRequest.getAmount())));
         this.accountRepository.save(requesterAccount);
 
-        requester.getLoans().add(loanRequest);
+//        requester.getLoans().add(loanRequest);
 
         TransactionDetails loanTransactionShowing= new TransactionDetails();
         loanTransactionShowing.setStatus("Received!");
@@ -96,11 +113,12 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public void rejectLoan(Long id) {
-        Loan searchedLoan = this.loanRepository.findById(id).orElse(null);
-
-        if(searchedLoan == null){
-            throw new NullPointerException("Loan not found!");
-        }
-        this.loanRepository.delete(searchedLoan);
+        this.loanCrudService.deleteLoan(id);
+//        Loan searchedLoan = this.loanRepository.findById(id).orElse(null);
+//
+//        if(searchedLoan == null){
+//            throw new NullPointerException("Loan not found!");
+//        }
+//        this.loanRepository.delete(searchedLoan);
     }
 }
