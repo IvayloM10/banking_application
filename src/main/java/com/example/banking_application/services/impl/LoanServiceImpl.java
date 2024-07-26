@@ -67,30 +67,29 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public void transferMoneyToUserAccount(Long id) {
-        Loan loanRequest = this.loanRepository.findById(id).orElse(null);
-        if(loanRequest == null){
-            throw new NullPointerException("Loan request could not be found!");
-        }
-        User requester = this.userRepository.findById(loanRequest.getRequesterId()).orElse(null);
+        LoanDto currentLoan = this.loanCrudService.getCurrentLoan(id);
+        currentLoan.setStatus("Received!");
+          this.loanCrudService.updateLoan(id, currentLoan);
+        User requester = this.userRepository.findById(currentLoan.getRequesterId()).orElse(null);
         if(requester == null){
             throw new NullPointerException("Loan request could not be found!");
         }
 
         Card requesterCard = requester.getCard();
-        requesterCard.setBalance(Double.parseDouble(String.valueOf(loanRequest.getAmount())) + requesterCard.getBalance());
+        requesterCard.setBalance(Double.parseDouble(String.valueOf(currentLoan.getAmount())) + requesterCard.getBalance());
         this.cardRepository.save(requesterCard);
         requester.setCard(requesterCard);
 
         Account requesterAccount = this.accountRepository.findByUser(requester);
-        requesterAccount.addIntoAccount(Double.parseDouble(String.valueOf(loanRequest.getAmount())));
+        requesterAccount.addIntoAccount(Double.parseDouble(String.valueOf(currentLoan.getAmount())));
         this.accountRepository.save(requesterAccount);
 
 //        requester.getLoans().add(loanRequest);
 
         TransactionDetails loanTransactionShowing= new TransactionDetails();
         loanTransactionShowing.setStatus("Received!");
-        loanTransactionShowing.setDate(loanRequest.getDate());
-        loanTransactionShowing.setDescription("Loan:" + loanRequest.getId());
+        loanTransactionShowing.setDate(currentLoan.getDate());
+        loanTransactionShowing.setDescription("Loan:" + currentLoan.getId());
 
         requester.getTransactions().add(loanTransactionShowing);
         this.userRepository.save(requester);

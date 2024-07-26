@@ -59,9 +59,11 @@ public class AdministrationServiceImpl implements AdministrationService {
 
     @Override
     public void initialize() {
+        //check if administrators are already created
         if(this.administratorRepository.findAll().size() > 0){
             return;
         }
+
         List<Currency> currencies = List.of(Currency.values());
         Long id = 1L;
         for (int i = 0; i < Currency.values().length; i++){
@@ -110,6 +112,7 @@ public class AdministrationServiceImpl implements AdministrationService {
     @Override
     public void approveTransaction(Long id, String username) {
         getCurrentUserInfo(username);
+
         Optional<Transaction> searchedTransaction = this.transactionRepository.findById(id);
         if (searchedTransaction.isEmpty()) {
             throw new IllegalArgumentException("Invalid transaction ID");
@@ -117,6 +120,7 @@ public class AdministrationServiceImpl implements AdministrationService {
 
         Transaction transaction = searchedTransaction.get();
 
+        //Get the user card number
         User sender = transaction.getMaker();
         User receiver = transaction.getReceiver();
         String cardNumber = "";
@@ -128,8 +132,14 @@ public class AdministrationServiceImpl implements AdministrationService {
         Account senderAccount = this.accountRepository.findByUser(sender);
         this.userService.handleRegularTransaction(senderAccount, cardNumber, transaction);
 
-        transaction.setStatus("Approved");
+        transaction.setStatus("Approved!");
         this.transactionRepository.save(transaction);
+
+
+        removeTransactionFromAdminView(transaction);
+    }
+
+    private void removeTransactionFromAdminView(Transaction transaction) {
         Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
         Branch branch = currentAdmin.getBranch();
         List<Transaction> transactions = branch.getTransaction();
@@ -178,21 +188,7 @@ public class AdministrationServiceImpl implements AdministrationService {
         maker.getTransactions().add(senderDetail);
         this.userRepository.save(maker);
 
-        Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
-        Branch branch = currentAdmin.getBranch();
-        List<Transaction> transactions = branch.getTransaction();
-
-        int indexToRemove = IntStream.range(0, transactions.size())
-                .filter(i -> transactions.get(i).getTransactionIdentifier().equals(transaction.getTransactionIdentifier()))
-                .findFirst()
-                .orElse(-1);
-
-        if (indexToRemove != -1) {
-            transactions.remove(indexToRemove);
-        }
-
-        currentAdmin.setBranch(branch);
-        this.branchRepository.save(branch);
+        removeTransactionFromAdminView(transaction);
     }
 
     @Override
@@ -203,21 +199,7 @@ public class AdministrationServiceImpl implements AdministrationService {
 
         Loan currentLoan = this.loanService.getCurrentLoan(id);
 
-        Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
-        Branch branch = currentAdmin.getBranch();
-        List<Loan> loans = branch.getLoans();
-
-        int indexToRemove = IntStream.range(0,loans.size())
-                .filter(i ->loans.get(i).getId().equals(currentLoan.getId()))
-                .findFirst()
-                .orElse(-1);
-
-        if (indexToRemove != -1) {
-           loans.remove(indexToRemove);
-        }
-
-        currentAdmin.setBranch(branch);
-        this.branchRepository.save(branch);
+        removeLoanFromAdminView(id, currentLoan);
     }
 
 
@@ -227,6 +209,10 @@ public class AdministrationServiceImpl implements AdministrationService {
         getCurrentUserInfo(username);
         Loan currentLoan = this.loanService.getCurrentLoan(id);
 
+        removeLoanFromAdminView(id, currentLoan);
+    }
+
+    private void removeLoanFromAdminView(Long id, Loan currentLoan) {
         Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
         Branch branch = currentAdmin.getBranch();
         List<Loan> loans = branch.getLoans();

@@ -107,6 +107,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createCardAndAccountForUser(CardDto cardDetails) {
         User byId = this.userRepository.findByUsername(this.currentUser.getUsername()).get();
+        //creating a new card
         Card card = new Card();
         card.setCardHolder(byId);
         card.setCvvNumber(generateCVV());
@@ -118,12 +119,13 @@ public class UserServiceImpl implements UserService {
         card.setBalance(50);
         byId.setCard(card);
 
+        //getting a new virtual card
         VirtualCard virtualCard = this.modelMapper.map(card, VirtualCard.class);
         virtualCard.setCardNumber(generateCardNumber());
         virtualCard.setBalance(50);
         virtualCard.setType(CardType.valueOf(cardDetails.getCardType()));
 
-
+        //creating an account
         Account account = new Account();
         account.setAccountNumber(generateAccountNumber());
         account.setUser(byId);
@@ -150,8 +152,8 @@ public class UserServiceImpl implements UserService {
 
         Transaction transaction = getTransaction(transactionDto, sender);
 
-
-        if (transactionDto.getAmountBase().compareTo(BigDecimal.valueOf(10.0)) > 0) {
+        // For amounts greater than or equal to 10,000 a validation is required from the administrator
+        if (transactionDto.getAmountBase().compareTo(BigDecimal.valueOf(10.0)) >= 0) {
             handleBranchTransaction(sender, transaction);
         } else {
             handleRegularTransaction(senderAccount, transactionDto.getCardNumber(), transaction);
@@ -230,7 +232,7 @@ public class UserServiceImpl implements UserService {
 
         transaction = this.transactionRepository.save(transaction);
 
-        // Handle the sender
+        // Sender
         Optional<User> senderOp = this.userRepository.findByUsername(transaction.getMaker().getUsername());
         if (senderOp.isPresent()) {
 
@@ -300,32 +302,41 @@ public class UserServiceImpl implements UserService {
 @Transient
     private void cardReduction(Account senderAccount,Transaction transaction, Card receiverCard) {
 
+        //convert the amount that is asked in
         BigDecimal convertAmount = convertAmount(transaction.getAmount(),String.valueOf(senderAccount.getCurrency()), String.valueOf(transaction.getCurrency()));
+
+        //Get the user who sends it
+    User sender = senderAccount.getUser();
+
+    //check the user having enough money
+    userHasEnoughMoney(senderAccount,convertAmount);
+
+    //deduct the amount in the currency of the user
+    deductFunds(senderAccount,convertAmount);
+
         convertAmount = convertAmount(convertAmount,String.valueOf(transaction.getCurrency()), String.valueOf(receiverCard.getCurrency()));
 
-        User sender = senderAccount.getUser();
-
-        userHasEnoughMoney(senderAccount, transaction);
-
-        deductFunds(senderAccount,convertAmount);
+//        User sender = senderAccount.getUser();
+//
+//        userHasEnoughMoney(senderAccount, transaction);
+//
+//        deductFunds(senderAccount,convertAmount);
 
 
         this.userRepository.save(sender);
 
-
-
+       //Get the cardholder at the receiving nd
         User cardHolder = receiverCard.getCardHolder();
 
         this.userRepository.save(cardHolder);
 
+        //Update reciever account
         Account account = this.accountRepository.findByUser(cardHolder);
         account.setBalance(account.getBalance() + Double.parseDouble(String.valueOf(convertAmount)));
 
          this.accountRepository.save(account);
 
-
-
-
+    //update reciever card balance to reflect the amount added
     receiverCard.setBalance(receiverCard.getBalance() + Double.parseDouble(String.valueOf(convertAmount)));
         this.cardRepository.save(receiverCard);
     };
@@ -333,23 +344,31 @@ public class UserServiceImpl implements UserService {
 
     public void cardReduction(Account senderAccount, Transaction transaction, VirtualCard receiverCard) {
 
+        // convert to the currency of the sender the amount
         BigDecimal convertAmount = convertAmount(transaction.getAmount(),String.valueOf(senderAccount.getCurrency()),String.valueOf(transaction.getCurrency()));
-        convertAmount =  convertAmount(convertAmount,String.valueOf(transaction.getCurrency()), String.valueOf(receiverCard.getCurrency()));
 
-       userHasEnoughMoney(senderAccount,transaction);
+        //Check whether the sender has enough amount
+        userHasEnoughMoney(senderAccount,convertAmount);
+
 
         User sender = senderAccount.getUser();
-
-
 
         this.userRepository.save(sender);
         deductFunds(senderAccount,convertAmount);
 
+        //convert to receiver's currency
+        convertAmount =  convertAmount(convertAmount,String.valueOf(transaction.getCurrency()), String.valueOf(receiverCard.getCurrency()));
+
+//       userHasEnoughMoney(senderAccount,transaction);
+//
+//        User sender = senderAccount.getUser();
+//
+//
+//
+//        this.userRepository.save(sender);
+//        deductFunds(senderAccount,convertAmount);
+
         User cardHolder = receiverCard.getCardHolder();
-
-
-
-
         this.userRepository.save(cardHolder);
         receiverCard.setBalance(receiverCard.getBalance() + Double.parseDouble(String.valueOf(convertAmount)));
         Account recieverAccount = this.accountRepository.findByUser(cardHolder);
@@ -358,13 +377,8 @@ public class UserServiceImpl implements UserService {
         this.virtualCardRepository.save(receiverCard);
     }
 
-
-
-
-
     @Override
     public User getCurrentUser(String username) {
-
         return this.userRepository.findByUsername(username).get();
     }
 
@@ -380,8 +394,8 @@ public class UserServiceImpl implements UserService {
         return String.valueOf(new Random().nextInt(999));
     }
 
-    private void userHasEnoughMoney(Account senderAccount, Transaction transaction) {
-        if( senderAccount.getBalance() < Double.parseDouble(String.valueOf(transaction.getAmount()))){
+    private void userHasEnoughMoney(Account senderAccount, BigDecimal convertAmount) {
+        if( senderAccount.getBalance() < Double.parseDouble(String.valueOf(convertAmount))){
             throw new NotEnoughFundsException("I am sorry to inform you but you have no sufficient funds to execute transaction", senderAccount.getId());
         }
     }
@@ -389,6 +403,7 @@ public class UserServiceImpl implements UserService {
         return exchangeRateService.convert(fromCurrency, toCurrency, amount);
     }
 
+    // method to check if the card to send the funds has the amount if not then take from the virtual card
     private void deductFunds(Account senderAccount, BigDecimal amount) {
         Card physicalCard = this.cardRepository.findByCardHolder(senderAccount.getUser());
         VirtualCard virtualCard = this.virtualCardRepository.findByCardHolder(senderAccount.getUser());
