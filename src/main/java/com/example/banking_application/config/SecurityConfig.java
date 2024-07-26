@@ -50,7 +50,7 @@ public class SecurityConfig{
                 ).authorizeHttpRequests(authorize -> authorize
                 // Resources accessible to everyone
                 .requestMatchers("/", "/users/login", "/users/register", "/FAQ","/change-language","/users/createCard").permitAll()
-
+                          // permission for css, js and etc.
                         .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
                         // Accessible to logged-in users
                 .requestMatchers("/home", "/users/submit-loan", "/transaction","/loans/delete/**","/loans/send/**").hasAuthority("USER")

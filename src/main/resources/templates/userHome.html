@@ -94,10 +94,10 @@
                 <td th:text="${loan.status}"></td>
                 <td>
                     <form th:action="@{/users/loans/send/{id}(id=${loan.id})}" th:method="post" class="action-form">
-                        <button type="submit" class="btn btn-send">Send</button>
+                        <button type="submit" class="btn btn-send" th:disabled="${loan.status == 'Sent'}">Send</button>
                     </form>
                     <form th:action="@{/users/loans/delete/{id}(id=${loan.id})}" th:method="delete" class="action-form">
-                        <button type="submit" class="btn btn-remove">Remove</button>
+                        <button type="submit" class="btn btn-remove" th:disabled="${loan.status == 'Sent'}">Remove</button>
                     </form>
                 </td>
             </tr>

@@ -51,6 +51,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 
     @Override
     public void updateRates(ExchangeRateDto exRatesDTO) {
+        // message to see whether rates update frequently
         this.LOGGER.info("Updating {} rates.", exRatesDTO.rates().size());
 
         if (!this.forexApiConfig.getBase().equals(exRatesDTO.base())) {
@@ -80,11 +81,11 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
         }
         Optional<BigDecimal> fromSearchedCurrency = this.forexApiConfig.getBase().equals(fromCurrency) ?
                 Optional.of(BigDecimal.ONE) :
-                exRateRepository.findByCurrency(fromCurrency).map(ExchangeRate::getRate);
+                this.exRateRepository.findByCurrency(fromCurrency).map(ExchangeRate::getRate);
 
-        Optional<BigDecimal> toSearchedCurrency = forexApiConfig.getBase().equals( toCurrency) ?
+        Optional<BigDecimal> toSearchedCurrency = this.forexApiConfig.getBase().equals( toCurrency) ?
                 Optional.of(BigDecimal.ONE) :
-                exRateRepository.findByCurrency( toCurrency).map(ExchangeRate::getRate);
+                this.exRateRepository.findByCurrency( toCurrency).map(ExchangeRate::getRate);
 
         if (fromSearchedCurrency.isEmpty() || toSearchedCurrency.isEmpty()) {
             return Optional.empty();

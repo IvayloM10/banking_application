@@ -54,6 +54,7 @@ public class LoanCrudServiceImpl implements LoanCrudService {
 
     @Override
     public void deleteLoan(Long id) {
+
         LOGGER.info("Delete: {}", id);
         loanRestClient.delete()
                 .uri("/loans/{id}", id)

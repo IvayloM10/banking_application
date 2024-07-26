@@ -85,7 +85,7 @@ public class LoanServiceImpl implements LoanService {
         this.accountRepository.save(requesterAccount);
 
 //        requester.getLoans().add(loanRequest);
-
+//TODO: check why not showing in the user view
         TransactionDetails loanTransactionShowing= new TransactionDetails();
         loanTransactionShowing.setStatus("Received!");
         loanTransactionShowing.setDate(currentLoan.getDate());

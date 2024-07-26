@@ -210,6 +210,7 @@ public class AdministrationServiceImpl implements AdministrationService {
         Loan currentLoan = this.loanService.getCurrentLoan(id);
 
         removeLoanFromAdminView(id, currentLoan);
+        this.loanService.rejectLoan(id);
     }
 
     private void removeLoanFromAdminView(Long id, Loan currentLoan) {
@@ -229,7 +230,7 @@ public class AdministrationServiceImpl implements AdministrationService {
         currentAdmin.setBranch(branch);
         this.branchRepository.save(branch);
 
-        this.loanService.rejectLoan(id);
+
     }
 
 

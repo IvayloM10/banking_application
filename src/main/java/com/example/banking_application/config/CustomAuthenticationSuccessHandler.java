@@ -29,6 +29,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             response.sendRedirect("/admin/home");
         } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("USER"))) {
             User currentUser = (User) authentication.getPrincipal();
+            //Adding session due to the fact I lose session to default settings of Spring Security
             session.setAttribute("current", currentUser);
             response.sendRedirect("/home");
         } else {

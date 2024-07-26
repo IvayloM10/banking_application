@@ -1,7 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
 /* nav bar css */
 .dropdown {
     position: relative;
@@ -150,15 +148,26 @@ main {
 }
 
 .invalid-feedback {
+    font-size: 0.875rem;
+}
+.invalid-feedback {
     display: block;
     font-size: 1rem;
 }
-.is-invalid {
-    border-color: #dc3545;
+
+.text-danger {
+    color: #dc3545;
+}
+.forgot-link {
+    display: block;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #2980b9;
+    text-decoration: none;
 }
 
-.invalid-feedback {
-    font-size: 0.875rem;
+.forgot-link:hover {
+    text-decoration: underline;
 }
 /* footer */
 footer {

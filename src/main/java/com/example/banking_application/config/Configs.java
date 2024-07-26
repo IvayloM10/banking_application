@@ -10,9 +10,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 public class Configs {
-
-
-
     @Bean
     public ModelMapper modelMapper(){
         return new ModelMapper();
