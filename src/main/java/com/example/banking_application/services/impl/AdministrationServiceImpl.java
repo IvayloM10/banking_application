@@ -40,7 +40,7 @@ public class AdministrationServiceImpl implements AdministrationService {
 
     private final VirtualCardRepository virtualCardRepository;
 
-    private LoanService loanService;
+    private final LoanService loanService;
 
     public AdministrationServiceImpl(AdministratorRepository administratorRepository, ModelMapper modelMapper, BranchRepository branchRepository, TransactionRepository transactionRepository, AccountRepository accountRepository, PasswordEncoder passwordEncoder, UserRepository userRepository, UserService userService, CardRepository cardRepository, VirtualCardRepository virtualCardRepository, LoanService loanService) {
         this.administratorRepository = administratorRepository;
@@ -229,8 +229,6 @@ public class AdministrationServiceImpl implements AdministrationService {
 
         currentAdmin.setBranch(branch);
         this.branchRepository.save(branch);
-
-
     }
 
 

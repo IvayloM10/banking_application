@@ -19,7 +19,7 @@
         <h2>Account Information</h2>
         <p>Account Number: <span th:text="${account.getAccountNumber()}"></span> - Currency: <span th:text="${account.getCurrency()}"></span></p>
         <p>Balance: <span th:text="${#numbers.formatDecimal(account.getBalance(), 1, 'COMMA', 2, 'POINT')}"></span></p>
-        <img src="account-card.jpg" alt="Account Card" class="account-card-image">
+<!--        <img src="account-card.jpg" alt="Account Card" class="account-card-image">-->
     </section>
     <section class="account-info">
         <h2>Card</h2>
@@ -42,6 +42,42 @@
             <option value="all">All Time</option>
         </select>
     </section>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filter = document.getElementById('filter');
+            filter.addEventListener('change', function() {
+                fetchTransactions(filter.value);
+            });
+
+            // Initial load
+            fetchTransactions(filter.value);
+        });
+
+        function fetchTransactions(period) {
+            fetch(`/transactions?period=${period}`)
+                .then(response => response.json())
+                .then(data => updateTransactionsTable(data))
+                .catch(error => console.error('Error fetching transactions:', error));
+        }
+
+        function updateTransactionsTable(transactions) {
+            const tbody = document.querySelector('#transactions-table tbody');
+            tbody.innerHTML = ''; // Clear existing rows
+
+            transactions.forEach(transaction => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${transaction.date}</td>
+                    <td>${transaction.description}</td>
+                    <td>${transaction.amount}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+    </script>
+
+
 
     </div>
     <section class="transactions-history">
@@ -93,12 +129,17 @@
                 <td th:text="${loan.term}"></td>
                 <td th:text="${loan.status}"></td>
                 <td>
-                    <form th:action="@{/users/loans/send/{id}(id=${loan.id})}" th:method="post" class="action-form">
-                        <button type="submit" class="btn btn-send" th:disabled="${loan.status == 'Sent'}">Send</button>
-                    </form>
-                    <form th:action="@{/users/loans/delete/{id}(id=${loan.id})}" th:method="delete" class="action-form">
-                        <button type="submit" class="btn btn-remove" th:disabled="${loan.status == 'Sent'}">Remove</button>
-                    </form>
+                    <div th:if="${loan.isAuthorized}">
+                        <span>Congratulations!</span>
+                    </div>
+                    <div th:if="${!loan.isAuthorized}">
+                        <form th:action="@{/users/loans/send/{id}(id=${loan.id})}" th:method="post" class="action-form">
+                            <button type="submit" class="btn btn-send" th:disabled="${loan.status == 'Sent'}">Send</button>
+                        </form>
+                        <form th:action="@{/users/loans/delete/{id}(id=${loan.id})}" th:method="delete" class="action-form">
+                            <button type="submit" class="btn btn-remove" th:disabled="${loan.status == 'Sent'}">Remove</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             </tbody>

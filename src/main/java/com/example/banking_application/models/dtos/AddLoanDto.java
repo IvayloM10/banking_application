@@ -1,5 +1,8 @@
 package com.example.banking_application.models.dtos;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,17 +13,27 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 public class AddLoanDto {
+
+    @NotEmpty
+    @Positive
     private BigDecimal amount;
 
     private Long requesterId;
-    private BigDecimal returnAmount;
-    private double rate;
-    private String term;
-    private String currency;
-    private BigDecimal monthlyPayment;
-    private String pin;
 
-    private void setRateForTransaction(){
-        setRate(Double.parseDouble(String.valueOf(returnAmount.divide(amount))));
-    }
+    @NotEmpty
+    private BigDecimal returnAmount;
+
+    private double rate;
+
+    @NotEmpty
+    private String term;
+
+    @NotEmpty
+    @Size(min=3,max = 3)
+    private String currency;
+
+    @NotEmpty
+    @Positive
+    private BigDecimal monthlyPayment;
+
 }

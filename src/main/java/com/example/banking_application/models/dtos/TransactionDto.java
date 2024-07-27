@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 public class TransactionDto {
-    @NotEmpty
+    @NotEmpty(message = "Please, describe the transaction")
     private String description;
     @NotEmpty
     private String currency;

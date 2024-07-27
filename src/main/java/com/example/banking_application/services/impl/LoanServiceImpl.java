@@ -68,6 +68,7 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public void transferMoneyToUserAccount(Long id) {
         LoanDto currentLoan = this.loanCrudService.getCurrentLoan(id);
+        currentLoan.setAuthorized(true);
         currentLoan.setStatus("Received!");
           this.loanCrudService.updateLoan(id, currentLoan);
         User requester = this.userRepository.findById(currentLoan.getRequesterId()).orElse(null);
@@ -90,6 +91,9 @@ public class LoanServiceImpl implements LoanService {
         loanTransactionShowing.setStatus("Received!");
         loanTransactionShowing.setDate(currentLoan.getDate());
         loanTransactionShowing.setDescription("Loan:" + currentLoan.getId());
+        loanTransactionShowing.setSign('+');
+        loanTransactionShowing.setAmount(Double.parseDouble(String.valueOf(currentLoan.getAmount())));
+        loanTransactionShowing.setCurrency(String.valueOf(requesterAccount.getCurrency()));
 
         requester.getTransactions().add(loanTransactionShowing);
         this.userRepository.save(requester);

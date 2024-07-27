@@ -14,10 +14,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-//@Entity
+
 public class LoanDto {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
     private boolean isAuthorized;
     private BigDecimal amount;

@@ -219,7 +219,7 @@ public class UserServiceImpl implements UserService {
     public void handleRegularTransaction(Account senderAccount, String receiverCardNumber, Transaction transaction) {
 
         transaction.setStatus("Received!");
-       // transaction.setTransactionIdentifier(UUID.randomUUID().toString()); // Ensure uniqueness for every transaction, so it could be found later in the admin controller when approved or rejected
+
 
         // Ensure that the maker and receiver are set
         User maker = userRepository.findByUsername(transaction.getMaker().getUsername())

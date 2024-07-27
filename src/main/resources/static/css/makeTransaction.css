@@ -169,6 +169,18 @@ main {
 .forgot-link:hover {
     text-decoration: underline;
 }
+
+.is-invalid {
+border: 1px solid red;
+}
+
+.invalid-feedback {
+display: none;
+}
+
+.is-invalid + .invalid-feedback {
+display: block;
+}
 /* footer */
 footer {
     background-color: #000;
