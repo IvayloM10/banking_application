@@ -19,7 +19,7 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private Currency currency;
    @OneToOne
-    @JoinColumn(name = "user_id",unique = true,nullable = false)
+    @JoinColumn(name = "user_id",unique = true)
     private User user;
 
     @Column(name ="account_number", unique = true,nullable = false)
@@ -28,7 +28,7 @@ public class Account {
     @Column(nullable = false)
     private double balance;
 
-    @ManyToOne
+    @OneToOne(mappedBy = "account")
     private Administrator administrator;
 
     public User getUser() {

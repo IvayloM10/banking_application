@@ -49,7 +49,7 @@ public class SecurityConfig{
                         .sessionFixation(sessionFixation -> sessionFixation.none())
                 ).authorizeHttpRequests(authorize -> authorize
                 // Resources accessible to everyone
-                .requestMatchers("/", "/users/login", "/users/register", "/FAQ","/change-language","/users/createCard").permitAll()
+                .requestMatchers("/", "/users/login", "/users/register","/about-us", "/FAQ","/change-language","/users/createCard").permitAll()
                           // permission for css, js and etc.
                         .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
                         // Accessible to logged-in users

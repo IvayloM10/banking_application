@@ -14,26 +14,23 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class AddLoanDto {
 
-    @NotEmpty
-    @Positive
+
     private BigDecimal amount;
 
     private Long requesterId;
 
-    @NotEmpty
     private BigDecimal returnAmount;
 
     private double rate;
 
-    @NotEmpty
+
     private String term;
 
-    @NotEmpty
-    @Size(min=3,max = 3)
+
     private String currency;
 
-    @NotEmpty
-    @Positive
+
+
     private BigDecimal monthlyPayment;
 
 }

@@ -49,7 +49,7 @@ public class LoanController {
         if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("loan",loanDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.loan",bindingResult);
-            return "redirect:/users/createCard";
+            return "redirect:/users/submit-loan";
         }
         Long currentUserId = this.userService.getCurrentUser(currentUser.getUsername()).getId();
         loanDto.setRequesterId(currentUserId);

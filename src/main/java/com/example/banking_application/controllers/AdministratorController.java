@@ -31,6 +31,7 @@ public class AdministratorController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String adminView(@SessionAttribute("current") User currentUser, Model model){
         Administrator currentAdmin = this.administrationService.getCurrentAdmin(currentUser.getUsername());
+        model.addAttribute("account", currentAdmin.getAccount());
         model.addAttribute("transactions",currentAdmin.getBranch().getTransaction());
         model.addAttribute("loans",currentAdmin.getBranch().getLoans());
         model.addAttribute("admin",currentAdmin);

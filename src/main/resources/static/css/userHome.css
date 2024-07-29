@@ -148,10 +148,61 @@ flex-wrap: wrap;
     margin-bottom: 20px;
 }
 
-.account-card-image {
+.card {
+    width: 300px;
+    height: 180px;
+    margin: 20px auto;
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #4d79ff 0%, #667aff 100%);
+    color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-front {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
     width: 100%;
-    border-radius: 15px;
-    object-fit: cover;
+    position: relative;
+}
+
+.card-logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.card-number {
+    font-size: 1.2em;
+    letter-spacing: 2px;
+    margin: auto;
+    text-align: center;
+}
+
+.card-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-size: 0.9em;
+    width: 100%;
+}
+
+.card-holder-name {
+    text-transform: uppercase;
+}
+
+.card-expiry {
+    text-align: right;
 }
 
 .transactions-filter {

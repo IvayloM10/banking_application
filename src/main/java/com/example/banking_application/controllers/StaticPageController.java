@@ -10,4 +10,9 @@ public class StaticPageController {
     public String getFAQPage(){
         return "FAQ";
     }
+
+    @GetMapping("/about-us")
+    public String getAboutUsPage(){
+        return "aboutUs";
+    }
 }

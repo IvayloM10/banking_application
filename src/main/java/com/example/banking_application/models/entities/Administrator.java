@@ -27,8 +27,8 @@ public class Administrator {
     @OneToOne(mappedBy = "administrator", cascade = CascadeType.ALL)
     private Branch branch;
 
-    @OneToMany(mappedBy = "administrator")
-    private List<Account> accounts;
+    @OneToOne
+    private Account account;
 
     @Column
     @Enumerated(EnumType.STRING)

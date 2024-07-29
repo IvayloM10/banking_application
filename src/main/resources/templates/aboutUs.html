@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Profiles</title>
+    <link rel="stylesheet" href="/css/aboutUs.css">
+</head>
+<body>
+<header>
+    <nav th:replace="~{fragments/commons::nav}"></nav>
+</header>
+
+<main>
+    <section class="profile-section">
+        <img src="person1.jpg" alt="Person 1" class="profile-image">
+        <div class="profile-box">
+            <h2>Ivan Ivanov</h2>
+            <h3>CEO</h3>
+            <p>Ivan started his journey at the company as a junior analyst. Through dedication and hard work, he climbed the ranks to become the CEO. His motivation is to inspire every employee to reach their full potential.</p>
+        </div>
+    </section>
+
+    <section class="profile-section">
+        <img src="person2.jpg" alt="Person 2" class="profile-image">
+        <div class="profile-box">
+            <h2>Maria Todorova</h2>
+            <h3>CTO</h3>
+            <p>Maria joined the company as a software engineer. Her innovative thinking and leadership skills earned her the position of CTO. She believes in the power of technology to transform businesses.</p>
+        </div>
+    </section>
+
+    <section class="profile-section">
+        <img src="person3.jpg" alt="Person 3" class="profile-image">
+        <div class="profile-box">
+            <h2>Ivana Petrova</h2>
+            <h3>COO</h3>
+            <p>Ivana's journey began in the customer service department. Her strategic vision and operational expertise led her to become the COO. She aims to create a seamless experience for all our customers.</p>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/commons::footer}"></footer>
+</body>
+</html>

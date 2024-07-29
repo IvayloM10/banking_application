@@ -1,11 +1,11 @@
 package com.example.banking_application.services.impl;
 
 import com.example.banking_application.config.CurrentUser;
-import com.example.banking_application.models.dtos.LoanDto;
 import com.example.banking_application.models.dtos.UserLoginDto;
 import com.example.banking_application.models.entities.*;
 import com.example.banking_application.models.entities.enums.Currency;
 import com.example.banking_application.repositories.*;
+import com.example.banking_application.services.AccountService;
 import com.example.banking_application.services.AdministrationService;
 import com.example.banking_application.services.LoanService;
 import com.example.banking_application.services.UserService;
@@ -13,6 +13,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.beans.Transient;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -27,8 +29,7 @@ public class AdministrationServiceImpl implements AdministrationService {
 
     private final TransactionRepository transactionRepository;
 
-
-    private final AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -42,22 +43,27 @@ public class AdministrationServiceImpl implements AdministrationService {
 
     private final LoanService loanService;
 
-    public AdministrationServiceImpl(AdministratorRepository administratorRepository, ModelMapper modelMapper, BranchRepository branchRepository, TransactionRepository transactionRepository, AccountRepository accountRepository, PasswordEncoder passwordEncoder, UserRepository userRepository, UserService userService, CardRepository cardRepository, VirtualCardRepository virtualCardRepository, LoanService loanService) {
+    private final AccountService accountService;
+
+    public AdministrationServiceImpl(AdministratorRepository administratorRepository, ModelMapper modelMapper, BranchRepository branchRepository, TransactionRepository transactionRepository, AccountRepository accountRepository, PasswordEncoder passwordEncoder, UserRepository userRepository, UserService userService, CardRepository cardRepository, VirtualCardRepository virtualCardRepository, LoanService loanService, AccountService accountService) {
         this.administratorRepository = administratorRepository;
         this.modelMapper = modelMapper;
         this.branchRepository = branchRepository;
         this.transactionRepository = transactionRepository;
-
         this.accountRepository = accountRepository;
+
+
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.userService = userService;
         this.cardRepository = cardRepository;
         this.virtualCardRepository = virtualCardRepository;
         this.loanService = loanService;
+        this.accountService = accountService;
     }
 
     @Override
+    @Transient
     public void initialize() {
         //check if administrators are already created
         if(this.administratorRepository.findAll().size() > 0){
@@ -68,15 +74,20 @@ public class AdministrationServiceImpl implements AdministrationService {
         Long id = 1L;
         for (int i = 0; i < Currency.values().length; i++){
             Administrator administrator = new Administrator();
+            Currency currency = currencies.get(i);
             administrator.setId(id);
-            administrator.setUsername(String.join(" ", String.valueOf(currencies.get(i))));
+            administrator.setUsername(String.join(" ", String.valueOf(currency)));
             administrator.setPassword(passwordEncoder.encode(String.join("",String.valueOf(i),String.valueOf(i),String.valueOf(i),String.valueOf(i))));
-            administrator.setCurrency(currencies.get(i));
+            administrator.setCurrency(currency);
+            Account adminAccount = this.accountService.createNewAccount(100000, currency);
+
+            administrator.setAccount(adminAccount);
+            this.accountRepository.save(adminAccount);
             Branch branch;
-            if(currencies.get(i).equals(Currency.BGN)){
+            if(currency.equals(Currency.BGN)){
                 branch = this.branchRepository.findByCurrency(Currency.EUR);
             }else {
-                branch = this.branchRepository.findByCurrency(currencies.get(i));
+                branch = this.branchRepository.findByCurrency(currency);
             }
             administrator.setBranch(branch);
             this.administratorRepository.save(administrator);
@@ -129,7 +140,7 @@ public class AdministrationServiceImpl implements AdministrationService {
         }else if(transaction.getRecieverCardType().equals("Virtual card")){
             cardNumber = this.virtualCardRepository.findByCardHolder(receiver).getCardNumber();
         }
-        Account senderAccount = this.accountRepository.findByUser(sender);
+        Account senderAccount = this.accountService.getUserAccount(sender); //this.accountRepository.findByUser(sender);
         this.userService.handleRegularTransaction(senderAccount, cardNumber, transaction);
 
         transaction.setStatus("Approved!");
@@ -195,11 +206,18 @@ public class AdministrationServiceImpl implements AdministrationService {
     public void approveLoan(Long id, String username) {
         getCurrentUserInfo(username);
 
-        this.loanService.transferMoneyToUserAccount(id);
-
         Loan currentLoan = this.loanService.getCurrentLoan(id);
 
-        removeLoanFromAdminView(id, currentLoan);
+
+        this.loanService.transferMoneyToUserAccount(id);
+        BigDecimal amount = currentLoan.getAmount();
+        Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
+        Account accountAdmin = currentAdmin.getAccount();
+        accountAdmin.reduceAccount(Double.parseDouble(String.valueOf(amount)));
+        this.administratorRepository.save(currentAdmin);
+        this.accountRepository.save(accountAdmin);
+
+        removeLoanFromAdminView( currentLoan);
     }
 
 
@@ -209,12 +227,13 @@ public class AdministrationServiceImpl implements AdministrationService {
         getCurrentUserInfo(username);
         Loan currentLoan = this.loanService.getCurrentLoan(id);
 
-        removeLoanFromAdminView(id, currentLoan);
+        removeLoanFromAdminView(currentLoan);
         this.loanService.rejectLoan(id);
     }
 
-    private void removeLoanFromAdminView(Long id, Loan currentLoan) {
+    private void removeLoanFromAdminView(Loan currentLoan) {
         Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
+
         Branch branch = currentAdmin.getBranch();
         List<Loan> loans = branch.getLoans();
 

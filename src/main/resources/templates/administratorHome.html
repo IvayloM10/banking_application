@@ -16,6 +16,15 @@
     <hr class="hr-3 w-25 white"/>
 
     <h2 class="text-center mt-2" >Welcome, administrator for <span th:text="${admin.getUsername()}"></span></h2>
+
+    <div class="container">
+    <section class="account-info">
+        <h2>Account Information</h2>
+        <p>Account Number: <span th:text="${account.getAccountNumber()}"></span> - Currency: <span th:text="${account.getCurrency()}"></span></p>
+        <p>Balance: <span th:text="${#numbers.formatDecimal(account.getBalance(), 1, 'COMMA', 2, 'POINT')}"></span></p>
+        </section>
+
+
     <section class="admin-section">
         <h2>Transactions</h2>
         <table class="transaction-table">
@@ -81,6 +90,7 @@
             </tbody>
         </table>
     </section>
+    </div>
 </main>
 
 <footer th:replace="~{fragments/commons::footer}"></footer>

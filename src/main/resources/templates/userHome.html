@@ -25,13 +25,31 @@
         <h2>Card</h2>
         <p>Card Number: <span th:text="${physicalCard.getCardNumber()}"></span> - Currency: <span th:text="${physicalCard.getCurrency()}"></span></p>
         <p>Balance: <span th:text="${#numbers.formatDecimal(physicalCard.getBalance(), 1, 'COMMA', 2, 'POINT')}"></span></p>
-        <img src="account-card.jpg" alt="Account Card" class="account-card-image">
+        <div class="card">
+        <div class="card-front">
+            <div class="card-logo">Visa</div>
+            <div class="card-number" th:text="${physicalCard.getCardNumber()}">1234 5678 9012 3456</div>
+            <div class="card-details">
+                <div class="card-holder-name">Ivan Ivanov</div>
+                <div class="card-expiry">12/24</div>
+            </div>
+        </div>
+    </div>
     </section>
     <section class="account-info">
         <h2>Virtual Card</h2>
         <p>Virtual Card Number: <span th:text="${virtualCard.getCardNumber()}"></span> - Currency: <span th:text="${virtualCard.getCurrency()}"></span></p>
         <p>Balance: <span th:text="${#numbers.formatDecimal(virtualCard.getBalance(), 1, 'COMMA', 2, 'POINT')}"></span></p>
-        <img src="account-card.jpg" alt="Account Card" class="account-card-image">
+        <div class="card">
+            <div class="card-front">
+                <div class="card-logo">Visa</div>
+                <div class="card-number" th:text="${virtualCard.getCardNumber()}">1234 5678 9012 3456</div>
+                <div class="card-details">
+                    <div class="card-holder-name">Ivan Ivanov</div>
+                    <div class="card-expiry">12/24</div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section class="transactions-filter">
@@ -63,7 +81,7 @@
 
         function updateTransactionsTable(transactions) {
             const tbody = document.querySelector('#transactions-table tbody');
-            tbody.innerHTML = ''; // Clear existing rows
+            tbody.innerHTML = '';
 
             transactions.forEach(transaction => {
                 const row = document.createElement('tr');
