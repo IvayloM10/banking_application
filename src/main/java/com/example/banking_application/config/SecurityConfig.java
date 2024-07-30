@@ -53,7 +53,7 @@ public class SecurityConfig{
                           // permission for css, js and etc.
                         .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
                         // Accessible to logged-in users
-                .requestMatchers("/home", "/users/submit-loan", "/transaction","/loans/delete/**","/loans/send/**").hasAuthority("USER")
+                .requestMatchers("/home", "/users/submit-loan", "/transaction","/loans/delete/**","/loans/send/**","/users/virtualCard/generate").hasAuthority("USER")
                 // Accessible to logged-in administrators
                 .requestMatchers("/admin/home","/transactions/approve/**", "/transactions/reject/**","/loans/reject/**","/loans/approve/**").hasAuthority("ADMIN")
                 //Other request needs to be authenticated

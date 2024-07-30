@@ -83,4 +83,11 @@ public class HomeController {
         return"redirect:/home";
     }
 
+    @PostMapping("/users/virtualCard/generate")
+    @PreAuthorize("hasAuthority('USER')")
+    public String generateNewNumber(@SessionAttribute("current") org.springframework.security.core.userdetails.User currentUser){
+        this.virtualCardService.generateNewNumber(currentUser.getUsername());
+
+        return"redirect:/home";
+    }
 }

@@ -19,7 +19,7 @@
         <h2>Account Information</h2>
         <p>Account Number: <span th:text="${account.getAccountNumber()}"></span> - Currency: <span th:text="${account.getCurrency()}"></span></p>
         <p>Balance: <span th:text="${#numbers.formatDecimal(account.getBalance(), 1, 'COMMA', 2, 'POINT')}"></span></p>
-<!--        <img src="account-card.jpg" alt="Account Card" class="account-card-image">-->
+
     </section>
     <section class="account-info">
         <h2>Card</h2>
@@ -27,11 +27,11 @@
         <p>Balance: <span th:text="${#numbers.formatDecimal(physicalCard.getBalance(), 1, 'COMMA', 2, 'POINT')}"></span></p>
         <div class="card">
         <div class="card-front">
-            <div class="card-logo">Visa</div>
+            <div class="card-logo" th:text="${physicalCard.getType()}">Visa</div>
             <div class="card-number" th:text="${physicalCard.getCardNumber()}">1234 5678 9012 3456</div>
             <div class="card-details">
-                <div class="card-holder-name">Ivan Ivanov</div>
-                <div class="card-expiry">12/24</div>
+                <div class="card-holder-name" th:text="${physicalCard.getCardHolder().getFullName()}">Ivan Ivanov</div>
+                <div class="card-expiry" th:text="${physicalCard.getExpirationDate()}">12/24</div>
             </div>
         </div>
     </div>
@@ -42,14 +42,17 @@
         <p>Balance: <span th:text="${#numbers.formatDecimal(virtualCard.getBalance(), 1, 'COMMA', 2, 'POINT')}"></span></p>
         <div class="card">
             <div class="card-front">
-                <div class="card-logo">Visa</div>
+                <div class="card-logo" th:text="${virtualCard.getType()}" >Visa</div>
                 <div class="card-number" th:text="${virtualCard.getCardNumber()}">1234 5678 9012 3456</div>
                 <div class="card-details">
-                    <div class="card-holder-name">Ivan Ivanov</div>
-                    <div class="card-expiry">12/24</div>
+                    <div class="card-holder-name"  th:text="${virtualCard.getCardHolder().getFullName()}">Ivan Ivanov</div>
+<!--                    <div class="card-expiry" th:text="${virtualCard.getCardNumber()}">12/24</div>-->
                 </div>
             </div>
         </div>
+        <form th:action="@{/users/virtualCard/generate}" method="post">
+            <button type="submit" class="btn-generate">Generate new number</button>
+        </form>
     </section>
 
     <section class="transactions-filter">

@@ -9,8 +9,10 @@ import com.example.banking_application.models.entities.*;
 import com.example.banking_application.models.entities.enums.CardType;
 import com.example.banking_application.models.entities.enums.Currency;
 import com.example.banking_application.repositories.*;
+import com.example.banking_application.services.AccountService;
 import com.example.banking_application.services.ExchangeRateService;
 import com.example.banking_application.services.UserService;
+import com.example.banking_application.services.VirtualCardService;
 import com.example.banking_application.services.exceptions.InvalidPinException;
 import com.example.banking_application.services.exceptions.NotEnoughFundsException;
 import org.modelmapper.ModelMapper;
@@ -28,27 +30,31 @@ import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    private ModelMapper modelMapper;
-    private CardRepository cardRepository;
+    private final ModelMapper modelMapper;
+    private final CardRepository cardRepository;
 
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
-    private VirtualCardRepository virtualCardRepository;
+    private final VirtualCardRepository virtualCardRepository;
 
     @Autowired
     private final BranchRepository branchRepository;
-    private TransactionRepository transactionRepository;
+    private final TransactionRepository transactionRepository;
 
-    private ExchangeRateService exchangeRateService;
+    private final ExchangeRateService exchangeRateService;
+
+    private final AccountService accountService;
+
+    private VirtualCardService virtualCardService;
 
 
     @Autowired
     private CurrentUser currentUser;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, CardRepository cardRepository, AccountRepository accountRepository, VirtualCardRepository virtualCardRepository, BranchRepository branchRepository, TransactionRepository transactionRepository, ExchangeRateService exchangeRateService, CurrentUser currentUser) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, CardRepository cardRepository, AccountRepository accountRepository, VirtualCardRepository virtualCardRepository, BranchRepository branchRepository, TransactionRepository transactionRepository, ExchangeRateService exchangeRateService, AccountService accountService, VirtualCardService virtualCardService, CurrentUser currentUser) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
@@ -58,6 +64,8 @@ public class UserServiceImpl implements UserService {
         this.branchRepository = branchRepository;
         this.transactionRepository = transactionRepository;
         this.exchangeRateService = exchangeRateService;
+        this.accountService = accountService;
+        this.virtualCardService = virtualCardService;
 
         this.currentUser = currentUser;
     }
@@ -121,16 +129,14 @@ public class UserServiceImpl implements UserService {
 
         //getting a new virtual card
         VirtualCard virtualCard = this.modelMapper.map(card, VirtualCard.class);
-        virtualCard.setCardNumber(generateCardNumber());
+        virtualCard.setCardNumber(this.virtualCardService.generateCardNumber());
         virtualCard.setBalance(50);
         virtualCard.setType(CardType.valueOf(cardDetails.getCardType()));
 
         //creating an account
-        Account account = new Account();
-        account.setAccountNumber(generateAccountNumber());
+        Account account = this.accountService.createNewAccount(virtualCard.getBalance() + card.getBalance(),card.getCurrency());
         account.setUser(byId);
-        account.setBalance(virtualCard.getBalance() + card.getBalance());
-        account.setCurrency(card.getCurrency());
+
 
         byId.setAccount(account);
         this.accountRepository.save(account);
@@ -382,9 +388,7 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findByUsername(username).get();
     }
 
-    private String generateAccountNumber() {
-        return "UB" + new Random().nextInt(999999);
-    }
+
 
     private String generateCardNumber() {
         return "CARD" + new Random().nextInt(99999999);

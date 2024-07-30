@@ -7,4 +7,7 @@ import com.example.banking_application.models.entities.VirtualCard;
 public interface VirtualCardService {
     VirtualCard UserVirtualCard(User loggedUser);
 
+    void generateNewNumber(String username);
+
+    String generateCardNumber();
 }
