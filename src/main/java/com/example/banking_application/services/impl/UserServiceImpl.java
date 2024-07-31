@@ -391,7 +391,12 @@ public class UserServiceImpl implements UserService {
 
 
     private String generateCardNumber() {
-        return "CARD" + new Random().nextInt(99999999);
+        String newNumber = "CARD" + new Random().nextInt(99999999);
+        // check whether there a card with such number exists as not to duplicate
+        while(this.cardRepository.findByCardNumber(newNumber).isPresent()){
+            newNumber = generateCardNumber();
+        }
+        return newNumber;
     }
 
     private String generateCVV() {

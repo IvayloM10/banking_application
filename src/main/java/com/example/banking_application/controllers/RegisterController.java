@@ -4,6 +4,7 @@ import com.example.banking_application.models.dtos.CardDto;
 import com.example.banking_application.models.dtos.UserRegisterDto;
 import com.example.banking_application.models.entities.User;
 import com.example.banking_application.services.UserService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,6 +48,7 @@ public class RegisterController {
             return "redirect:/users/register";
         }
 
+
         model.addAttribute("userId",userRegisterDto.getUsername());
         return "redirect:/users/createCard";
     }
@@ -66,6 +68,8 @@ public class RegisterController {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.card",bindingResult);
             return "redirect:/users/createCard";
         }
+
+
         this.userService.createCardAndAccountForUser(cardDto);
         return "redirect:/users/login";
     }
