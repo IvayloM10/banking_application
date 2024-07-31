@@ -6,7 +6,10 @@ import com.example.banking_application.repositories.AdministratorRepository;
 import com.example.banking_application.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -15,6 +18,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class CustomUserDetailsServiceTest {
 
     private static final String USER_USERNAME ="test";
@@ -29,14 +33,14 @@ public class CustomUserDetailsServiceTest {
 
     private CustomUserDetailsService toTest;
 
+    @Mock
     private UserRepository mockUserRepository;
 
+    @Mock
     private AdministratorRepository mockAdministratorRepository;
 
     @BeforeEach
     void setUp(){
-        this.mockUserRepository = Mockito.mock(UserRepository.class);
-        this.mockAdministratorRepository = Mockito.mock(AdministratorRepository.class);
         this.toTest = new CustomUserDetailsService(this.mockUserRepository, this.mockAdministratorRepository);
     }
 
