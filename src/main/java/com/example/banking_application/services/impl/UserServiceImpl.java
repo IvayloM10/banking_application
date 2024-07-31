@@ -30,6 +30,9 @@ import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final char PLUS_SIGN = '+';
+    private static final char MINUS_SIGN = '-';
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -48,13 +51,13 @@ public class UserServiceImpl implements UserService {
 
     private final AccountService accountService;
 
-    private VirtualCardService virtualCardService;
+    private final VirtualCardService virtualCardService;
 
 
     @Autowired
     private CurrentUser currentUser;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, CardRepository cardRepository, AccountRepository accountRepository, VirtualCardRepository virtualCardRepository, BranchRepository branchRepository, TransactionRepository transactionRepository, ExchangeRateService exchangeRateService, AccountService accountService, VirtualCardService virtualCardService, CurrentUser currentUser) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, CardRepository cardRepository, AccountRepository accountRepository, VirtualCardRepository virtualCardRepository, BranchRepository branchRepository, TransactionRepository transactionRepository, ExchangeRateService exchangeRateService, AccountService accountService, VirtualCardService virtualCardService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
@@ -66,24 +69,26 @@ public class UserServiceImpl implements UserService {
         this.exchangeRateService = exchangeRateService;
         this.accountService = accountService;
         this.virtualCardService = virtualCardService;
-
-        this.currentUser = currentUser;
+        this.currentUser = new CurrentUser();
     }
 
     @Override
     @Transient
     public boolean register(UserRegisterDto userRegisterDto) {
+        //check for password and confirm password being the same
         if(!userRegisterDto.getPassword().equals(userRegisterDto.getConfirmPassword())){
             return false;
         }
 
         Optional<User> possibleSameUser = this.userRepository.findByUsernameOrEmail(userRegisterDto.getUsername(), userRegisterDto.getEmail());
 
+        //check if such user with email or username exists and if yes send to make new user as the properties are occupied
         if(possibleSameUser.isPresent()){
             return false;
         }
 
-        User user = modelMapper.map(userRegisterDto, User.class);
+        //creating new User entity
+        User user = this.modelMapper.map(userRegisterDto, User.class);
         user.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
         Branch regionBranch = this.branchRepository.findByRegion(userRegisterDto.getRegion());
         user.setBranch(regionBranch);
@@ -171,7 +176,7 @@ public class UserServiceImpl implements UserService {
         Transaction transaction = this.modelMapper.map(transactionDto, Transaction.class);
         transaction.setStatus("Waiting....");
         transaction.setAmount(transactionDto.getAmountBase());
-        transaction.setSign("-");
+        transaction.setSign(String.valueOf(MINUS_SIGN));
         transaction.setDate(LocalDate.now());
         transaction.setMaker(sender);
         transaction.setTransactionIdentifier(UUID.randomUUID().toString()); // Ensure uniqueness for every transaction, so it could be found later in the admin controller when approved or rejected
@@ -251,7 +256,7 @@ public class UserServiceImpl implements UserService {
             senderDetail.setStatus("Received!");
             senderDetail.setUser(maker);
             senderDetail.setAmount(Double.parseDouble(String.valueOf(transaction.getAmount())));
-            senderDetail.setSign('-');
+            senderDetail.setSign(MINUS_SIGN);
 
             maker.getMadeTransactions().add(transaction);
             maker.getTransactions().add(senderDetail);
@@ -271,7 +276,7 @@ public class UserServiceImpl implements UserService {
            receiverDetail.setStatus("Received!");
             receiverDetail.setUser(receiver);
             receiverDetail.setAmount(Double.parseDouble(String.valueOf(transaction.getAmount())));
-            receiverDetail.setSign('+');
+            receiverDetail.setSign(PLUS_SIGN);
 
             receiver.getReceivedTransactions().add(transaction);
             receiver.getTransactions().add(receiverDetail);
