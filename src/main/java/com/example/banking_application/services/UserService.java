@@ -13,13 +13,10 @@ public interface UserService {
 
     boolean login(UserLoginDto userLoginDto);
 
-
-
     User getCurrentUser(String username);
 
     void createCardAndAccountForUser( CardDto carddto);
 
-    User getUser(String username);
 
     void makeTransaction(TransactionDto transactionDto,String username);
 

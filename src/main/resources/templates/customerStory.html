@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Story</title>
+    <link rel="stylesheet" href="/css/customerStory.css">
+</head>
+<body>
+<header>
+    <nav th:replace="~{fragments/commons::nav}"></nav>
+</header>
+
+<main>
+    <header>
+        <img src="jane.jpg" alt="Jane" class="profile-image">
+        <h1>Customer Story: Jane's Positive Banking Experience</h1>
+    </header>
+
+    <section class="story-section">
+        <div class="story-block">
+            <img src="jane.jpg" alt="Jane" class="story-image">
+            <div class="story-text">
+                <h2>Struggles with Previous Banks</h2>
+                <p>Jane had always been skeptical about banks. Growing up, she heard countless stories about hidden fees, complicated processes, and poor customer service. Her experiences with her previous banks did little to change her opinion. Whenever she needed assistance or had questions about her account, she often found herself waiting on hold for ages or navigating through confusing automated systems. The unexpected fees and complicated terms left her feeling frustrated and mistrustful.</p>
+            </div>
+        </div>
+
+        <div class="story-block">
+            <img src="horizon-bank.jpg" alt="Horizon Bank" class="story-image">
+            <div class="story-text">
+                <h2>Discovering Horizon Bank</h2>
+                <p>Her perception began to change when she opened an account with Horizon Bank. Jane needed a loan to start her dream project—a small bakery in her hometown. She walked into Horizon Bank, bracing herself for a lengthy, stressful process. Instead, she was warmly greeted by Maria, the bank's loan officer, who took the time to sit down with Jane and understand her business plan and financial needs.</p>
+            </div>
+        </div>
+
+        <div class="story-block">
+            <img src="maria.jpg" alt="Maria" class="story-image">
+            <div class="story-text">
+                <h2>A Warm Welcome</h2>
+                <p>Maria explained each step of the loan process in simple terms, ensuring that Jane felt comfortable and informed. Unlike her previous experiences, Maria was always available to answer questions, making the entire process seamless and stress-free. Maria’s dedication and transparent communication built a sense of trust and confidence in Jane.</p>
+            </div>
+        </div>
+
+        <div class="story-block">
+            <img src="bakery.jpg" alt="Jane's Bakery" class="story-image">
+            <div class="story-text">
+                <h2>Success and Growth</h2>
+                <p>Thanks to Horizon Bank's support, Jane's bakery flourished. The initial success allowed her to expand her product offerings and hire additional staff. She felt valued as a customer and trusted that the bank had her best interests at heart. Jane’s experience with Horizon Bank was a stark contrast to her past banking experiences and showed her that banking can be transparent, supportive, and beneficial. She began recommending Horizon Bank to friends and family, sharing her positive experience and encouraging others to explore what the bank had to offer.</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/commons::footer}"></footer>
+</body>
+</html>

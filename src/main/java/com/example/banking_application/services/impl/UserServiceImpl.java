@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private CurrentUser currentUser;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, CardRepository cardRepository, AccountRepository accountRepository, VirtualCardRepository virtualCardRepository, BranchRepository branchRepository, TransactionRepository transactionRepository, ExchangeRateService exchangeRateService, AccountService accountService, VirtualCardService virtualCardService) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, CardRepository cardRepository, AccountRepository accountRepository, VirtualCardRepository virtualCardRepository, BranchRepository branchRepository, TransactionRepository transactionRepository, ExchangeRateService exchangeRateService, AccountService accountService, VirtualCardService virtualCardService,CurrentUser currentUser) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
         this.exchangeRateService = exchangeRateService;
         this.accountService = accountService;
         this.virtualCardService = virtualCardService;
-        this.currentUser = new CurrentUser();
+        this.currentUser = currentUser;
     }
 
     @Override
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public void createCardAndAccountForUser(CardDto cardDetails) {
-        User byId = this.userRepository.findByUsername(this.currentUser.getUsername()).get();
+        User byId = this.userRepository.findByUsername(this.currentUser.getUsername()).orElse(null);
         //creating a new card
         Card card = new Card();
         card.setCardHolder(byId);
@@ -130,6 +130,8 @@ public class UserServiceImpl implements UserService {
         card.setCurrency(Currency.valueOf(cardDetails.getCurrency()));
         card.setPin(cardDetails.getPin());
         card.setBalance(50);
+
+
         byId.setCard(card);
 
         //getting a new virtual card
@@ -150,10 +152,10 @@ public class UserServiceImpl implements UserService {
         this.currentUser.setUsername("");
     }
 
-    @Override
-    public User getUser(String username) {
-        return this.userRepository.findByUsername(username).get();
-    }
+//    @Override
+//    public User getUser(String username) {
+//        return this.userRepository.findByUsername(username).get();
+//    }
 
     @Override
     public void makeTransaction(TransactionDto transactionDto, String username) {
@@ -188,7 +190,7 @@ public class UserServiceImpl implements UserService {
         return transaction;
     }
 
-    private User validateSenderPin(TransactionDto transactionDto) {
+     User validateSenderPin(TransactionDto transactionDto) {
         Optional<User> senderAccounts = this.userRepository.findById(this.currentUser.getId());
         User sender = senderAccounts.orElseThrow(() -> new IllegalArgumentException("Sender can not found"));
         if (!sender.getCard().getPin().equals(transactionDto.getPin())) {
@@ -197,7 +199,7 @@ public class UserServiceImpl implements UserService {
         return sender;
     }
 
-    private User getReceiverAndSetCardType(TransactionDto transactionDto, Transaction transaction) {
+    User getReceiverAndSetCardType(TransactionDto transactionDto, Transaction transaction) {
         Optional<Card> receiverCard = this.cardRepository.findByCardNumber(transactionDto.getCardNumber());
         if (receiverCard.isPresent()) {
             User receiver = receiverCard.get().getCardHolder();
@@ -216,7 +218,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transient
-    private void handleBranchTransaction(User sender, Transaction transaction) {
+    void handleBranchTransaction(User sender, Transaction transaction) {
         this.transactionRepository.save(transaction);
         Branch senderBranch = sender.getBranch();
         senderBranch.getTransaction().add(transaction);
@@ -327,12 +329,6 @@ public class UserServiceImpl implements UserService {
 
         convertAmount = convertAmount(convertAmount,String.valueOf(transaction.getCurrency()), String.valueOf(receiverCard.getCurrency()));
 
-//        User sender = senderAccount.getUser();
-//
-//        userHasEnoughMoney(senderAccount, transaction);
-//
-//        deductFunds(senderAccount,convertAmount);
-
 
         this.userRepository.save(sender);
 
@@ -370,15 +366,6 @@ public class UserServiceImpl implements UserService {
         //convert to receiver's currency
         convertAmount =  convertAmount(convertAmount,String.valueOf(transaction.getCurrency()), String.valueOf(receiverCard.getCurrency()));
 
-//       userHasEnoughMoney(senderAccount,transaction);
-//
-//        User sender = senderAccount.getUser();
-//
-//
-//
-//        this.userRepository.save(sender);
-//        deductFunds(senderAccount,convertAmount);
-
         User cardHolder = receiverCard.getCardHolder();
         this.userRepository.save(cardHolder);
         receiverCard.setBalance(receiverCard.getBalance() + Double.parseDouble(String.valueOf(convertAmount)));
@@ -395,7 +382,7 @@ public class UserServiceImpl implements UserService {
 
 
 
-    private String generateCardNumber() {
+     String generateCardNumber() {
         String newNumber = "CARD" + new Random().nextInt(99999999);
         // check whether there a card with such number exists as not to duplicate
         while(this.cardRepository.findByCardNumber(newNumber).isPresent()){
@@ -404,21 +391,21 @@ public class UserServiceImpl implements UserService {
         return newNumber;
     }
 
-    private String generateCVV() {
+     String generateCVV() {
         return String.valueOf(new Random().nextInt(999));
     }
 
-    private void userHasEnoughMoney(Account senderAccount, BigDecimal convertAmount) {
+     void userHasEnoughMoney(Account senderAccount, BigDecimal convertAmount) {
         if( senderAccount.getBalance() < Double.parseDouble(String.valueOf(convertAmount))){
             throw new NotEnoughFundsException("I am sorry to inform you but you have no sufficient funds to execute transaction", senderAccount.getId());
         }
     }
-    private BigDecimal convertAmount(BigDecimal amount, String fromCurrency, String toCurrency) {
+     BigDecimal convertAmount(BigDecimal amount, String fromCurrency, String toCurrency) {
         return exchangeRateService.convert(fromCurrency, toCurrency, amount);
     }
 
     // method to check if the card to send the funds has the amount if not then take from the virtual card
-    private void deductFunds(Account senderAccount, BigDecimal amount) {
+     void deductFunds(Account senderAccount, BigDecimal amount) {
         Card physicalCard = this.cardRepository.findByCardHolder(senderAccount.getUser());
         VirtualCard virtualCard = this.virtualCardRepository.findByCardHolder(senderAccount.getUser());
 
@@ -440,5 +427,7 @@ public class UserServiceImpl implements UserService {
         senderAccount.setBalance(senderAccount.getBalance() - Double.parseDouble(String.valueOf(amount)));
         this.accountRepository.save(senderAccount);
     }
+
+
 
 }

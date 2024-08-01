@@ -15,4 +15,9 @@ public class StaticPageController {
     public String getAboutUsPage(){
         return "aboutUs";
     }
+
+    @GetMapping("/customer-stories")
+    public String getCustomerStories(){
+        return "customerStory";
+    }
 }
