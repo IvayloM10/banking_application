@@ -174,7 +174,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transient
-    private Transaction getTransaction(TransactionDto transactionDto, User sender) {
+    Transaction getTransaction(TransactionDto transactionDto, User sender) {
         Transaction transaction = this.modelMapper.map(transactionDto, Transaction.class);
         transaction.setStatus("Waiting....");
         transaction.setAmount(transactionDto.getAmountBase());
@@ -191,8 +191,8 @@ public class UserServiceImpl implements UserService {
     }
 
      User validateSenderPin(TransactionDto transactionDto) {
-        Optional<User> senderAccounts = this.userRepository.findById(this.currentUser.getId());
-        User sender = senderAccounts.orElseThrow(() -> new IllegalArgumentException("Sender can not found"));
+        Optional<User> senderUser = this.userRepository.findById(this.currentUser.getId());
+        User sender = senderUser.orElseThrow(() -> new IllegalArgumentException("Sender can not found"));
         if (!sender.getCard().getPin().equals(transactionDto.getPin())) {
             throw new InvalidPinException("Invalid pin for card", transactionDto.getCardNumber());
         }

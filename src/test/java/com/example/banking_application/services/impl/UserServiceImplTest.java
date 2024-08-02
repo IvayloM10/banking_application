@@ -2,6 +2,7 @@ package com.example.banking_application.services.impl;
 
 import com.example.banking_application.config.CurrentUser;
 import com.example.banking_application.models.dtos.CardDto;
+import com.example.banking_application.models.dtos.TransactionDto;
 import com.example.banking_application.models.dtos.UserLoginDto;
 import com.example.banking_application.models.dtos.UserRegisterDto;
 import com.example.banking_application.models.entities.*;
@@ -25,9 +26,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -44,6 +46,8 @@ public class UserServiceImplTest {
     private static final String USERNAME = "username";
 
     private static final String INCORRECT_USERNAME = "incorrectUsername";
+
+    private static final String CARD_NUMBER = "1234";
 
     private UserServiceImpl toTest;
 
@@ -298,9 +302,139 @@ public class UserServiceImplTest {
         assertEquals(1, savedVirtualCards.size());
         assertEquals(1, savedAccounts.size());
 
-        // Additional assertions to verify the user has the correct card and account
+        // Assertions to verify the user has the correct card and account
         assertThat(user.getCard().getCardHolder().getUsername()).isEqualTo(card.getCardHolder().getUsername());
         assertThat(user.getAccount().getUser().getUsername()).isEqualTo(account.getUser().getUsername());
     }
+
+    @Test
+    void testValidatePinSuccess(){
+        // Arrange
+        TransactionDto transactionDto = new TransactionDto();
+        transactionDto.setPin("1234");
+
+            mockCurrentUser.setUsername(USERNAME);
+            mockCurrentUser.setId(1L);
+
+            // Create and set up the user
+            User user = new User();
+            user.setId(1L);
+            user.setUsername(USERNAME);
+
+
+            // Create the Card
+            Card card = new Card();
+            card.setCardHolder(user);
+            card.setCvvNumber("123");
+            card.setCardNumber("CARD456789");
+            card.setExpirationDate(LocalDate.now());
+            card.setType(CardType.Mastercard);
+            card.setCurrency(Currency.USD);
+            card.setPin("1234");
+            card.setBalance(50);
+
+            user.setCard(card);
+
+        Mockito.lenient().when(mockCurrentUser.getId()).thenReturn(1L);
+        Mockito.lenient().when(mockUserRepository.findByUsername(USERNAME)).thenReturn(Optional.of(user));
+        Mockito.lenient().when(mockUserRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        //Act
+        User result = toTest.validateSenderPin(transactionDto);
+
+        //Assert
+        assertEquals(user.getUsername(), result.getUsername());
+        assertEquals(user.getCard().getCardNumber(), result.getCard().getCardNumber());
+    }
+
+    @Test
+    void testGetReceiverAndSetCardTypeCardPresent() {
+        // Arrange
+        TransactionDto transactionDto = new TransactionDto();
+        transactionDto.setCardNumber(CARD_NUMBER);
+
+        Transaction transaction = new Transaction();
+
+        User receiver = new User();
+        Card card = new Card();
+        card.setCardHolder(receiver);
+
+        when(mockCardRepository.findByCardNumber(CARD_NUMBER)).thenReturn(Optional.of(card));
+
+        // Act
+        User result = toTest.getReceiverAndSetCardType(transactionDto, transaction);
+
+        // Assert
+        assertEquals(receiver, result);
+        assertEquals("card", transaction.getRecieverCardType());
+    }
+
+    @Test
+    void testGetReceiverAndSetCardTypeVirtualCardPresent() {
+        // Arrange
+        TransactionDto transactionDto = new TransactionDto();
+        transactionDto.setCardNumber(CARD_NUMBER);
+
+        Transaction transaction = new Transaction();
+
+        User receiver = new User();
+        VirtualCard virtualCard = new VirtualCard();
+        virtualCard.setCardHolder(receiver);
+
+        when(mockCardRepository.findByCardNumber(CARD_NUMBER)).thenReturn(Optional.empty());
+        when(mockVirtualCardRepository.findByCardNumber(CARD_NUMBER)).thenReturn(Optional.of(virtualCard));
+
+        // Act
+        User result = toTest.getReceiverAndSetCardType(transactionDto, transaction);
+
+        // Assert
+        assertEquals(receiver, result);
+        assertEquals("Virtual card", transaction.getRecieverCardType());
+    }
+
+    @Test
+    void testGetReceiverAndSetCardTypeReceiverNotFound() {
+        //Arrange
+        TransactionDto transactionDto = new TransactionDto();
+        transactionDto.setCardNumber(CARD_NUMBER);
+
+        Transaction transaction = new Transaction();
+
+        when(mockCardRepository.findByCardNumber(CARD_NUMBER)).thenReturn(Optional.empty());
+        when(mockVirtualCardRepository.findByCardNumber(CARD_NUMBER)).thenReturn(Optional.empty());
+
+        // Act
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            toTest.getReceiverAndSetCardType(transactionDto, transaction);
+        });
+        //Assert
+        assertEquals("Receiver not found", exception.getMessage());
+    }
+
+    @Test
+    void testHandleBranchTransaction() {
+        //Assert
+        // Create a sender
+        User sender = new User();
+        Branch branch = new Branch();
+        sender.setBranch(branch);
+
+        // Create a transaction
+        Transaction transaction = new Transaction();
+
+        // Act
+        toTest.handleBranchTransaction(sender, transaction);
+
+        // check the transaction repo saving it
+        verify(transactionRepository, times(1)).save(transaction);
+
+        // check containing the transaction
+        assertTrue(branch.getTransaction().contains(transaction));
+
+        // check number of saved units in branch
+        verify(mockBranchRepository, times(1)).save(branch);
+    }
+
+
 }
 
