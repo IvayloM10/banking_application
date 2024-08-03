@@ -233,7 +233,6 @@ public class UserServiceImpl implements UserService {
 
         transaction.setStatus("Received!");
 
-
         // Ensure that the maker and receiver are set
         User maker = userRepository.findByUsername(transaction.getMaker().getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("Maker not found"));
@@ -248,7 +247,6 @@ public class UserServiceImpl implements UserService {
         // Sender
         Optional<User> senderOp = this.userRepository.findByUsername(transaction.getMaker().getUsername());
         if (senderOp.isPresent()) {
-
 
             TransactionDetails senderDetail = new TransactionDetails();
             senderDetail.setTransactionId(transaction.getId());
@@ -293,12 +291,12 @@ public class UserServiceImpl implements UserService {
             } else {
                 Optional<VirtualCard> receiverVirtualCard = this.virtualCardRepository.findByCardNumber(receiverCardNumber);
                 Transaction finalTransaction1 = transaction;
-                receiverVirtualCard.ifPresent(card -> cardReduction(senderAccount, finalTransaction1, card));
+                receiverVirtualCard.ifPresent(card -> CardReductionWithVirtualCard(senderAccount, finalTransaction1, card));
             }
         }
     }
 
-    private boolean receiverCardType(String receiverCardNumber) {
+     boolean receiverCardType(String receiverCardNumber) {
         Optional<Card> card = this.cardRepository.findByCardNumber(receiverCardNumber);
         return card.isPresent();
     }
@@ -313,7 +311,7 @@ public class UserServiceImpl implements UserService {
 
 
 @Transient
-    private void cardReduction(Account senderAccount,Transaction transaction, Card receiverCard) {
+    void cardReduction(Account senderAccount,Transaction transaction, Card receiverCard) {
 
         //convert the amount that is asked in
         BigDecimal convertAmount = convertAmount(transaction.getAmount(),String.valueOf(senderAccount.getCurrency()), String.valueOf(transaction.getCurrency()));
@@ -349,7 +347,7 @@ public class UserServiceImpl implements UserService {
     };
 
 
-    public void cardReduction(Account senderAccount, Transaction transaction, VirtualCard receiverCard) {
+     void CardReductionWithVirtualCard(Account senderAccount, Transaction transaction, VirtualCard receiverCard) {
 
         // convert to the currency of the sender the amount
         BigDecimal convertAmount = convertAmount(transaction.getAmount(),String.valueOf(senderAccount.getCurrency()),String.valueOf(transaction.getCurrency()));

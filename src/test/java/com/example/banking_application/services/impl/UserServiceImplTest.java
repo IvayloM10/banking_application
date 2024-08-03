@@ -12,6 +12,7 @@ import com.example.banking_application.repositories.*;
 import com.example.banking_application.services.AccountService;
 import com.example.banking_application.services.ExchangeRateService;
 import com.example.banking_application.services.VirtualCardService;
+import com.example.banking_application.services.exceptions.NotEnoughFundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,9 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,6 +47,7 @@ public class UserServiceImplTest {
     private static final String INCORRECT_USERNAME = "incorrectUsername";
 
     private static final String CARD_NUMBER = "1234";
+    private static final String VIRTUAL_CARD_NUMBER = "1111";
 
     private UserServiceImpl toTest;
 
@@ -433,6 +433,306 @@ public class UserServiceImplTest {
 
         // check number of saved units in branch
         verify(mockBranchRepository, times(1)).save(branch);
+    }
+
+    @Test
+    void testUserHasEnoughMoneyFundsSuccess() {
+        // Arrange
+        Account senderAccount = new Account();
+        senderAccount.setBalance(200.0);
+
+        BigDecimal convertAmount = BigDecimal.valueOf(100.0);
+
+        //Assert check if exception is thrwon
+        assertDoesNotThrow(() -> toTest.userHasEnoughMoney(senderAccount, convertAmount));
+    }
+
+    @Test
+    void testUserHasEnoughMoneyFundsUnsuccessful() {
+        //Arrange
+        Account senderAccount = new Account();
+        senderAccount.setId(1L);
+        senderAccount.setBalance(50.0);
+
+        BigDecimal convertAmount = BigDecimal.valueOf(100.0);
+
+        // check if the exception is thrown
+        NotEnoughFundsException exception = assertThrows(NotEnoughFundsException.class,
+                () -> toTest.userHasEnoughMoney(senderAccount, convertAmount));
+
+        // Assert
+        assertEquals("I am sorry to inform you but you have no sufficient funds to execute transaction", exception.getMessage());
+        assertEquals(senderAccount.getId(), exception.getId());
+    }
+
+    @Test
+    void testGetCurrentUserExists() {
+        // Arrange
+        String username = USERNAME;
+        User expectedUser = new User();
+        expectedUser.setUsername(username);
+
+        // Mocking the repository's response
+        when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(expectedUser));
+
+        // Execute the method
+        User actualUser = toTest.getCurrentUser(username);
+
+        // Verify the result
+        assertEquals(expectedUser, actualUser);
+
+        // Verify that the repository was called with the correct parameter
+        verify(mockUserRepository, times(1)).findByUsername(username);
+    }
+
+    @Test
+    void testGetCurrentUserDoesNotExist() {
+        // Arrange
+        String username = USERNAME;
+
+        // make sure we get the right thing from the mockUserRepo when called
+        when(mockUserRepository.findByUsername(username)).thenReturn(Optional.empty());
+
+        //Act
+        assertThrows(NoSuchElementException.class, () -> toTest.getCurrentUser(username));
+
+        // Assert
+        verify(mockUserRepository, times(1)).findByUsername(username);
+    }
+
+    @Test
+    void testDeductFundsEnoughFundsWithPhysicalCardBalance() {
+        // Arrange
+        Account senderAccount = new Account();
+        senderAccount.setBalance(1000.0);
+
+        User user = new User();
+        user.setUsername("user1");
+        senderAccount.setUser(user);
+
+        Card physicalCard = new Card();
+        physicalCard.setCardHolder(user);
+        physicalCard.setBalance(200.0);
+
+        VirtualCard virtualCard = new VirtualCard();
+        virtualCard.setCardHolder(user);
+        virtualCard.setBalance(300.0);
+
+        BigDecimal amount = BigDecimal.valueOf(150.0);
+
+
+        when(mockCardRepository.findByCardHolder(user)).thenReturn(physicalCard);
+        when(mockVirtualCardRepository.findByCardHolder(user)).thenReturn(virtualCard);
+
+        //Act
+        toTest.deductFunds(senderAccount, amount);
+
+        //Assert
+        assertEquals(50.0, physicalCard.getBalance());
+        assertEquals(300.0, virtualCard.getBalance()); // Unchanged
+        assertEquals(850.0, senderAccount.getBalance()); // 1000 - 150
+
+        // check if saved in repo
+        verify(mockCardRepository, times(1)).save(physicalCard);
+        verify(mockVirtualCardRepository, never()).save(any());
+        verify(mockAccountRepository, times(1)).save(senderAccount);
+    }
+
+    @Test
+    void testDeductFundsNotEnoughFundsWithPhysicalCardBalance() {
+        // Arrange
+        Account senderAccount = new Account();
+        senderAccount.setBalance(1000.0);
+
+        User user = new User();
+        user.setUsername("user2");
+        senderAccount.setUser(user);
+
+        Card physicalCard = new Card();
+        physicalCard.setCardHolder(user);
+        physicalCard.setBalance(100.0);
+
+        VirtualCard virtualCard = new VirtualCard();
+        virtualCard.setCardHolder(user);
+        virtualCard.setBalance(200.0);
+
+        BigDecimal amount = BigDecimal.valueOf(150.0);
+
+        // Mocking
+        when(mockCardRepository.findByCardHolder(user)).thenReturn(physicalCard);
+        when(mockVirtualCardRepository.findByCardHolder(user)).thenReturn(virtualCard);
+
+        // Act
+        toTest.deductFunds(senderAccount, amount);
+
+        // Assert
+        assertEquals(0.0, physicalCard.getBalance());
+        assertEquals(150.0, virtualCard.getBalance()); // 200 - 50
+        assertEquals(850.0, senderAccount.getBalance()); // 1000 - 150
+
+
+        verify(mockCardRepository, times(1)).save(physicalCard);
+        verify(mockVirtualCardRepository, times(1)).save(virtualCard);
+        verify(mockAccountRepository, times(1)).save(senderAccount);
+    }
+
+    @Test
+    void testReceiverCardTypeExists() {
+        // Arrange
+        Card card = new Card();
+        card.setCardNumber(CARD_NUMBER);
+        when(mockCardRepository.findByCardNumber(CARD_NUMBER)).thenReturn(Optional.of(card));
+
+        // Execute the method
+        boolean result = toTest.receiverCardType(CARD_NUMBER);
+
+        // Assertions
+        assertTrue(result);
+
+        // Verify repository interaction
+        verify(mockCardRepository, times(1)).findByCardNumber(CARD_NUMBER);
+    }
+
+    @Test
+    void testReceiverCardTypeDoesNotExist() {
+      ;
+
+        // Mocking
+        when(mockCardRepository.findByCardNumber(CARD_NUMBER)).thenReturn(Optional.empty());
+
+        // Act
+        boolean result = toTest.receiverCardType(CARD_NUMBER);
+
+        // Assert
+        assertFalse(result);
+
+        //check repo saved the entity
+        verify(mockCardRepository, times(1)).findByCardNumber(CARD_NUMBER);
+    }
+
+    @Test
+    void testConvertAmount() {
+        // Arrange
+        BigDecimal amount = BigDecimal.valueOf(100);
+        String fromCurrency = "USD";
+        String toCurrency = "EUR";
+        BigDecimal convertedAmount = BigDecimal.valueOf(85);
+
+
+        when(mockExchangeRateService.convert(fromCurrency, toCurrency, amount)).thenReturn(convertedAmount);
+
+        // Act
+        BigDecimal result = toTest.convertAmount(amount, fromCurrency, toCurrency);
+
+        // Assertions
+        assertEquals(convertedAmount, result);
+
+        verify(mockExchangeRateService, times(1)).convert(fromCurrency, toCurrency, amount);
+    }
+
+
+
+    @Test
+    void testCardReductionCard() {
+        //Arrange
+        UserServiceImpl toTestSpy = spy(toTest);
+
+        Account senderAccount = new Account();
+        senderAccount.setBalance(1000.0);
+        senderAccount.setCurrency(Currency.USD);
+
+        User sender = new User();
+        sender.setUsername("senderUser");
+        senderAccount.setUser(sender);
+
+        Transaction transaction = new Transaction();
+        transaction.setAmount(BigDecimal.valueOf(500.0));
+        transaction.setCurrency(Currency.EUR);
+
+        VirtualCard receiverVirtualCard = new VirtualCard();
+        receiverVirtualCard.setCardHolder(new User());
+        receiverVirtualCard.setBalance(300.0);
+        receiverVirtualCard.setCurrency(Currency.EUR);
+
+        Card receiverCard = new Card();
+        receiverCard.setCardHolder(new User());
+        receiverCard.setBalance(500.0);
+        receiverCard.setCurrency(Currency.USD);
+
+        Account receiverAccount = new Account();
+        receiverAccount.setBalance(500.0);
+        receiverAccount.setUser(receiverVirtualCard.getCardHolder());
+
+        BigDecimal expectedConvertAmount = BigDecimal.valueOf(500.0);
+        doReturn(expectedConvertAmount).when(toTestSpy).convertAmount(any(BigDecimal.class), any(String.class), any(String.class));
+
+       //Make sure repos invoke the right entitye
+        when(mockCardRepository.findByCardHolder(sender)).thenReturn(receiverCard);
+        when(mockVirtualCardRepository.findByCardHolder(any(User.class))).thenReturn(receiverVirtualCard);
+        when(mockAccountRepository.findByUser(receiverCard.getCardHolder())).thenReturn(receiverAccount);
+
+        // Saving entities
+        when(mockCardRepository.save(any(Card.class))).thenReturn(receiverCard);
+        Mockito.lenient().when(mockVirtualCardRepository.save(any(VirtualCard.class))).thenReturn(receiverVirtualCard);
+        when(mockAccountRepository.save(any(Account.class))).thenReturn(receiverAccount);
+
+        // Act
+        toTestSpy.cardReduction(senderAccount, transaction, receiverCard);
+
+        // check repo for number of saves
+        verify(mockCardRepository, times(2)).save(receiverCard);
+        verify(mockAccountRepository, times(1)).save(receiverAccount);
+
+       //Assert
+        assertEquals(1000.0 - expectedConvertAmount.doubleValue(), senderAccount.getBalance());
+        assertEquals(500.0 + expectedConvertAmount.doubleValue(), receiverAccount.getBalance());
+    }
+
+    @Test
+    void testMakeTransactionCorrectTransactionHandlingMethod() {
+        // Prepare test data
+        TransactionDto transactionDto = new TransactionDto();
+        transactionDto.setAmountBase(BigDecimal.valueOf(11000.0));
+        transactionDto.setCardNumber(CARD_NUMBER);
+        transactionDto.setPin("1111");
+
+        User sender = new User();
+        sender.setId(1L);
+        sender.setUsername(USERNAME);
+        sender.setBranch(new Branch());
+
+        Account senderAccount = new Account();
+        senderAccount.setUser(sender);
+
+        User receiver = new User();
+        receiver.setUsername("receiverUsername");
+
+        Transaction transaction = new Transaction();
+        transaction.setAmount(BigDecimal.valueOf(11.0));
+
+        // Mock repository behavior
+        when(mockUserRepository.findByUsername(anyString())).thenReturn(Optional.of(sender));
+        Mockito.lenient().when(mockUserRepository.findById(anyLong())).thenReturn(Optional.of(sender));
+        when(mockAccountRepository.findByUser(any(User.class))).thenReturn(senderAccount);
+        when(mockModelMapper.map(any(User.class), eq(CurrentUser.class))).thenReturn(new CurrentUser());
+        Mockito.lenient().when(mockModelMapper.map(any(TransactionDto.class), eq(Transaction.class))).thenReturn(transaction);
+        Mockito.lenient().when(mockCardRepository.findByCardNumber(anyString())).thenReturn(Optional.empty());
+        Mockito.lenient().when(mockVirtualCardRepository.findByCardNumber(anyString())).thenReturn(Optional.empty());
+
+        // Spy on toTest to access private methods
+        UserServiceImpl toTestSpy = spy(toTest);
+        doReturn(transaction).when(toTestSpy).getTransaction(any(TransactionDto.class), any(User.class));
+        doReturn(sender).when(toTestSpy).validateSenderPin(any(TransactionDto.class));
+        Mockito.lenient().doReturn(receiver).when(toTestSpy).getReceiverAndSetCardType(any(TransactionDto.class), any(Transaction.class));
+
+        // Execute the method
+        toTestSpy.makeTransaction(transactionDto, USERNAME);
+
+        // Verify that handleBranchTransaction was called
+        verify(toTestSpy, times(1)).handleBranchTransaction(any(User.class), any(Transaction.class));
+
+        // Verify that handleRegularTransaction was not called
+        verify(toTestSpy, never()).handleRegularTransaction(any(Account.class), anyString(), any(Transaction.class));
     }
 
 
