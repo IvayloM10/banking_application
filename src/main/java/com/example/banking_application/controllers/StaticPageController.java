@@ -20,4 +20,9 @@ public class StaticPageController {
     public String getCustomerStories(){
         return "customerStory";
     }
+
+    @GetMapping("/election")
+    public String electionStory(){
+        return "USelection.html";
+    }
 }

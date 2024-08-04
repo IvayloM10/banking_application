@@ -212,7 +212,7 @@ th {
     font-size: 1rem;
     border-radius: 4px;
     cursor: pointer;
-    margin: 0 2px;
+    margin: 4px 5px;
 }
 
 .btn-approve:hover {

@@ -1,5 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+}
 /* nav bar css */
 .dropdown {
     position: relative;
@@ -38,7 +42,7 @@ nav {
     display: flex;
     justify-content: space-between;
     background-color: #212121;
-    padding: 5px;
+    padding-bottom: 5px;
 }
 
 ul {
@@ -96,54 +100,76 @@ ul li a {
     margin-left: auto;
 }
 /* main */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background-color: #212121;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+
 main {
+    width: 80%;
+    margin: 20px auto;
     padding: 20px;
 }
 
-.profile-section {
-    display: flex;
-    align-items: center;
-    background-color: white;
-    padding: 20px;
+section {
+    margin: 20px auto;
+    width: 60%;
+    background-color: #000;
+    color: #fff;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    width: 100%;
-    max-width: 800px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+}
+
+h1, h2 {
+    font-family: 'Georgia', serif;
+    font-weight: normal;
+    text-align: center;
+    color: #fff;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin-top: 0;
+}
+
+p {
+    margin: 20px 0;
+    padding: 15px;
+    color: #fff; /
+    border-radius: 8px;
+    display: inline-block;
+    text-align: center;
+    font-size: 1em;
+    width: 80%;
+}
+
+.image {
+    width: 50%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 8px;
+    display: block;
     margin: 20px auto;
 }
 
-.profile-image {
-    width: 300px;
-    height: 200px;
-    border-radius: 8px;
-    margin-right: 20px;
-}
-
-.profile-box {
-    background-color: #333;
-    color: white;
-    padding: 20px;
-    border-radius: 16px;
-    flex: 1;
-}
-
-.profile-box h2, .profile-box h3 {
-    margin: 0 0 10px;
-}
-
-.profile-box h2 {
-    font-size: 1.5rem;
-}
-
-.profile-box h3 {
-    font-size: 1.2rem;
-}
-
-.profile-box p {
-    font-size: 1rem;
-    line-height: 1.5;
-}
 /* footer */
 footer {
     background-color: #000;

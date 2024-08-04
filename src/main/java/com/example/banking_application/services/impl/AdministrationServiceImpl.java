@@ -29,7 +29,7 @@ public class AdministrationServiceImpl implements AdministrationService {
 
     private final TransactionRepository transactionRepository;
 
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -51,8 +51,6 @@ public class AdministrationServiceImpl implements AdministrationService {
         this.branchRepository = branchRepository;
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
-
-
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.userService = userService;
@@ -111,8 +109,8 @@ public class AdministrationServiceImpl implements AdministrationService {
     }
 
     @Override
-    public Administrator getCurrentAdmin(String id) {
-        return this.administratorRepository.findByUsername(id).orElse(null);
+    public Administrator getCurrentAdmin(String username) {
+        return this.administratorRepository.findByUsername(username).orElse(null);
     }
 
     @Override
@@ -168,7 +166,7 @@ public class AdministrationServiceImpl implements AdministrationService {
         this.branchRepository.save(branch);
     }
 
-    private void getCurrentUserInfo(String username) {
+    void getCurrentUserInfo(String username) {
         this.currentUser = modelMapper.map(this.administratorRepository.findByUsername(username),CurrentUser.class);
     }
 
@@ -231,7 +229,7 @@ public class AdministrationServiceImpl implements AdministrationService {
         this.loanService.rejectLoan(id);
     }
 
-    private void removeLoanFromAdminView(Loan currentLoan) {
+     void removeLoanFromAdminView(Loan currentLoan) {
         Administrator currentAdmin = getCurrentAdmin(this.currentUser.getUsername());
 
         Branch branch = currentAdmin.getBranch();

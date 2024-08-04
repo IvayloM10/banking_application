@@ -101,6 +101,9 @@ ul li a {
 main {
     padding: 20px;
 }
+h1{
+text-align:center;
+}
 
 .story-section {
     display: flex;
@@ -111,7 +114,8 @@ main {
 .story-block {
     display: flex;
     align-items: center;
-    background-color: white;
+    background-color: black;
+    color:#fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -129,11 +133,11 @@ main {
 
 .story-text {
     flex: 1;
-    color: black;
+     color:#fff;
 }
 
 .story-text h2 {
-    color: black;
+     color:#fff;
     font-size: 1.8rem;
     margin-top: 0;
     text-align: center;
@@ -141,7 +145,7 @@ main {
 
 .story-text p {
     font-size: 1.1rem;
-    color: black;
+    color:#fff;
     line-height: 1.6;
     margin-bottom: 20px;
 }
