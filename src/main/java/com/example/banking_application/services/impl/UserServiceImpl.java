@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
         card.setCardHolder(byId);
         card.setCvvNumber(generateCVV());
         card.setCardNumber(generateCardNumber());
-        card.setExpirationDate(LocalDate.now());
+        card.setExpirationDate(LocalDate.now().plusYears(5));
         card.setType(CardType.valueOf(cardDetails.getCardType()));
         card.setCurrency(Currency.valueOf(cardDetails.getCurrency()));
         card.setPin(cardDetails.getPin());

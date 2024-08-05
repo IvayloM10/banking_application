@@ -4,9 +4,11 @@ import com.example.banking_application.services.AdministrationService;
 import com.example.banking_application.services.BranchService;
 import com.example.banking_application.services.ExchangeRateService;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConditionalOnProperty(name = "forex.api.init-exchange-rates", havingValue = "true")
 public class Initializer implements CommandLineRunner {
 
   private AdministrationService administrationService;

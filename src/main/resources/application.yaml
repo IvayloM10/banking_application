@@ -19,6 +19,7 @@ spring:
             key: ${FOREX_API_KEY:}
             url: ${FOREX_API_URL:}
             base: ${FOREX_API_BASE:}
+            init-exchange-rates: true
         loans:
           api:
             baseUrl: ${LOANS_BASE_URL:http://localhost:8081}
@@ -42,6 +43,9 @@ spring:
   #   api-key:
   #   api-secret:
   #   cloud-name:
+
+  rest:
+    configuration: prod
 
   logging:
     level:

@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
@@ -52,7 +53,7 @@ public class SecurityConfig{
                         .sessionFixation(sessionFixation -> sessionFixation.none())
                 ).authorizeHttpRequests(authorize -> authorize
                 // Resources accessible to everyone
-                .requestMatchers("/", "/users/login", "/users/register","/about-us", "/FAQ","/change-language","/users/createCard").permitAll()
+                .requestMatchers("/", "/users/login", "/users/register","/about-us", "/FAQ","/change-language","/users/createCard","/customer-stories","/election").permitAll()
                           // permission for css, js and etc.
                         .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
                         // Accessible to logged-in users

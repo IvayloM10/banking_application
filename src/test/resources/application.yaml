@@ -17,19 +17,37 @@ spring:
         format_sql: true
     defer-datasource-initialization: true
 
-  sql:
-    init:
-      mode: never
-
   mvc:
     hiddenmethod:
       filter:
         enabled: true
-  forex:
-    api:
-      key: "test"
-      url: "https://example.com"
-      base: "USD"
-  offers:
-    api:
-      baseUrl: "http://localhost:8081"
+        forex:
+          api:
+            key: "test"
+            url: "http://example.com"
+            base: "USD"
+        loans:
+          api:
+            baseUrl: "http://localhost:8081"
+
+  rest:
+    configuration: "test"
+
+    logging:
+      level:
+        org:
+          springframework:
+            security: DEBUG
+
+  # Ensure this matches the prefix in LoanApiConfig
+#  mvc:
+#    hiddenmethod:
+#      filter:
+#        forex:
+#          api:
+#            key: "test"
+#            url: "http://example.com"
+#            base: "USD"
+#        loans:
+#          api:
+#            baseUrl: "http://localhost:8081"
