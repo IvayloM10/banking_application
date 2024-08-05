@@ -6,6 +6,7 @@ import com.example.banking_application.repositories.UserRepository;
 import com.example.banking_application.services.*;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,7 +42,7 @@ public class HomeController {
 
     @GetMapping("/home")
     @PreAuthorize("hasAuthority('USER')")
-    public String userHomePage(@SessionAttribute("current") org.springframework.security.core.userdetails.User currentUser, Model model){
+    public String userHomePage(@AuthenticationPrincipal org.springframework.security.core.userdetails.User currentUser, Model model){
         String Username = currentUser.getUsername();
 
         User loggedUser = this.userRepository.findByUsername(currentUser.getUsername()).orElse(null);
@@ -71,7 +72,7 @@ public class HomeController {
 
     @PostMapping("/transaction")
     @PreAuthorize("hasAuthority('USER')")
-    public String transaction(@SessionAttribute("current") org.springframework.security.core.userdetails.User currentUser,@Valid TransactionDto transactionDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+    public String transaction(@AuthenticationPrincipal org.springframework.security.core.userdetails.User currentUser,@Valid TransactionDto transactionDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
 
         if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("transaction",transactionDto);
@@ -85,7 +86,7 @@ public class HomeController {
 
     @PostMapping("/users/virtualCard/generate")
     @PreAuthorize("hasAuthority('USER')")
-    public String generateNewNumber(@SessionAttribute("current") org.springframework.security.core.userdetails.User currentUser){
+    public String generateNewNumber( @AuthenticationPrincipal org.springframework.security.core.userdetails.User currentUser){
         this.virtualCardService.generateNewNumber(currentUser.getUsername());
 
         return"redirect:/home";

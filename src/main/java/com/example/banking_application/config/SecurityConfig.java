@@ -49,9 +49,10 @@ public class SecurityConfig{
 
         httpSecurity
                 //removing the session management as per default it does not allow my session
-                .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionFixation(sessionFixation -> sessionFixation.none())
-                ).authorizeHttpRequests(authorize -> authorize
+//                .sessionManagement(sessionManagement -> sessionManagement
+//                        .sessionFixation(sessionFixation -> sessionFixation.none())
+//                )
+                .authorizeHttpRequests(authorize -> authorize
                 // Resources accessible to everyone
                 .requestMatchers("/", "/users/login", "/users/register","/about-us", "/FAQ","/change-language","/users/createCard","/customer-stories","/election").permitAll()
                           // permission for css, js and etc.
