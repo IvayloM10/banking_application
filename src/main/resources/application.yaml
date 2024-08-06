@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: prod
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: "jdbc:mysql://localhost:3306/banking_application?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC"
@@ -44,8 +46,8 @@ spring:
   #   api-secret:
   #   cloud-name:
 
-  rest:
-    configuration: prod
+#  rest:
+#    configuration: prod
 
   logging:
     level:

@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnProperty(name = "forex.api.init-exchange-rates", havingValue = "true")
+//@ConditionalOnProperty(name = "mvc.hiddenmethod.filter.forex.api.init-exchange-rates", havingValue = "true")
 public class Initializer implements CommandLineRunner {
 
   private AdministrationService administrationService;

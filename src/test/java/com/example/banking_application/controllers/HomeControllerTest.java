@@ -2,6 +2,7 @@ package com.example.banking_application.controllers;
 
 import com.example.banking_application.config.SecurityConfig;
 import com.example.banking_application.configs.TestSecurityConfig;
+import com.example.banking_application.models.dtos.ExchangeRateDto;
 import com.example.banking_application.models.dtos.TransactionDto;
 import com.example.banking_application.models.entities.Account;
 import com.example.banking_application.models.entities.Card;
@@ -12,6 +13,7 @@ import com.example.banking_application.repositories.UserRepository;
 import com.example.banking_application.services.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,10 +26,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -53,8 +55,11 @@ public class HomeControllerTest {
     @MockBean
     private CardService cardService;
 
+    @MockBean
+    private ExchangeRateService exchangeRateService;
 
-
+    @MockBean
+    private AdministrationService administrationService;
 
     @MockBean
     private VirtualCardService virtualCardService;
@@ -67,42 +72,18 @@ public class HomeControllerTest {
 
     @BeforeEach
     public void setUp() {
+        User mockUser = new User();
+        mockUser.setId(1L);
+        mockUser.setUsername("testuser");
+        mockUser.setFirstName("John");
+        mockUser.setLastName("Doe");
 
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(mockUser));
+        when(userRepository.save(any(User.class))).thenReturn(mockUser);
+
+        Mockito.when(exchangeRateService.fetchExRates()).thenReturn(new ExchangeRateDto("USD",new HashMap<>()));
+        doNothing().when(administrationService).initialize();
     }
-
-//    @Test
-//    @WithMockUser(username = "testuser", roles = {"USER"})
-//    public void testUserHomePage() throws Exception {
-//        // Setup mock data
-//        User mockUser = new User();
-//        mockUser.setId(1L);
-//        mockUser.setUsername("testuser");
-//        mockUser.setFirstName("John");
-//        mockUser.setLastName("Doe");
-//
-//        Card card = new Card();
-//        card.setCardHolder(mockUser);
-//
-//        VirtualCard virtualCard = new VirtualCard();
-//        virtualCard.setCardNumber("333");
-//        virtualCard.setCardHolder(mockUser);
-//
-//        // Mocking the behavior of the services
-//        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(mockUser));
-//        when(accountService.getUserAccount(mockUser)).thenReturn(new Account());
-//        when(cardService.UserCard(mockUser)).thenReturn(card);
-//        when(loanService.syncUserLoans(mockUser.getId())).thenReturn(Collections.emptyList());
-//        when(virtualCardService.UserVirtualCard(mockUser)).thenReturn(virtualCard);
-//
-//        // Perform the GET request and verify the result
-//        mockMvc.perform(get("/home")
-//                        .with(csrf())
-//                        .sessionAttr("current", new org.springframework.security.core.userdetails.User("testuser", "password", new ArrayList<>())))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("userHome"))
-//                .andExpect(model().attributeExists("user", "account", "physicalCard", "transactions", "loans", "virtualCard"))
-//                .andExpect(model().attribute("virtualCard", hasProperty("cardNumber", is("333")))); // Check specific properties
-//    }
 
     @Test
     @WithMockUser(username = "testuser", roles = {"USER"})
@@ -131,6 +112,9 @@ public class HomeControllerTest {
                         .with(SecurityMockMvcRequestPostProcessors.user("testuser").password("password").roles("USER")))
                 .andExpect(status().is3xxRedirection())  // Expect redirection
                 .andExpect(redirectedUrl("/home"));      // Expect redirection URL
+
+        // Verify that makeTransaction was called
+        verify(userService, times(1)).makeTransaction(any(TransactionDto.class), anyString());
     }
 
     @Test

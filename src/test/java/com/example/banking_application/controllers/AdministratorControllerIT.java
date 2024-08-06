@@ -2,10 +2,12 @@ package com.example.banking_application.controllers;
 
 
 import com.example.banking_application.configs.TestSecurityConfig;
+import com.example.banking_application.models.dtos.ExchangeRateDto;
 import com.example.banking_application.models.entities.Administrator;
 import com.example.banking_application.models.entities.Account;
 import com.example.banking_application.models.entities.Branch;
 import com.example.banking_application.services.AdministrationService;
+import com.example.banking_application.services.ExchangeRateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,6 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -36,6 +39,8 @@ public class AdministratorControllerIT {
 
     @MockBean
     private AdministrationService administrationService;
+    @MockBean
+    private ExchangeRateService exchangeRateService;
 
     private User mockAdminUser;
 
@@ -46,6 +51,7 @@ public class AdministratorControllerIT {
                 "password",
                 Collections.singletonList(new SimpleGrantedAuthority("ADMIN"))
         );
+        Mockito.when(exchangeRateService.fetchExRates()).thenReturn(new ExchangeRateDto("USD",new HashMap<>()));
     }
 
     @Test
