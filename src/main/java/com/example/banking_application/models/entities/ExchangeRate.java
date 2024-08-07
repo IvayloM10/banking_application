@@ -30,4 +30,11 @@ public class ExchangeRate {
     private BigDecimal rate;
 
 
+    @Override
+    public String toString() {
+        return "ExRateEntity{" +
+                "currency='" + currency + '\'' +
+                ", rate=" + rate +
+                '}';
+    }
 }
