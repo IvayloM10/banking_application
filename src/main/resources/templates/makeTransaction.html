@@ -24,23 +24,26 @@
                     id="currency"
                     th:errorclass="'is-invalid alert-danger'"
                     name="currency"
-                    required>
+                    >
                 <option value="USD">USD</option>
                 <option value="EUR">EUR</option>
                 <option value="BGN">BGN</option>
                 <option value="JPY">JPY</option>
             </select>
-            <small class="invalid-feedback text-danger">Currency must not be empty</small>
+            <small class="invalid-feedback text-danger">Currency must not be empty!</small>
 
+
+            <div th:if="${notEnoughFunds}" class="text-danger">Not enough funds to make transaction!</div>
             <label for="amountBase">Amount (Base Currency):</label>
             <input th:field = "*{amountBase}"
                    type="number"
                    id="amountBase"
                    name="amountBase"
-                   min="0"
+                   min="1"
                    th:errorclass="'is-invalid alert-danger'"
-                   max="50000" required>
-            <small class="invalid-feedback text-danger">Amount must be between 0 and 50000</small>
+                   max="50000" >
+            <small class="invalid-feedback text-danger">Amount must be between 0 and 50000!</small>
+
 
             <label for="accountId">Card Number:</label>
             <input th:field = "*{cardNumber}"
@@ -48,18 +51,20 @@
                    id="accountId"
                    name="accountId"
                    th:errorclass="'is-invalid alert-danger'"
-                   required>
-            <small class="invalid-feedback text-danger">Card number must not be empty</small>
+                   >
+            <small class="invalid-feedback text-danger">Card number must not be empty!</small>
 
+            <div th:if="${userNotFound}" class="text-danger">Reciever not found!</div>
             <label for="accountHolderName">Card Holder Name:</label>
             <input th:field = "*{accountHolderName}"
                    type="text"
                    id="accountHolderName"
                    name="accountHolderName"
                    th:errorclass="'is-invalid alert-danger'"
-                   required>
-            <small class="invalid-feedback text-danger">Cardholder must not be empty</small>
+                   >
+            <small class="invalid-feedback text-danger">Cardholder must not be empty!</small>
 
+            <div th:if="${invalidPin}" class="text-danger">Card pin is incorrect!</div>
             <label for="pin">PIN:</label>
             <input th:field="*{pin}"
                    type="password"
@@ -68,8 +73,8 @@
                    pattern="\d{4}"
                    maxlength="4"
                    th:errorclass="'is-invalid alert-danger'"
-                   required>
-            <small class="invalid-feedback text-danger">PIN must be a 4-digit number</small>
+                   >
+            <small class="invalid-feedback text-danger">PIN must be a 4-digit number!</small>
 
 
             <label for="description">Description:</label>
@@ -77,8 +82,8 @@
                       id="description"
                       name="description"
                       th:errorclass="'is-invalid alert-danger'"
-                      required></textarea>
-            <small class="invalid-feedback text-danger">Please, describe the transaction</small>
+                      ></textarea>
+            <small class="invalid-feedback text-danger">Please, describe the transaction!</small>
 
             <button type="submit">Submit</button>
         </form>

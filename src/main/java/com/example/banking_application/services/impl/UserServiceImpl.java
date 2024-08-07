@@ -162,8 +162,12 @@ public class UserServiceImpl implements UserService {
         this.currentUser = modelMapper.map(this.userRepository.findByUsername(username).get(),CurrentUser.class);
         User sender = validateSenderPin(transactionDto);
         Account senderAccount = this.accountRepository.findByUser(sender);
+        if(convertAmount(transactionDto.getAmountBase(),transactionDto.getCurrency(), String.valueOf(senderAccount.getCurrency())).compareTo(BigDecimal.valueOf(senderAccount.getBalance())) > 0){
+            throw new NotEnoughFundsException("I am sorry to inform you but you have no sufficient funds to execute transaction", senderAccount.getId());
+        }
 
         Transaction transaction = getTransaction(transactionDto, sender);
+
 
         // For amounts greater than or equal to 10,000 a validation is required from the administrator
         if (transactionDto.getAmountBase().compareTo(BigDecimal.valueOf(10.0)) >= 0) {

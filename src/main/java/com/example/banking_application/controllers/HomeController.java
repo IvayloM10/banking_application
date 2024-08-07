@@ -4,6 +4,8 @@ import com.example.banking_application.models.dtos.TransactionDto;
 import com.example.banking_application.models.entities.*;
 import com.example.banking_application.repositories.UserRepository;
 import com.example.banking_application.services.*;
+import com.example.banking_application.services.exceptions.InvalidPinException;
+import com.example.banking_application.services.exceptions.NotEnoughFundsException;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -80,7 +82,24 @@ public class HomeController {
             return "redirect:/transaction";
         }
 
-        this.userService.makeTransaction( transactionDto, currentUser.getUsername());
+        try {
+            this.userService.makeTransaction(transactionDto, currentUser.getUsername());
+        }catch (InvalidPinException e) {
+            System.err.println("Transaction failed due to an invalid pin: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.transaction",bindingResult);
+            redirectAttributes.addFlashAttribute("invalidPin", true);
+            return "redirect:/transaction";
+        }catch (NotEnoughFundsException e) {
+        System.err.println("Transaction failed due to insufficient funds: " + e.getMessage());
+        redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.transaction",bindingResult);
+        redirectAttributes.addFlashAttribute("notEnoughFunds", true);
+        return "redirect:/transaction";
+    } catch (Exception e) {
+            System.err.println("An error occurred while making the transaction: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.transaction",bindingResult);
+            redirectAttributes.addFlashAttribute("userNotFound", true);
+            return "redirect:/transaction";
+        }
         return"redirect:/home";
     }
 

@@ -694,6 +694,7 @@ public class UserServiceImplTest {
         TransactionDto transactionDto = new TransactionDto();
         transactionDto.setAmountBase(BigDecimal.valueOf(11000.0));
         transactionDto.setCardNumber(CARD_NUMBER);
+        transactionDto.setCurrency(String.valueOf(Currency.EUR));
         transactionDto.setPin("1111");
 
         User sender = new User();
@@ -703,6 +704,8 @@ public class UserServiceImplTest {
 
         Account senderAccount = new Account();
         senderAccount.setUser(sender);
+        senderAccount.setBalance(1000.0); // Setting the balance for the sender account
+        senderAccount.setCurrency(Currency.USD);
 
         User receiver = new User();
         receiver.setUsername("receiverUsername");
@@ -721,6 +724,10 @@ public class UserServiceImplTest {
 
         // Spy on toTest to access private methods
         UserServiceImpl toTestSpy = spy(toTest);
+
+        // Mock the convertAmount method to return a value within the sender's balance
+        doReturn(BigDecimal.valueOf(500.0)).when(toTestSpy).convertAmount(any(BigDecimal.class), anyString(), anyString());
+
         doReturn(transaction).when(toTestSpy).getTransaction(any(TransactionDto.class), any(User.class));
         doReturn(sender).when(toTestSpy).validateSenderPin(any(TransactionDto.class));
         Mockito.lenient().doReturn(receiver).when(toTestSpy).getReceiverAndSetCardType(any(TransactionDto.class), any(Transaction.class));
@@ -734,7 +741,6 @@ public class UserServiceImplTest {
         // Verify that handleRegularTransaction was not called
         verify(toTestSpy, never()).handleRegularTransaction(any(Account.class), anyString(), any(Transaction.class));
     }
-
 
 }
 
