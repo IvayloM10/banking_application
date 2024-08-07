@@ -85,17 +85,6 @@ public class LoanServiceImpl implements LoanService {
         requesterAccount.addIntoAccount(Double.parseDouble(String.valueOf(currentLoan.getAmount())));
         this.accountRepository.save(requesterAccount);
 
-//        requester.getLoans().add(loanRequest);
-//TODO: check why not showing in the user view, it might not be needed with newest impl
-//        TransactionDetails loanTransactionShowing= new TransactionDetails();
-//        loanTransactionShowing.setStatus("Received!");
-//        loanTransactionShowing.setDate(currentLoan.getDate());
-//        loanTransactionShowing.setDescription("Loan:" + currentLoan.getId());
-//        loanTransactionShowing.setSign('+');
-//        loanTransactionShowing.setAmount(Double.parseDouble(String.valueOf(currentLoan.getAmount())));
-//        loanTransactionShowing.setCurrency(String.valueOf(requesterAccount.getCurrency()));
-//
-//        requester.getTransactions().add(loanTransactionShowing);
         this.userRepository.save(requester);
     }
 

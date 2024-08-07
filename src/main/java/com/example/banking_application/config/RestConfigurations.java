@@ -23,7 +23,7 @@ public class RestConfigurations {
         return new ClientHttpRequestInterceptor() {
             @Override
             public org.springframework.http.client.ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-                // Add any custom logic or headers here
+                // check if the request is at the right url
                 System.out.println("Request URI: " + request.getURI());
                 return execution.execute(request, body);
             }

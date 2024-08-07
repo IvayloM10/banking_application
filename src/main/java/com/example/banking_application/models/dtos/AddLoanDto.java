@@ -23,7 +23,6 @@ public class AddLoanDto {
 
     private double rate;
 
-
     private String term;
 
 

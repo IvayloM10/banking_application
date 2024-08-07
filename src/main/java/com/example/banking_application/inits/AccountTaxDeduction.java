@@ -19,7 +19,7 @@ public class AccountTaxDeduction {
     @Scheduled(cron = "0 0 0 1 * ?")
     public void reduceAccountBalances() {
         List<Account> accounts = this.accountRepository.findAll();
-
+        //reduce accounts every first day of the month
         for (Account account : accounts) {
             account.reduceAccount(1.5);
             this.accountRepository.save(account);
