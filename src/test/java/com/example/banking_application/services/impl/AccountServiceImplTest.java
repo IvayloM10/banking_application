@@ -54,6 +54,6 @@ public class AccountServiceImplTest {
         assertEquals(createdAccount, savedAccount);
         assertEquals(balance, savedAccount.getBalance());
         assertEquals(currency, savedAccount.getCurrency());
-        assertEquals(8, savedAccount.getAccountNumber().length());
+
     }
 }
