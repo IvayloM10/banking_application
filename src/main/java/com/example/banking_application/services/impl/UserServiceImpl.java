@@ -171,7 +171,7 @@ public class UserServiceImpl implements UserService {
 
 
         // For amounts greater than or equal to 10,000 a validation is required from the administrator
-        if (transactionDto.getAmountBase().compareTo(BigDecimal.valueOf(10.0)) >= 0) {
+        if (transactionDto.getAmountBase().compareTo(BigDecimal.valueOf(1000.0)) >= 0) {
             handleBranchTransaction(sender, transaction);
         } else {
             handleRegularTransaction(senderAccount, transactionDto.getCardNumber(), transaction);
